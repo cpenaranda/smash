@@ -77,6 +77,9 @@ void showMessage(const std::string &exe) {
   printLine("-t, --threads <number>",
             "Threads used in algorithms (1 by default)",
             "Not all compression libraries use it");
+  printLine("-b, --back_reference_bits <number>",
+            "Number of bits used for back-reference (4 by default)",
+            "Acceptable values (3 - (window_size-1))");
 }
 
 void listCompressionLibraries() {
@@ -107,6 +110,7 @@ bool getParams(const int &number_params, const char *const params[],
   bool work_factor_set{false};
   bool shuffle_set{false};
   bool threads_set{false};
+  bool back_reference_bits_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (check(params[n], "-h", "--help")) {
@@ -190,6 +194,14 @@ bool getParams(const int &number_params, const char *const params[],
       if (n < number_params && !threads_set) {
         opt->setNumberThreads(atoi(params[n]));
         threads_set = true;
+      } else {
+        error = end = true;
+      }
+    } else if (check(params[n], "-b", "--back_reference_bits")) {
+      ++n;
+      if (n < number_params && !back_reference_bits_set) {
+        opt->setBackReferenceBits(atoi(params[n]));
+        back_reference_bits_set = true;
       } else {
         error = end = true;
       }
