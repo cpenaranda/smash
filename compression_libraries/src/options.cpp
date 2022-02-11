@@ -19,16 +19,23 @@ void Options::setWindowSize(const uint32_t &window_size) {
 
 void Options::setMode(const uint8_t &mode) { mode_ = mode; }
 
+void Options::setWorkFactor(const uint8_t &work_factor) {
+  work_factor_ = work_factor;
+}
+
 uint8_t Options::getCompressionLevel() { return compression_level_; }
 
 uint32_t Options::getWindowSize() { return window_size_; }
 
 uint8_t Options::getMode() { return mode_; }
 
+uint8_t Options::getWorkFactor() { return work_factor_; }
+
 Options::Options() {
   compression_level_ = 1;
   window_size_ = 10;
   mode_ = 0;
+  work_factor_ = 30;
 }
 
 Options::~Options() {}

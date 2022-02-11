@@ -22,9 +22,7 @@
 const uint16_t val_name = 45;
 const uint16_t val_description = 60;
 
-void printLineRecursive() {
-  std::cout << std::endl;
-}
+void printLineRecursive() { std::cout << std::endl; }
 
 template <typename... Strings>
 void printLineRecursive(std::string r_message, const Strings &...args) {
@@ -41,7 +39,6 @@ void printLineRecursive(std::string r_message, const Strings &...args) {
   std::cout << std::left << std::setw(val_name) << std::setfill(' ') << " ";
   printLineRecursive(args...);
 }
-
 
 template <typename... Strings>
 void printLine(std::string l_message, std::string r_message,
@@ -72,6 +69,9 @@ void showMessage(const std::string &exe) {
   printLine("-m, --mode <number>", "Specifies the input type (0 by default)",
             "0: Generic", "1: UTF-8 formatted text input",
             "2: Web Open Font Format input");
+  printLine("-wf, --work_factor <number>",
+            "Controls how the compression works with repetitive data",
+            "Values depend of different libraries (30 by default)");
 }
 
 void listCompressionLibraries() {
@@ -99,6 +99,7 @@ bool getParams(const int &number_params, const char *const params[],
   bool compression_level_set{false};
   bool window_size_set{false};
   bool mode_set{false};
+  bool work_factor_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (check(params[n], "-h", "--help")) {
@@ -158,6 +159,14 @@ bool getParams(const int &number_params, const char *const params[],
       if (n < number_params && !mode_set) {
         opt->setMode(atoi(params[n]));
         mode_set = true;
+      } else {
+        error = end = true;
+      }
+    } else if (check(params[n], "-wf", "--work_factor")) {
+      ++n;
+      if (n < number_params && !work_factor_set) {
+        opt->setWorkFactor(atoi(params[n]));
+        work_factor_set = true;
       } else {
         error = end = true;
       }
