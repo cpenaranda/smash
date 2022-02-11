@@ -7,3 +7,6 @@
 [submodule "compression_libraries/bzip2_/bzip2"]
 	path = compression_libraries/bzip2_/bzip2
 	url = https://gitlab.com/bzip2/bzip2.git
+[submodule "compression_libraries/c-blosc2_/c-blosc2"]
+	path = compression_libraries/c-blosc2_/c-blosc2
+	url = https://github.com/Blosc/c-blosc2.git

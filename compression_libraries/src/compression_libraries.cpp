@@ -12,6 +12,7 @@
 #include <brieflz_library.hpp>
 #include <brotli_library.hpp>
 #include <bzip2_library.hpp>
+#include <c-blosc2_library.hpp>
 #include <compression_libraries.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
@@ -37,6 +38,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["brieflz"] = []() { return new BrieflzLibrary(); };
   map_["brotli"] = []() { return new BrotliLibrary(); };
   map_["bzip2"] = []() { return new Bzip2Library(); };
+  map_["c-blosc2"] = []() { return new CBlosc2Library(); };
 }
 
 CompressionLibraries::~CompressionLibraries() {}
