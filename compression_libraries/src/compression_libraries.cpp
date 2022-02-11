@@ -14,6 +14,7 @@
 #include <bzip2_library.hpp>
 #include <c-blosc2_library.hpp>
 #include <compression_libraries.hpp>
+#include <density_library.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
     std::string library_name) {
@@ -39,6 +40,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["brotli"] = []() { return new BrotliLibrary(); };
   map_["bzip2"] = []() { return new Bzip2Library(); };
   map_["c-blosc2"] = []() { return new CBlosc2Library(); };
+  map_["density"] = []() { return new DensityLibrary(); };
 }
 
 CompressionLibraries::~CompressionLibraries() {}

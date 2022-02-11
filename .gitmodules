@@ -10,3 +10,6 @@
 [submodule "compression_libraries/c-blosc2_/c-blosc2"]
 	path = compression_libraries/c-blosc2_/c-blosc2
 	url = https://github.com/Blosc/c-blosc2.git
+[submodule "compression_libraries/density_/density"]
+	path = compression_libraries/density_/density
+	url = https://github.com/k0dai/density.git
