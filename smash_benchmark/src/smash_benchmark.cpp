@@ -22,9 +22,12 @@
 const uint16_t val_name = 45;
 const uint16_t val_description = 60;
 
-void printLine(std::string l_message, std::string r_message) {
-  std::cout << std::left << std::setw(val_name) << std::setfill(' ')
-            << " " + l_message;
+void printLineRecursive() {
+  std::cout << std::endl;
+}
+
+template <typename... Strings>
+void printLineRecursive(std::string r_message, const Strings &...args) {
   std::cout << std::left << std::setw(val_description) << std::setfill(' ')
             << r_message.substr(0, val_description);
   std::cout << std::endl;
@@ -35,7 +38,17 @@ void printLine(std::string l_message, std::string r_message) {
               << r_message.substr(0, val_description);
     std::cout << std::endl;
   }
-  std::cout << std::endl;
+  std::cout << std::left << std::setw(val_name) << std::setfill(' ') << " ";
+  printLineRecursive(args...);
+}
+
+
+template <typename... Strings>
+void printLine(std::string l_message, std::string r_message,
+               const Strings &...args) {
+  std::cout << std::left << std::setw(val_name) << std::setfill(' ')
+            << " " + l_message;
+  printLineRecursive(r_message, args...);
 }
 
 void showMessage(const std::string &exe) {
@@ -54,6 +67,11 @@ void showMessage(const std::string &exe) {
   printLine("-o, --output_file <file_name>",
             "File name where the compress data is stored");
   printLine("-l, --level <number>", "Compression level to use (1 by default)");
+  printLine("-w, --window <number>", "Set window size",
+            "Values depend of different libraries (10 by default)");
+  printLine("-m, --mode <number>", "Specifies the input type (0 by default)",
+            "0: Generic", "1: UTF-8 formatted text input",
+            "2: Web Open Font Format input");
 }
 
 void listCompressionLibraries() {
@@ -79,6 +97,8 @@ bool getParams(const int &number_params, const char *const params[],
   bool end{false};
   bool error{false};
   bool compression_level_set{false};
+  bool window_size_set{false};
+  bool mode_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (check(params[n], "-h", "--help")) {
@@ -122,6 +142,22 @@ bool getParams(const int &number_params, const char *const params[],
       if (n < number_params && !compression_level_set) {
         opt->setCompressionLevel(atoi(params[n]));
         compression_level_set = true;
+      } else {
+        error = end = true;
+      }
+    } else if (check(params[n], "-w", "--window")) {
+      ++n;
+      if (n < number_params && !window_size_set) {
+        opt->setWindowSize(atoi(params[n]));
+        window_size_set = true;
+      } else {
+        error = end = true;
+      }
+    } else if (check(params[n], "-m", "--mode")) {
+      ++n;
+      if (n < number_params && !mode_set) {
+        opt->setMode(atoi(params[n]));
+        mode_set = true;
       } else {
         error = end = true;
       }

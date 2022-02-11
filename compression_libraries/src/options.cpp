@@ -13,8 +13,22 @@ void Options::setCompressionLevel(const uint8_t &compression_level) {
   compression_level_ = compression_level;
 }
 
+void Options::setWindowSize(const uint32_t &window_size) {
+  window_size_ = window_size;
+}
+
+void Options::setMode(const uint8_t &mode) { mode_ = mode; }
+
 uint8_t Options::getCompressionLevel() { return compression_level_; }
 
-Options::Options() { compression_level_ = 1; }
+uint32_t Options::getWindowSize() { return window_size_; }
+
+uint8_t Options::getMode() { return mode_; }
+
+Options::Options() {
+  compression_level_ = 1;
+  window_size_ = 10;
+  mode_ = 0;
+}
 
 Options::~Options() {}
