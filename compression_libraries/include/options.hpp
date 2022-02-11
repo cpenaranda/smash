@@ -12,7 +12,13 @@
 
 class Options {
  private:
+  uint8_t compression_level_;
+
  public:
+  void setCompressionLevel(const uint8_t &compression_level);
+
+  uint8_t getCompressionLevel();
+
   Options();
   ~Options();
 };

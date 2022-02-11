@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 
 // SMASH LIBRARIES
 #include <compression_libraries.hpp>
@@ -52,6 +53,7 @@ void showMessage(const std::string &exe) {
   printLine("-f, --file <file_name>", "File name to compress");
   printLine("-o, --output_file <file_name>",
             "File name where the compress data is stored");
+  printLine("-l, --level <number>", "Compression level to use (1 by default)");
 }
 
 void listCompressionLibraries() {
@@ -66,7 +68,7 @@ bool check(const char *const param, const char *const first_value,
 
 void showLibraryInformation(const std::string &library_name,
                             const std::string &exe) {
-  Smash(library_name).getLibraryInformation(exe);
+  // TODO(Cristian): Must show the information of the especific library
 }
 
 bool getParams(const int &number_params, const char *const params[],
@@ -76,6 +78,7 @@ bool getParams(const int &number_params, const char *const params[],
   bool show_message{true};
   bool end{false};
   bool error{false};
+  bool compression_level_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (check(params[n], "-h", "--help")) {
@@ -111,6 +114,14 @@ bool getParams(const int &number_params, const char *const params[],
       ++n;
       if (n < number_params && output_file_name->empty()) {
         *output_file_name = params[n];
+      } else {
+        error = end = true;
+      }
+    } else if (check(params[n], "-l", "--level")) {
+      ++n;
+      if (n < number_params && !compression_level_set) {
+        opt->setCompressionLevel(atoi(params[n]));
+        compression_level_set = true;
       } else {
         error = end = true;
       }
@@ -200,18 +211,26 @@ void removeMemories(char *uncompressed_data, char *compressed_data,
   }
 }
 
+const uint16_t size_rows = 17;
 void showTitle() {
-  std::cout << "Library\t| ";
-  std::cout << "Original data\t| ";
-  std::cout << "Packed data\t| ";
-  std::cout << "Ratio\t| ";
-  std::cout << "Compress\t| ";
-  std::cout << "Decompress\t| ";
-  std::cout << "Total";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| Library";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| Original data";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| Packed data";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| Ratio";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| Compress";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| Decompress";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| Total"
+            << "|";
   std::cout << std::endl;
-  std::cout << "---------------------------------------------------";
-  std::cout << "---------------------------------------------------";
-  std::cout << "-----------------" << std::endl;
+  std::cout << std::left << std::setw(size_rows * 7 + 1) << std::setfill('-')
+            << "-" << std::endl;
 }
 
 void showResult(const std::string &library_name, Options opt,
@@ -222,22 +241,27 @@ void showResult(const std::string &library_name, Options opt,
       ((static_cast<double>(uncompressed_size) / 1000000.0) / time_compression);
   double vel_decompression =
       ((static_cast<double>(compressed_size) / 1000000.0) / time_decompression);
-
   double vel_total = ((static_cast<double>(uncompressed_size) / 1000000.0) /
                       (time_compression + time_decompression));
 
-  std::cout << library_name << "\t| ";
-  std::cout << uncompressed_size << " Bytes\t| ";
-  std::cout << compressed_size << " Bytes\t| ";
-  std::cout << (static_cast<double>(uncompressed_size) /
-                static_cast<double>(compressed_size))
-            << "\t| ";
-  // std::cout << time_compression << "\t";
-  std::cout << vel_compression << " MB/s\t| ";
-  // std::cout << time_decompression << "\t";
-  std::cout << vel_decompression << " MB/s\t| ";
-  // std::cout << (time_compression + time_decompression) << "\t";
-  std::cout << (vel_total) << " MB/s" << std::endl;
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| " + library_name;
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| " + std::to_string(uncompressed_size) + " Bytes";
+
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| " + std::to_string(compressed_size) + " Bytes";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| " + std::to_string((static_cast<double>(uncompressed_size) /
+                                      static_cast<double>(compressed_size)));
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| " + std::to_string(vel_compression) + " MB/s";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| " + std::to_string(vel_decompression) + " MB/s";
+  std::cout << std::left << std::setw(size_rows) << std::setfill(' ')
+            << "| " + std::to_string(vel_total) + " MB/s"
+            << "|";
+  std::cout << std::endl;
 }
 
 int main(int argc, char *argv[]) {

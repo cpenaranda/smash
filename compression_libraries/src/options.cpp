@@ -9,6 +9,12 @@
 // SMASH LIBRARIES
 #include <options.hpp>
 
-Options::Options() {}
+void Options::setCompressionLevel(const uint8_t &compression_level) {
+  compression_level_ = compression_level;
+}
+
+uint8_t Options::getCompressionLevel() { return compression_level_; }
+
+Options::Options() { compression_level_ = 1; }
 
 Options::~Options() {}
