@@ -4,3 +4,6 @@
 [submodule "compression_libraries/brotli_/brotli"]
 	path = compression_libraries/brotli_/brotli
 	url = https://github.com/google/brotli.git
+[submodule "compression_libraries/bzip2_/bzip2"]
+	path = compression_libraries/bzip2_/bzip2
+	url = https://gitlab.com/bzip2/bzip2.git

@@ -11,6 +11,7 @@
 // SMASH LIBRARIES
 #include <brieflz_library.hpp>
 #include <brotli_library.hpp>
+#include <bzip2_library.hpp>
 #include <compression_libraries.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
@@ -35,6 +36,7 @@ void CompressionLibraries::getListInformation() {
 CompressionLibraries::CompressionLibraries() {
   map_["brieflz"] = []() { return new BrieflzLibrary(); };
   map_["brotli"] = []() { return new BrotliLibrary(); };
+  map_["bzip2"] = []() { return new Bzip2Library(); };
 }
 
 CompressionLibraries::~CompressionLibraries() {}
