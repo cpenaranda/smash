@@ -51,17 +51,15 @@ execute_process(
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-function(update_repository TARGET VERSION LIBRARY_NAME)
-  if (VERSION MATCHES "last_tag")
-    add_custom_target( ${TARGET}
-      COMMAND ${GIT_EXECUTABLE} checkout $(${GIT_EXECUTABLE} describe --tags `git rev-list --tags --max-count=1`) > /dev/null 2>&1
-      COMMENT "Update ${LIBRARY_NAME} git submodule to last tag"
+function(update_repository VERSION_LIBRARY LIBRARY_NAME)
+  if (VERSION_LIBRARY MATCHES "last_tag")
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} checkout $(${GIT_EXECUTABLE} describe --tags `git rev-list --tags --max-count=1`)
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}
     )
   else()
-    add_custom_target(${TARGET}
-      COMMAND ${GIT_EXECUTABLE} checkout ${VERSION} > /dev/null 2>&1
-      COMMENT "Update ${LIBRARY_NAME} git submodule to ${VERSION}"
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} checkout ${VERSION_LIBRARY}
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}
     )
   endif()

@@ -1,3 +1,6 @@
 [submodule "compression_libraries/brieflz_/brieflz"]
 	path = compression_libraries/brieflz_/brieflz
 	url = https://github.com/jibsen/brieflz.git
+[submodule "compression_libraries/brotli_/brotli"]
+	path = compression_libraries/brotli_/brotli
+	url = https://github.com/google/brotli.git
