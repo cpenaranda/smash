@@ -9,6 +9,7 @@
 #include <iostream>
 
 // SMASH LIBRARIES
+#include <brieflz_library.hpp>
 #include <compression_libraries.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
@@ -30,6 +31,8 @@ void CompressionLibraries::getListInformation() {
   }
 }
 
-CompressionLibraries::CompressionLibraries() {}
+CompressionLibraries::CompressionLibraries() {
+  map_["brieflz"] = []() { return new BrieflzLibrary(); };
+}
 
 CompressionLibraries::~CompressionLibraries() {}

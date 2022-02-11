@@ -35,10 +35,6 @@ bool Smash::compareData(char *uncompress_data, const uint64_t &uncompress_size,
                           decompress_size);
 }
 
-void Smash::getLibraryInformation(const std::string &exe) {
-  lib->getLibraryInformation(exe);
-}
-
 Smash::Smash(const std::string &compression_library_name) {
   lib = CompressionLibraries().getCompressionLibrary(
       compression_library_name);

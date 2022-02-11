@@ -28,7 +28,8 @@ class CompressionLibrary {
 
   virtual void getTitle() = 0;
 
-  virtual void getLibraryInformation(const std::string &exe) = 0;
+  void getTitle(const std::string &library_name,
+                const std::string &description);
 
   bool compareData(char *uncompress_data, const uint64_t &uncompress_size,
                    char *decompress_data, const uint64_t &decompress_size);

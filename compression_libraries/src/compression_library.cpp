@@ -8,8 +8,16 @@
 
 #include <string.h>
 
+#include <iomanip>
+
 // SMASH LIBRARIES
 #include <compression_library.hpp>
+
+void CompressionLibrary::getTitle(const std::string &library_name,
+                                  const std::string &description) {
+  std::cout << std::left << std::setw(15) << std::setfill(' ') << library_name
+            << "- " << description << std::endl;
+}
 
 bool CompressionLibrary::compareData(char *uncompress_data,
                                      const uint64_t &uncompress_size,
