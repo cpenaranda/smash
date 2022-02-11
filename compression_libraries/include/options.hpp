@@ -16,17 +16,23 @@ class Options {
   uint32_t window_size_;
   uint8_t mode_;
   uint8_t work_factor_;
+  uint8_t shuffle_;
+  uint8_t number_threads_;
 
  public:
   void setCompressionLevel(const uint8_t &compression_level);
   void setWindowSize(const uint32_t &window_size);
   void setMode(const uint8_t &mode);
   void setWorkFactor(const uint8_t &work_factor);
+  void setShuffle(const uint8_t &shuffle);
+  void setNumberThreads(const uint8_t &number_threads);
 
   uint8_t getCompressionLevel();
   uint32_t getWindowSize();
   uint8_t getMode();
   uint8_t getWorkFactor();
+  uint8_t getShuffle();
+  uint8_t getNumberThreads();
 
   Options();
   ~Options();

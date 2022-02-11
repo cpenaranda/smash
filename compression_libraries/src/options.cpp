@@ -23,6 +23,12 @@ void Options::setWorkFactor(const uint8_t &work_factor) {
   work_factor_ = work_factor;
 }
 
+void Options::setShuffle(const uint8_t &shuffle) { shuffle_ = shuffle; }
+
+void Options::setNumberThreads(const uint8_t &number_threads) {
+  number_threads_ = number_threads;
+}
+
 uint8_t Options::getCompressionLevel() { return compression_level_; }
 
 uint32_t Options::getWindowSize() { return window_size_; }
@@ -31,11 +37,17 @@ uint8_t Options::getMode() { return mode_; }
 
 uint8_t Options::getWorkFactor() { return work_factor_; }
 
+uint8_t Options::getShuffle() { return shuffle_; }
+
+uint8_t Options::getNumberThreads() { return number_threads_; }
+
 Options::Options() {
   compression_level_ = 1;
   window_size_ = 10;
   mode_ = 0;
   work_factor_ = 30;
+  shuffle_ = 0;
+  number_threads_ = 1;
 }
 
 Options::~Options() {}

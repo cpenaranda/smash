@@ -72,6 +72,11 @@ void showMessage(const std::string &exe) {
   printLine("-wf, --work_factor <number>",
             "Controls how the compression works with repetitive data",
             "Values depend of different libraries (30 by default)");
+  printLine("-s, --shuffle <number>", "Shuffle filter applied (0 by default)",
+            "0: No Shuffle", "1: Byte Shuffle", "2: Bit Shuffle");
+  printLine("-t, --threads <number>",
+            "Threads used in algorithms (1 by default)",
+            "Not all compression libraries use it");
 }
 
 void listCompressionLibraries() {
@@ -100,6 +105,8 @@ bool getParams(const int &number_params, const char *const params[],
   bool window_size_set{false};
   bool mode_set{false};
   bool work_factor_set{false};
+  bool shuffle_set{false};
+  bool threads_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (check(params[n], "-h", "--help")) {
@@ -167,6 +174,22 @@ bool getParams(const int &number_params, const char *const params[],
       if (n < number_params && !work_factor_set) {
         opt->setWorkFactor(atoi(params[n]));
         work_factor_set = true;
+      } else {
+        error = end = true;
+      }
+    } else if (check(params[n], "-s", "--shuffle")) {
+      ++n;
+      if (n < number_params && !shuffle_set) {
+        opt->setShuffle(atoi(params[n]));
+        shuffle_set = true;
+      } else {
+        error = end = true;
+      }
+    } else if (check(params[n], "-t", "--threads")) {
+      ++n;
+      if (n < number_params && !threads_set) {
+        opt->setNumberThreads(atoi(params[n]));
+        threads_set = true;
       } else {
         error = end = true;
       }
