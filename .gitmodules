@@ -13,3 +13,6 @@
 [submodule "compression_libraries/density_/density"]
 	path = compression_libraries/density_/density
 	url = https://github.com/k0dai/density.git
+[submodule "compression_libraries/libdeflate_/libdeflate"]
+	path = compression_libraries/libdeflate_/libdeflate
+	url = https://github.com/ebiggers/libdeflate.git
