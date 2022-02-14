@@ -16,3 +16,6 @@
 [submodule "compression_libraries/libdeflate_/libdeflate"]
 	path = compression_libraries/libdeflate_/libdeflate
 	url = https://github.com/ebiggers/libdeflate.git
+[submodule "compression_libraries/lzfse_/lzfse"]
+	path = compression_libraries/lzfse_/lzfse
+	url = https://github.com/lzfse/lzfse.git

@@ -5,6 +5,7 @@ set(BZIP2_VERSION "bzip2-1.0.8")
 set(CBLOSC2_VERSION "v2.0.4")
 set(DENSITY_VERSION "density-0.14.2")
 set(LIBDEFLATE_VERSION "v1.9")
+set(LZFSE_VERSION "lzfse-1.0")
 
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
@@ -12,6 +13,7 @@ add_subdirectory(bzip2_)
 add_subdirectory(c-blosc2_)
 add_subdirectory(density_)
 add_subdirectory(libdeflate_)
+add_subdirectory(lzfse_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -21,6 +23,7 @@ set(SMASH_LIBRARIES
   blosc2_static
   density
   libdeflate
+  lzfse
 )
 
 set(SMASH_INCLUDES
@@ -36,6 +39,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/density_/density/src
   ${CMAKE_CURRENT_SOURCE_DIR}/libdeflate_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/libdeflate_/libdeflate
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzfse_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzfse_/lzfse/src
 )
 
 set(SMASH_SOURCES
@@ -45,4 +50,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/c-blosc2_/src/c-blosc2_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/density_/src/density_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/libdeflate_/src/libdeflate_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzfse_/src/lzfse_library.cpp
 )
