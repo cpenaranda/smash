@@ -17,6 +17,7 @@
 #include <density_library.hpp>
 #include <libdeflate_library.hpp>
 #include <lzfse_library.hpp>
+#include <lzma_library.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
     std::string library_name) {
@@ -45,6 +46,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["density"] = []() { return new DensityLibrary(); };
   map_["libdeflate"] = []() { return new LibdeflateLibrary(); };
   map_["lzfse"] = []() { return new LzfseLibrary(); };
+  map_["lzma"] = []() { return new LzmaLibrary(); };
 }
 
 CompressionLibraries::~CompressionLibraries() {}
