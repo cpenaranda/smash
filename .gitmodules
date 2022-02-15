@@ -22,3 +22,6 @@
 [submodule "compression_libraries/xz_/xz"]
 	path = compression_libraries/xz_/xz
 	url = https://git.tukaani.org/xz.git
+[submodule "compression_libraries/lzo_/lzo"]
+	path = compression_libraries/lzo_/lzo
+	url = https://github.com/nemequ/lzo.git

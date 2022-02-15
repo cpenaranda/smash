@@ -4,4 +4,4 @@ update_repository(${LZFSE_VERSION} lzfse)
 
 SET(BUILD_SHARED_LIBS OFF)
 
-add_subdirectory(lzfse)
+add_subdirectory(lzfse EXCLUDE_FROM_ALL)

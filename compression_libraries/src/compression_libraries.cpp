@@ -18,6 +18,7 @@
 #include <libdeflate_library.hpp>
 #include <lzfse_library.hpp>
 #include <lzma_library.hpp>
+#include <lzo_library.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
     std::string library_name) {
@@ -47,6 +48,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["libdeflate"] = []() { return new LibdeflateLibrary(); };
   map_["lzfse"] = []() { return new LzfseLibrary(); };
   map_["lzma"] = []() { return new LzmaLibrary(); };
+  map_["lzo"] = []() { return new LzoLibrary(); };
 }
 
 CompressionLibraries::~CompressionLibraries() {}

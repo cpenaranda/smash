@@ -7,6 +7,7 @@ set(DENSITY_VERSION "density-0.14.2")
 set(LIBDEFLATE_VERSION "v1.9")
 set(LZFSE_VERSION "lzfse-1.0")
 set(LZMA_VERSION "v5.3.2alpha")
+set(LZO_VERSION "master")
 
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
@@ -16,6 +17,7 @@ add_subdirectory(density_)
 add_subdirectory(libdeflate_)
 add_subdirectory(lzfse_)
 add_subdirectory(lzma_)
+add_subdirectory(lzo_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -27,6 +29,7 @@ set(SMASH_LIBRARIES
   libdeflate
   lzfse
   liblzma
+  lzo
 )
 
 set(SMASH_INCLUDES
@@ -46,6 +49,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzfse_/lzfse/src
   ${CMAKE_CURRENT_SOURCE_DIR}/lzma_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/lzma_/xz/src/liblzma/api
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/lzo/include/lzo
 )
 
 set(SMASH_SOURCES
@@ -57,4 +62,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/libdeflate_/src/libdeflate_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzfse_/src/lzfse_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzma_/src/lzma_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/src/lzo_library.cpp
 )
