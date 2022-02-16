@@ -28,3 +28,6 @@
 [submodule "compression_libraries/ms_/ms-compress"]
 	path = compression_libraries/ms_/ms-compress
 	url = https://github.com/coderforlife/ms-compress.git
+[submodule "compression_libraries/snappy_/snappy"]
+	path = compression_libraries/snappy_/snappy
+	url = https://github.com/google/snappy.git

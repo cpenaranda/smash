@@ -20,6 +20,7 @@
 #include <lzma_library.hpp>
 #include <lzo_library.hpp>
 #include <ms_library.hpp>
+#include <snappy_library.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
     std::string library_name) {
@@ -51,6 +52,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["lzma"] = []() { return new LzmaLibrary(); };
   map_["lzo"] = []() { return new LzoLibrary(); };
   map_["ms"] = []() { return new MsLibrary(); };
+  map_["snappy"] = []() { return new SnappyLibrary(); };
 }
 
 CompressionLibraries::~CompressionLibraries() {}
