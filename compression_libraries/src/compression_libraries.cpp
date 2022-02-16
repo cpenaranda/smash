@@ -19,6 +19,7 @@
 #include <lzfse_library.hpp>
 #include <lzma_library.hpp>
 #include <lzo_library.hpp>
+#include <ms_library.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
     std::string library_name) {
@@ -49,6 +50,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["lzfse"] = []() { return new LzfseLibrary(); };
   map_["lzma"] = []() { return new LzmaLibrary(); };
   map_["lzo"] = []() { return new LzoLibrary(); };
+  map_["ms"] = []() { return new MsLibrary(); };
 }
 
 CompressionLibraries::~CompressionLibraries() {}

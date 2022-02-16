@@ -25,3 +25,6 @@
 [submodule "compression_libraries/lzo_/lzo"]
 	path = compression_libraries/lzo_/lzo
 	url = https://github.com/nemequ/lzo.git
+[submodule "compression_libraries/ms_/ms-compress"]
+	path = compression_libraries/ms_/ms-compress
+	url = https://github.com/coderforlife/ms-compress.git

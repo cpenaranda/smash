@@ -8,6 +8,7 @@ set(LIBDEFLATE_VERSION "v1.9")
 set(LZFSE_VERSION "lzfse-1.0")
 set(LZMA_VERSION "v5.3.2alpha")
 set(LZO_VERSION "master")
+set(MS_VERSION "master")
 
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
@@ -18,6 +19,7 @@ add_subdirectory(libdeflate_)
 add_subdirectory(lzfse_)
 add_subdirectory(lzma_)
 add_subdirectory(lzo_)
+add_subdirectory(ms_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -30,6 +32,7 @@ set(SMASH_LIBRARIES
   lzfse
   liblzma
   lzo
+  ms
 )
 
 set(SMASH_INCLUDES
@@ -51,6 +54,9 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzma_/xz/src/liblzma/api
   ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/lzo/include/lzo
+  ${CMAKE_CURRENT_SOURCE_DIR}/ms_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/ms_/ms-compress/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/ms_/ms-compress/include/mscomp
 )
 
 set(SMASH_SOURCES
@@ -63,4 +69,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzfse_/src/lzfse_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzma_/src/lzma_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/src/lzo_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/ms_/src/ms_library.cpp
 )
