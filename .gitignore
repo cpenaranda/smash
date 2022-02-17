@@ -48,3 +48,5 @@ nbproject
 *licensekey*
 .autotools
 .nfs*
+compression_libraries/lzfx_/lzfx-0.1.tar.gz
+compression_libraries/lzfx_/lzfx

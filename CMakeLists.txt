@@ -65,6 +65,33 @@ function(update_repository VERSION_LIBRARY LIBRARY_NAME)
   endif()
 endfunction()
 
+function(update_repository_from_tar URL_LIBRARY LIBRARY_NAME)
+  string(REPLACE "/" ";" URL_LIBRARY_AUX ${URL_LIBRARY})
+  list(GET URL_LIBRARY_AUX -1 NAME_DATA)
+  if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${NAME_DATA})
+    execute_process(
+      COMMAND wget ${URL_LIBRARY}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME})
+      execute_process(
+        COMMAND rm -rf ${LIBRARY_NAME}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      )
+    endif()
+  endif()
+  if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME})
+    execute_process(
+      COMMAND mkdir ${LIBRARY_NAME}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+    execute_process(
+      COMMAND tar xzvf ${NAME_DATA} -C ${LIBRARY_NAME} --strip-components 1
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+  endif()
+endfunction()
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

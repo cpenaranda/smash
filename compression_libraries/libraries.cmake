@@ -15,6 +15,8 @@ set(ZLIB_VERSION "v1.2.11")
 set(ZLIBNG_VERSION "2.0.2")
 set(ZSTD_VERSION "v1.5.2")
 
+set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
+
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
 add_subdirectory(bzip2_)
@@ -30,6 +32,7 @@ add_subdirectory(xpack_)
 add_subdirectory(zlib_)
 add_subdirectory(zlib-ng_)
 add_subdirectory(zstd_)
+add_subdirectory(lzfx_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -48,6 +51,7 @@ set(SMASH_LIBRARIES
   zlibstatic
   ng_zlib
   libzstd_static
+  lzfx
 )
 
 set(SMASH_INCLUDES
@@ -82,6 +86,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/zlib-ng_/zlib-ng
   ${CMAKE_CURRENT_SOURCE_DIR}/zstd_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/zstd_/zstd/lib
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzfx_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzfx_/lzfx
 )
 
 set(SMASH_SOURCES
@@ -100,4 +106,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/zlib_/src/zlib_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/zlib-ng_/src/zlib-ng_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/zstd_/src/zstd_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzfx_/src/lzfx_library.cpp
 )
