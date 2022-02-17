@@ -10,6 +10,7 @@ set(LZMA_VERSION "v5.3.2alpha")
 set(LZO_VERSION "master")
 set(MS_VERSION "master")
 set(SNAPPY_VERSION "1.1.9")
+set(XPACK_VERSION "v0.1")
 
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
@@ -22,6 +23,7 @@ add_subdirectory(lzma_)
 add_subdirectory(lzo_)
 add_subdirectory(ms_)
 add_subdirectory(snappy_)
+add_subdirectory(xpack_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -36,6 +38,7 @@ set(SMASH_LIBRARIES
   lzo
   ms
   snappy
+  xpack
 )
 
 set(SMASH_INCLUDES
@@ -62,6 +65,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/ms_/ms-compress/include/mscomp
   ${CMAKE_CURRENT_SOURCE_DIR}/snappy_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/snappy_/snappy
+  ${CMAKE_CURRENT_SOURCE_DIR}/xpack_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/xpack_/xpack
 )
 
 set(SMASH_SOURCES
@@ -76,4 +81,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/src/lzo_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ms_/src/ms_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/snappy_/src/snappy_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/xpack_/src/xpack_library.cpp
 )

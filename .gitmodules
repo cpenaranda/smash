@@ -31,3 +31,6 @@
 [submodule "compression_libraries/snappy_/snappy"]
 	path = compression_libraries/snappy_/snappy
 	url = https://github.com/google/snappy.git
+[submodule "compression_libraries/xpack_/xpack"]
+	path = compression_libraries/xpack_/xpack
+	url = https://github.com/ebiggers/xpack.git
