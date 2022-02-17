@@ -12,6 +12,7 @@ set(MS_VERSION "master")
 set(SNAPPY_VERSION "1.1.9")
 set(XPACK_VERSION "v0.1")
 set(ZLIB_VERSION "v1.2.11")
+set(ZLIBNG_VERSION "2.0.2")
 
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
@@ -26,6 +27,7 @@ add_subdirectory(ms_)
 add_subdirectory(snappy_)
 add_subdirectory(xpack_)
 add_subdirectory(zlib_)
+add_subdirectory(zlib-ng_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -42,6 +44,7 @@ set(SMASH_LIBRARIES
   snappy
   xpack
   zlibstatic
+  ng_zlib
 )
 
 set(SMASH_INCLUDES
@@ -72,6 +75,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack_/xpack
   ${CMAKE_CURRENT_SOURCE_DIR}/zlib_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/zlib_/zlib
+  ${CMAKE_CURRENT_SOURCE_DIR}/zlib-ng_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/zlib-ng_/zlib-ng
 )
 
 set(SMASH_SOURCES
@@ -88,4 +93,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/snappy_/src/snappy_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack_/src/xpack_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/zlib_/src/zlib_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/zlib-ng_/src/zlib-ng_library.cpp
 )

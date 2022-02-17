@@ -37,3 +37,6 @@
 [submodule "compression_libraries/zlib_/zlib"]
 	path = compression_libraries/zlib_/zlib
 	url = https://github.com/madler/zlib.git
+[submodule "compression_libraries/zlib-ng_/zlib-ng"]
+	path = compression_libraries/zlib-ng_/zlib-ng
+	url = https://github.com/Dead2/zlib-ng.git

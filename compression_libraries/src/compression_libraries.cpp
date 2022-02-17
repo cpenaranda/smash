@@ -23,6 +23,7 @@
 #include <snappy_library.hpp>
 #include <xpack_library.hpp>
 #include <zlib_library.hpp>
+#include <zlib-ng_library.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
     std::string library_name) {
@@ -57,6 +58,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["snappy"] = []() { return new SnappyLibrary(); };
   map_["xpack"] = []() { return new XpackLibrary(); };
   map_["zlib"] = []() { return new ZlibLibrary(); };
+  map_["zlib-ng"] = []() { return new ZlibNgLibrary(); };
 }
 
 CompressionLibraries::~CompressionLibraries() {}
