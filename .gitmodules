@@ -34,3 +34,6 @@
 [submodule "compression_libraries/xpack_/xpack"]
 	path = compression_libraries/xpack_/xpack
 	url = https://github.com/ebiggers/xpack.git
+[submodule "compression_libraries/zlib_/zlib"]
+	path = compression_libraries/zlib_/zlib
+	url = https://github.com/madler/zlib.git

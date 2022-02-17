@@ -11,6 +11,7 @@ set(LZO_VERSION "master")
 set(MS_VERSION "master")
 set(SNAPPY_VERSION "1.1.9")
 set(XPACK_VERSION "v0.1")
+set(ZLIB_VERSION "v1.2.11")
 
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
@@ -24,6 +25,7 @@ add_subdirectory(lzo_)
 add_subdirectory(ms_)
 add_subdirectory(snappy_)
 add_subdirectory(xpack_)
+add_subdirectory(zlib_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -39,6 +41,7 @@ set(SMASH_LIBRARIES
   ms
   snappy
   xpack
+  zlibstatic
 )
 
 set(SMASH_INCLUDES
@@ -67,6 +70,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/snappy_/snappy
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack_/xpack
+  ${CMAKE_CURRENT_SOURCE_DIR}/zlib_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/zlib_/zlib
 )
 
 set(SMASH_SOURCES
@@ -82,4 +87,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/ms_/src/ms_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/snappy_/src/snappy_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack_/src/xpack_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/zlib_/src/zlib_library.cpp
 )
