@@ -24,6 +24,7 @@
 #include <xpack_library.hpp>
 #include <zlib_library.hpp>
 #include <zlib-ng_library.hpp>
+#include <zstd_library.hpp>
 
 CompressionLibrary *CompressionLibraries::getCompressionLibrary(
     std::string library_name) {
@@ -59,6 +60,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["xpack"] = []() { return new XpackLibrary(); };
   map_["zlib"] = []() { return new ZlibLibrary(); };
   map_["zlib-ng"] = []() { return new ZlibNgLibrary(); };
+  map_["zstd"] = []() { return new ZstdLibrary(); };
 }
 
 CompressionLibraries::~CompressionLibraries() {}

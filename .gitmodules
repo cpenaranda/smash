@@ -40,3 +40,6 @@
 [submodule "compression_libraries/zlib-ng_/zlib-ng"]
 	path = compression_libraries/zlib-ng_/zlib-ng
 	url = https://github.com/Dead2/zlib-ng.git
+[submodule "compression_libraries/zstd_/zstd"]
+	path = compression_libraries/zstd_/zstd
+	url = https://github.com/facebook/zstd.git
