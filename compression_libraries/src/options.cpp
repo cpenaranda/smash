@@ -9,48 +9,48 @@
 // SMASH LIBRARIES
 #include <options.hpp>
 
-void Options::setCompressionLevel(const uint8_t &compression_level) {
+void Options::SetCompressionLevel(const uint8_t &compression_level) {
   compression_level_ = compression_level;
 }
 
-void Options::setWindowSize(const uint32_t &window_size) {
+void Options::SetWindowSize(const uint32_t &window_size) {
   window_size_ = window_size;
 }
 
-void Options::setMode(const uint8_t &mode) { mode_ = mode; }
+void Options::SetMode(const uint8_t &mode) { mode_ = mode; }
 
-void Options::setWorkFactor(const uint8_t &work_factor) {
+void Options::SetWorkFactor(const uint8_t &work_factor) {
   work_factor_ = work_factor;
 }
 
-void Options::setShuffle(const uint8_t &shuffle) { shuffle_ = shuffle; }
+void Options::SetShuffle(const uint8_t &shuffle) { shuffle_ = shuffle; }
 
-void Options::setNumberThreads(const uint8_t &number_threads) {
+void Options::SetNumberThreads(const uint8_t &number_threads) {
   number_threads_ = number_threads;
 }
 
-void Options::setBackReferenceBits(const uint8_t &back_reference_bits) {
+void Options::SetBackReferenceBits(const uint8_t &back_reference_bits) {
   back_reference_bits_ = back_reference_bits;
 }
 
-uint8_t Options::getCompressionLevel() { return compression_level_; }
+uint8_t Options::GetCompressionLevel() { return compression_level_; }
 
-uint32_t Options::getWindowSize() { return window_size_; }
+uint32_t Options::GetWindowSize() { return window_size_; }
 
-uint8_t Options::getMode() { return mode_; }
+uint8_t Options::GetMode() { return mode_; }
 
-uint8_t Options::getWorkFactor() { return work_factor_; }
+uint8_t Options::GetWorkFactor() { return work_factor_; }
 
-uint8_t Options::getShuffle() { return shuffle_; }
+uint8_t Options::GetShuffle() { return shuffle_; }
 
-uint8_t Options::getNumberThreads() { return number_threads_; }
+uint8_t Options::GetNumberThreads() { return number_threads_; }
 
-uint8_t Options::getBackReferenceBits() { return back_reference_bits_; }
+uint8_t Options::GetBackReferenceBits() { return back_reference_bits_; }
 
 Options::Options() {
   compression_level_ = 1;
   window_size_ = 10;
-  mode_ = 0;
+  mode_ = 1;
   work_factor_ = 30;
   shuffle_ = 0;
   number_threads_ = 1;

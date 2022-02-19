@@ -10,8 +10,9 @@
 
 #include <functional>
 #include <iostream>
-#include <string>
 #include <map>
+#include <string>
+#include <vector>
 
 // SMASH LIBRARIES
 #include <compression_library.hpp>
@@ -21,9 +22,11 @@ class CompressionLibraries {
   std::map<std::string, std::function<CompressionLibrary *()>> map_;
 
  public:
-  CompressionLibrary *getCompressionLibrary(std::string library_name);
+  CompressionLibrary *GetCompressionLibrary(std::string library_name);
 
-  void getListInformation();
+  std::vector<std::string> GetNameLibraries();
+
+  void GetListInformation();
 
   CompressionLibraries();
   ~CompressionLibraries();

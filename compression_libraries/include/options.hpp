@@ -21,21 +21,21 @@ class Options {
   uint8_t back_reference_bits_;
 
  public:
-  void setCompressionLevel(const uint8_t &compression_level);
-  void setWindowSize(const uint32_t &window_size);
-  void setMode(const uint8_t &mode);
-  void setWorkFactor(const uint8_t &work_factor);
-  void setShuffle(const uint8_t &shuffle);
-  void setNumberThreads(const uint8_t &number_threads);
-  void setBackReferenceBits(const uint8_t &back_reference_bits);
+  void SetCompressionLevel(const uint8_t &compression_level);
+  void SetWindowSize(const uint32_t &window_size);
+  void SetMode(const uint8_t &mode);
+  void SetWorkFactor(const uint8_t &work_factor);
+  void SetShuffle(const uint8_t &shuffle);
+  void SetNumberThreads(const uint8_t &number_threads);
+  void SetBackReferenceBits(const uint8_t &back_reference_bits);
 
-  uint8_t getCompressionLevel();
-  uint32_t getWindowSize();
-  uint8_t getMode();
-  uint8_t getWorkFactor();
-  uint8_t getShuffle();
-  uint8_t getNumberThreads();
-  uint8_t getBackReferenceBits();
+  uint8_t GetCompressionLevel();
+  uint32_t GetWindowSize();
+  uint8_t GetMode();
+  uint8_t GetWorkFactor();
+  uint8_t GetShuffle();
+  uint8_t GetNumberThreads();
+  uint8_t GetBackReferenceBits();
 
   Options();
   ~Options();

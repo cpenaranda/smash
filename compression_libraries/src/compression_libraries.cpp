@@ -23,11 +23,11 @@
 #include <ms_library.hpp>
 #include <snappy_library.hpp>
 #include <xpack_library.hpp>
-#include <zlib_library.hpp>
 #include <zlib-ng_library.hpp>
+#include <zlib_library.hpp>
 #include <zstd_library.hpp>
 
-CompressionLibrary *CompressionLibraries::getCompressionLibrary(
+CompressionLibrary *CompressionLibraries::GetCompressionLibrary(
     std::string library_name) {
   auto lib = map_.find(library_name);
   if (lib == map_.end()) {
@@ -37,13 +37,21 @@ CompressionLibrary *CompressionLibraries::getCompressionLibrary(
   return lib->second();
 }
 
-void CompressionLibraries::getListInformation() {
+void CompressionLibraries::GetListInformation() {
   CompressionLibrary *library;
   for (auto &lib : map_) {
     library = lib.second();
-    library->getTitle();
+    library->GetTitle();
     delete library;
   }
+}
+
+std::vector<std::string> CompressionLibraries::GetNameLibraries() {
+  std::vector<std::string> result;
+  for (auto &lib : map_) {
+    result.push_back(lib.first);
+  }
+  return result;
 }
 
 CompressionLibraries::CompressionLibraries() {

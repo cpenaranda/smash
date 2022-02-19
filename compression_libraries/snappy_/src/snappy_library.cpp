@@ -12,23 +12,29 @@
 #include <options.hpp>
 #include <snappy_library.hpp>
 
-bool SnappyLibrary::checkOptions(Options opt) {
+bool SnappyLibrary::CheckOptions(Options options) {
   bool result{true};
   return result;
 }
 
-void SnappyLibrary::getCompressDataSize(uint64_t uncompress_size,
-                                        uint64_t *compress_size) {
-  *compress_size = snappy_max_compressed_length(uncompress_size);
+bool SnappyLibrary::SetOptions(Options options) {
+  initialized_ = CheckOptions(options);
+  if (initialized_) options_ = options;
+  return initialized_;
 }
 
-bool SnappyLibrary::compress(Options opt, char *uncompress_data,
-                             uint64_t uncompress_size, char *compress_data,
-                             uint64_t *compress_size) {
-  bool result = checkOptions(opt);
+void SnappyLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+                                          uint64_t *compressed_size) {
+  *compressed_size = snappy_max_compressed_length(uncompressed_size);
+}
+
+bool SnappyLibrary::Compress(char *uncompressed_data,
+                             uint64_t uncompressed_size, char *compressed_data,
+                             uint64_t *compressed_size) {
+  bool result{initialized_};
   if (result) {
-    snappy_status error = snappy_compress(uncompress_data, uncompress_size,
-                                          compress_data, compress_size);
+    snappy_status error = snappy_compress(uncompressed_data, uncompressed_size,
+                                          compressed_data, compressed_size);
     if (SNAPPY_OK != error) {
       std::cout << "ERROR: snappy error when compress data" << std::endl;
       result = false;
@@ -37,22 +43,87 @@ bool SnappyLibrary::compress(Options opt, char *uncompress_data,
   return result;
 }
 
-bool SnappyLibrary::decompress(char *compress_data, uint64_t compress_size,
-                               char *decompress_data,
-                               uint64_t *decompress_size) {
-  bool result{true};
-  snappy_status error = snappy_uncompress(compress_data, compress_size,
-                                          decompress_data, decompress_size);
-  if (SNAPPY_OK != error) {
-    std::cout << "ERROR: snappy error when decompress data" << std::endl;
-    result = false;
+void SnappyLibrary::GetDecompressedDataSize(char *compressed_data,
+                                            uint64_t compressed_size,
+                                            uint64_t *decompressed_size) {
+  snappy_uncompressed_length(compressed_data, compressed_size,
+                             decompressed_size);
+}
+
+bool SnappyLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+                               char *decompressed_data,
+                               uint64_t *decompressed_size) {
+  bool result{initialized_};
+  if (result) {
+    snappy_status error = snappy_uncompress(
+        compressed_data, compressed_size, decompressed_data, decompressed_size);
+    if (SNAPPY_OK != error) {
+      std::cout << "ERROR: snappy error when decompress data" << std::endl;
+      result = false;
+    }
   }
   return result;
 }
 
-void SnappyLibrary::getTitle() {
-  CompressionLibrary::getTitle(
+void SnappyLibrary::GetTitle() {
+  CompressionLibrary::GetTitle(
       "snappy", "A fast compressor/decompressor created by Google");
+}
+
+void SnappyLibrary::GetCompressionLevelInformation(
+    uint8_t *minimum_level, uint8_t *maximum_level,
+    std::vector<std::string> *compression_level_information) {
+  if (minimum_level) *minimum_level = 0;
+  if (maximum_level) *maximum_level = 0;
+  if (compression_level_information) compression_level_information->clear();
+}
+
+void SnappyLibrary::GetWindowSizeInformation(
+    uint32_t *minimum_size, uint32_t *maximum_size,
+    std::vector<std::string> *window_size_information) {
+  if (minimum_size) *minimum_size = 0;
+  if (maximum_size) *maximum_size = 0;
+  if (window_size_information) window_size_information->clear();
+}
+
+void SnappyLibrary::GetModeInformation(
+    uint8_t *minimum_mode, uint8_t *maximum_mode,
+    std::vector<std::string> *mode_information) {
+  if (minimum_mode) *minimum_mode = 0;
+  if (maximum_mode) *maximum_mode = 0;
+  if (mode_information) mode_information->clear();
+}
+
+void SnappyLibrary::GetWorkFactorInformation(
+    uint8_t *minimum_factor, uint8_t *maximum_factor,
+    std::vector<std::string> *work_factor_information) {
+  if (minimum_factor) *minimum_factor = 0;
+  if (maximum_factor) *maximum_factor = 0;
+  if (work_factor_information) work_factor_information->clear();
+}
+
+void SnappyLibrary::GetShuffleInformation(
+    uint8_t *minimum_shuffle, uint8_t *maximum_shuffle,
+    std::vector<std::string> *shuffle_information) {
+  if (minimum_shuffle) *minimum_shuffle = 0;
+  if (maximum_shuffle) *maximum_shuffle = 0;
+  if (shuffle_information) shuffle_information->clear();
+}
+
+void SnappyLibrary::GetNumberThreadsInformation(
+    uint8_t *minimum_threads, uint8_t *maximum_threads,
+    std::vector<std::string> *number_threads_information) {
+  if (minimum_threads) *minimum_threads = 0;
+  if (maximum_threads) *maximum_threads = 0;
+  if (number_threads_information) number_threads_information->clear();
+}
+
+void SnappyLibrary::GetBackReferenceBitsInformation(
+    uint8_t *minimum_bits, uint8_t *maximum_bits,
+    std::vector<std::string> *back_reference_information) {
+  if (minimum_bits) *minimum_bits = 0;
+  if (maximum_bits) *maximum_bits = 0;
+  if (back_reference_information) back_reference_information->clear();
 }
 
 SnappyLibrary::SnappyLibrary() {}
