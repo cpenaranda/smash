@@ -8,6 +8,7 @@
 
 #include <string.h>
 
+#include <algorithm>
 #include <chrono>  // NOLINT
 #include <fstream>
 #include <iomanip>
@@ -91,6 +92,13 @@ void ShowMessage(const std::string &exe) {
   PrintLine("-f, --file <file_name>", "File name to compress");
   PrintLine("-o, --output_file <file_name>",
             "File name where the compress data is stored");
+  PrintLine("-b, --best_effort",
+            "Run all possible configurations of the selected library");
+  PrintLine(
+      "-b, --best <option> <number>",
+      "Get the <number> configurations of the selected library",
+      "with the best <option>. Available options:", "0: Compression ratio",
+      "1: Compression time", "2: Decompression time", "3: Total time");
   PrintLine("-l, --level <number>", "Compression level to use",
             "Values depend of different libraries (1 by default)");
   PrintLine("-w, --window <number>", "Set window size",
@@ -105,8 +113,6 @@ void ShowMessage(const std::string &exe) {
   PrintLine("-t, --threads <number>",
             "Threads used in algorithms (1 by default)",
             "Not all compression libraries use it");
-  PrintLine("-b, --best_effort",
-            "Run all possible configurations of the selected library");
 }
 
 void ListCompressionLibraries() {
@@ -181,7 +187,8 @@ void ShowLibraryInformation(const std::string &library_name,
 bool GetParams(const int &number_params, const char *const params[],
                Options *opt, std::string *input_file_name,
                std::string *output_file_name,
-               std::string *compression_library_name, bool *all_options) {
+               std::string *compression_library_name, bool *all_options,
+               uint8_t *option, uint32_t *result_number) {
   bool show_message{true};
   bool end{false};
   bool error{false};
@@ -192,6 +199,7 @@ bool GetParams(const int &number_params, const char *const params[],
   bool shuffle_set{false};
   bool threads_set{false};
   bool best_effort_set{false};
+  bool best_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (Check(params[n], "-h", "--help")) {
@@ -278,12 +286,50 @@ bool GetParams(const int &number_params, const char *const params[],
       } else {
         error = end = true;
       }
-    } else if (Check(params[n], "-b", "--best_effort")) {
+    } else if (!strcmp(params[n], "--best_effort")) {
       if (!best_effort_set) {
         best_effort_set = true;
         *all_options = true;
       } else {
         error = end = true;
+      }
+    } else if (!strcmp(params[n], "--best")) {
+      ++n;
+      if (n + 1 < number_params && !best_set) {
+        best_set = true;
+        *option = atoi(params[n]) + 1;
+        if (*option > 4) {
+          error = end = true;
+        } else {
+          ++n;
+          *result_number = atoi(params[n]);
+        }
+      } else {
+        error = end = true;
+      }
+    } else if (!strcmp(params[n], "-b")) {
+      if (n + 1 < number_params &&
+          std::string(params[n + 1]).find("-") == std::string::npos) {
+        if (n + 2 < number_params && !best_set) {
+          ++n;
+          best_set = true;
+          *option = atoi(params[n]) + 1;
+          if (*option > 4) {
+            error = end = true;
+          } else {
+            ++n;
+            *result_number = atoi(params[n]);
+          }
+        } else {
+          error = end = true;
+        }
+      } else {
+        if (!best_effort_set) {
+          best_effort_set = true;
+          *all_options = true;
+        } else {
+          error = end = true;
+        }
       }
     } else {
       error = end = true;
@@ -440,10 +486,12 @@ std::string ToStringDouble(const double &value) {
   return out.str();
 }
 
-void ShowResult(Smash *lib, const std::string &library_name, Options opt,
-                const uint64_t &uncompressed_size,
-                const uint64_t &compressed_size, const double &time_compression,
-                const double &time_decompression) {
+std::string ShowResult(Smash *lib, const std::string &library_name, Options opt,
+                       const uint64_t &uncompressed_size,
+                       const uint64_t &compressed_size,
+                       const double &time_compression,
+                       const double &time_decompression) {
+  std::ostringstream result;
   double vel_compression =
       ((static_cast<double>(uncompressed_size) / 1000000.0) / time_compression);
   double vel_decompression =
@@ -451,81 +499,80 @@ void ShowResult(Smash *lib, const std::string &library_name, Options opt,
   double vel_total = ((static_cast<double>(uncompressed_size) / 1000000.0) /
                       (time_compression + time_decompression));
 
-  std::cout << std::left << std::setw(size_row_library) << std::setfill(' ')
-            << "| " + library_name;
+  result << std::left << std::setw(size_row_library) << std::setfill(' ')
+         << "| " + library_name;
 
   if (lib->GetCompressionLevelInformation()) {
-    std::cout << std::left << std::setw(size_row_level) << std::setfill(' ')
-              << "| " + std::to_string(opt.GetCompressionLevel());
+    result << std::left << std::setw(size_row_level) << std::setfill(' ')
+           << "| " + std::to_string(opt.GetCompressionLevel());
   } else {
-    std::cout << std::left << std::setw(size_row_level - 1) << std::setfill('-')
-              << "| "
-              << " ";
+    result << std::left << std::setw(size_row_level - 1) << std::setfill('-')
+           << "| "
+           << " ";
   }
 
   if (lib->GetWindowSizeInformation()) {
-    std::cout << std::left << std::setw(size_row_window) << std::setfill(' ')
-              << "| " + std::to_string(opt.GetWindowSize());
+    result << std::left << std::setw(size_row_window) << std::setfill(' ')
+           << "| " + std::to_string(opt.GetWindowSize());
   } else {
-    std::cout << std::left << std::setw(size_row_window - 1)
-              << std::setfill('-') << "| "
-              << " ";
+    result << std::left << std::setw(size_row_window - 1) << std::setfill('-')
+           << "| "
+           << " ";
   }
 
   if (lib->GetModeInformation()) {
-    std::cout << std::left << std::setw(size_row_mode) << std::setfill(' ')
-              << "| " + lib->GetModeName(opt.GetMode());
+    result << std::left << std::setw(size_row_mode) << std::setfill(' ')
+           << "| " + lib->GetModeName(opt.GetMode());
   } else {
-    std::cout << std::left << std::setw(size_row_mode - 1) << std::setfill('-')
-              << "| "
-              << " ";
+    result << std::left << std::setw(size_row_mode - 1) << std::setfill('-')
+           << "| "
+           << " ";
   }
 
   if (lib->GetWorkFactorInformation()) {
-    std::cout << std::left << std::setw(size_row_factor) << std::setfill(' ')
-              << "| " + std::to_string(opt.GetWorkFactor());
+    result << std::left << std::setw(size_row_factor) << std::setfill(' ')
+           << "| " + std::to_string(opt.GetWorkFactor());
   } else {
-    std::cout << std::left << std::setw(size_row_factor - 1)
-              << std::setfill('-') << "| "
-              << " ";
+    result << std::left << std::setw(size_row_factor - 1) << std::setfill('-')
+           << "| "
+           << " ";
   }
 
   if (lib->GetShuffleInformation()) {
-    std::cout << std::left << std::setw(size_row_shuffle) << std::setfill(' ')
-              << "| " + lib->GetShuffleName(opt.GetShuffle());
+    result << std::left << std::setw(size_row_shuffle) << std::setfill(' ')
+           << "| " + lib->GetShuffleName(opt.GetShuffle());
   } else {
-    std::cout << std::left << std::setw(size_row_shuffle - 1)
-              << std::setfill('-') << "| "
-              << " ";
+    result << std::left << std::setw(size_row_shuffle - 1) << std::setfill('-')
+           << "| "
+           << " ";
   }
 
   if (lib->GetNumberThreadsInformation()) {
-    std::cout << std::left << std::setw(size_row_threads) << std::setfill(' ')
-              << "| " + std::to_string(opt.GetNumberThreads());
+    result << std::left << std::setw(size_row_threads) << std::setfill(' ')
+           << "| " + std::to_string(opt.GetNumberThreads());
   } else {
-    std::cout << std::left << std::setw(size_row_threads - 1)
-              << std::setfill('-') << "| "
-              << " ";
+    result << std::left << std::setw(size_row_threads - 1) << std::setfill('-')
+           << "| "
+           << " ";
   }
 
-  std::cout << std::left << std::setw(size_rows_original_data)
-            << std::setfill(' ')
-            << "| " + std::to_string(uncompressed_size) + " Bytes";
+  result << std::left << std::setw(size_rows_original_data) << std::setfill(' ')
+         << "| " + std::to_string(uncompressed_size) + " Bytes";
 
-  std::cout << std::left << std::setw(size_rows_packed_data)
-            << std::setfill(' ')
-            << "| " + std::to_string(compressed_size) + " Bytes";
-  std::cout << std::left << std::setw(size_rows_ratio) << std::setfill(' ')
-            << "| " + ToStringDouble((static_cast<double>(uncompressed_size) /
-                                      static_cast<double>(compressed_size)));
-  std::cout << std::left << std::setw(size_rows_compress) << std::setfill(' ')
-            << "| " + ToStringDouble(vel_compression) + " MB/s";
-  std::cout << std::left << std::setw(size_rows_decompress) << std::setfill(' ')
-            << "| " + ToStringDouble(vel_decompression) + " MB/s";
-  std::cout << std::left << std::setw(size_rows_total) << std::setfill(' ')
-            << "| " + ToStringDouble(vel_total) + " MB/s"
-            << "|";
-  std::cout << std::endl;
+  result << std::left << std::setw(size_rows_packed_data) << std::setfill(' ')
+         << "| " + std::to_string(compressed_size) + " Bytes";
+  result << std::left << std::setw(size_rows_ratio) << std::setfill(' ')
+         << "| " + ToStringDouble((static_cast<double>(uncompressed_size) /
+                                   static_cast<double>(compressed_size)));
+  result << std::left << std::setw(size_rows_compress) << std::setfill(' ')
+         << "| " + ToStringDouble(vel_compression) + " MB/s";
+  result << std::left << std::setw(size_rows_decompress) << std::setfill(' ')
+         << "| " + ToStringDouble(vel_decompression) + " MB/s";
+  result << std::left << std::setw(size_rows_total) << std::setfill(' ')
+         << "| " + ToStringDouble(vel_total) + " MB/s"
+         << "|";
+  result << std::endl;
+  return result.str();
 }
 
 void SetNumberThreads(Smash *lib, std::vector<Options> *options,
@@ -558,7 +605,7 @@ void SetWorkFactor(Smash *lib, std::vector<Options> *options, Options *option) {
   do {
     if (set_value) option->SetWorkFactor(min_factor);
     SetShuffle(lib, options, option);
-    min_factor += 50;
+    min_factor += 51;
   } while (min_factor <= max_factor);
 }
 
@@ -602,18 +649,74 @@ void GetAllOptions(Smash *lib, std::vector<Options> *options) {
   SetCopressionLevel(lib, options);
 }
 
+struct Result {
+  std::string message_;
+  uint64_t uncompressed_size_;
+  uint64_t compressed_size_;
+  double compression_time_;
+  double decompression_time_;
+  uint8_t option_;
+
+  Result(const std::string &message, const uint64_t &uncompressed_size = 0,
+         const uint64_t &compressed_size = 0,
+         const double &compression_time = 0,
+         const double &decompression_time = 0, const uint8_t &option = 0) {
+    message_ = message;
+    uncompressed_size_ = uncompressed_size;
+    compressed_size_ = compressed_size;
+    compression_time_ = compression_time;
+    decompression_time_ = decompression_time;
+    option_ = option;
+  }
+
+  bool operator<(const Result &other) const {
+    bool result{false};
+    if (option_ == 1) {
+      // Compression Ratio
+      result = other.compressed_size_ < compressed_size_;
+    } else if (option_ == 2) {
+      if (other.compressed_size_ < other.uncompressed_size_) {
+        // Compression Time
+        result = (static_cast<double>(other.uncompressed_size_) /
+                  other.compression_time_) >
+                 (static_cast<double>(uncompressed_size_) / compression_time_);
+      }
+    } else if (option_ == 3) {
+      if (other.compressed_size_ < other.uncompressed_size_) {
+        // Decompression Time
+        result = (static_cast<double>(other.compressed_size_) /
+                  other.decompression_time_) >
+                 (static_cast<double>(compressed_size_) / decompression_time_);
+      }
+    } else if (option_ == 4) {
+      if (other.compressed_size_ < other.uncompressed_size_) {
+        // Total Time
+        result = (static_cast<double>(other.uncompressed_size_) /
+                  (other.compression_time_ + other.decompression_time_)) >
+                 (static_cast<double>(uncompressed_size_) /
+                  (compression_time_ + decompression_time_));
+      }
+    }
+    return result;
+  }
+};
+
 int main(int argc, char *argv[]) {
   Options opt;
   Smash *lib;
   std::string input_file_name;
   std::string output_file_name;
   std::string compression_library_name;
+  uint64_t uncompressed_size{0};
   std::vector<Options> options;
+  std::vector<Result> results;
+  uint8_t best_options{0};
+  uint32_t best_result_number{0};
   bool all_options{false};
   int result{EXIT_FAILURE};
-  bool show_title{true};
   if (GetParams(argc, argv, &opt, &input_file_name, &output_file_name,
-                &compression_library_name, &all_options)) {
+                &compression_library_name, &all_options, &best_options,
+                &best_result_number)) {
     std::vector<std::string> libraries;
     if (!compression_library_name.compare("all")) {
       libraries = CompressionLibraries().GetNameLibraries();
@@ -630,16 +733,11 @@ int main(int argc, char *argv[]) {
         char *uncompressed_data{nullptr};
         char *compressed_data{nullptr};
         char *decompressed_data{nullptr};
-        uint64_t uncompressed_size{0};
         uint64_t compressed_size{0};
         uint64_t decompressed_size{0};
         if (SetMemories(input_file_name, &uncompressed_data, &uncompressed_size,
                         &compressed_data, &compressed_size, &decompressed_data,
                         &decompressed_size)) {
-          if (show_title) {
-            ShowTitle(uncompressed_size);
-            show_title = false;
-          }
           result = EXIT_SUCCESS;
           lib->GetCompressedDataSize(uncompressed_size, &compressed_size);
           std::chrono::_V2::system_clock::time_point start, end;
@@ -666,9 +764,13 @@ int main(int argc, char *argv[]) {
           } else {
             if (CopyToFile(output_file_name, compressed_data,
                            compressed_size)) {
-              ShowResult(lib, library_name, option, uncompressed_size,
-                         compressed_size, compression_time.count(),
-                         decompression_time.count());
+              std::string message = ShowResult(
+                  lib, library_name, option, uncompressed_size, compressed_size,
+                  compression_time.count(), decompression_time.count());
+              results.push_back(
+                  Result(message, uncompressed_size, compressed_size,
+                         compression_time.count(), decompression_time.count(),
+                         best_options));
               result = EXIT_SUCCESS;
             } else {
               result = EXIT_FAILURE;
@@ -677,6 +779,17 @@ int main(int argc, char *argv[]) {
         }
         RemoveMemories(uncompressed_data, compressed_data, decompressed_data);
       }
+    }
+    ShowTitle(uncompressed_size);
+    if (!best_options) {
+      best_result_number = results.size();
+    } else {
+      std::sort(results.begin(), results.end());
+    }
+    while (best_result_number && !results.empty()) {
+      std::cout << results.back().message_;
+      results.pop_back();
+      --best_result_number;
     }
   }
   return result;
