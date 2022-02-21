@@ -67,8 +67,10 @@ bool Smash::GetWindowSizeInformation(
 }
 
 bool Smash::GetModeInformation(std::vector<std::string> *mode_information,
-                               uint8_t *minimum_mode, uint8_t *maximum_mode) {
-  return lib->GetModeInformation(mode_information, minimum_mode, maximum_mode);
+                               uint8_t *minimum_mode, uint8_t *maximum_mode,
+                               const uint8_t &compression_level) {
+  return lib->GetModeInformation(mode_information, minimum_mode, maximum_mode,
+                                 compression_level);
 }
 
 bool Smash::GetWorkFactorInformation(
@@ -90,13 +92,6 @@ bool Smash::GetNumberThreadsInformation(
     uint8_t *minimum_threads, uint8_t *maximum_threads) {
   return lib->GetNumberThreadsInformation(number_threads_information,
                                           minimum_threads, maximum_threads);
-}
-
-bool Smash::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
-    uint8_t *maximum_bits) {
-  return lib->GetBackReferenceBitsInformation(back_reference_information,
-                                              minimum_bits, maximum_bits);
 }
 
 std::string Smash::GetModeName(const uint8_t &mode) {

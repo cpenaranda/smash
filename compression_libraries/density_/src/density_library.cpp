@@ -104,7 +104,7 @@ bool DensityLibrary::GetWindowSizeInformation(
 
 bool DensityLibrary::GetModeInformation(
     std::vector<std::string> *mode_information, uint8_t *minimum_mode,
-    uint8_t *maximum_mode) {
+    uint8_t *maximum_mode, const uint8_t &compression_level) {
   if (minimum_mode) *minimum_mode = 1;
   if (maximum_mode) *maximum_mode = 3;
   if (mode_information) {
@@ -145,19 +145,10 @@ bool DensityLibrary::GetNumberThreadsInformation(
   return false;
 }
 
-bool DensityLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
-    uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 0;
-  if (maximum_bits) *maximum_bits = 0;
-  if (back_reference_information) back_reference_information->clear();
-  return false;
-}
-
 std::string DensityLibrary::GetModeName(const uint8_t &mode) {
   std::string result = CompressionLibrary::GetDefaultModeName();
-  if (mode < number_of_modes_) {
-    result = modes_[mode];
+  if (mode-1 < number_of_modes_) {
+    result = modes_[mode-1];
   }
   return result;
 }

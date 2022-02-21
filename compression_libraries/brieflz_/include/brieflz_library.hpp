@@ -48,7 +48,8 @@ class BrieflzLibrary : public CompressionLibrary {
 
   bool GetModeInformation(std::vector<std::string> *mode_information = nullptr,
                           uint8_t *minimum_mode = nullptr,
-                          uint8_t *maximum_mode = nullptr);
+                          uint8_t *maximum_mode = nullptr,
+                          const uint8_t &compression_level = 0);
 
   bool GetWorkFactorInformation(
       std::vector<std::string> *work_factor_information = nullptr,
@@ -61,10 +62,6 @@ class BrieflzLibrary : public CompressionLibrary {
   bool GetNumberThreadsInformation(
       std::vector<std::string> *number_threads_information = nullptr,
       uint8_t *minimum_threads = nullptr, uint8_t *maximum_threads = nullptr);
-
-  bool GetBackReferenceBitsInformation(
-      std::vector<std::string> *back_reference_information = nullptr,
-      uint8_t *minimum_bits = nullptr, uint8_t *maximum_bits = nullptr);
 
   std::string GetModeName(const uint8_t &mode);
 

@@ -43,11 +43,11 @@ bool LzoLibrary::CheckOptions(Options options, const bool &compressor) {
         break;
       case 4:
         result = CompressionLibrary::CheckCompressionLevel(
-            "mode value 4 in lzo", options.GetCompressionLevel(), 0, 1);
+            "mode value 4 in lzo", options.GetCompressionLevel(), 0, 4);
         break;
       case 5:
         result = CompressionLibrary::CheckCompressionLevel(
-            "mode value 5 in lzo", options.GetCompressionLevel(), 0, 4);
+            "mode value 5 in lzo", options.GetCompressionLevel(), 0, 1);
         break;
       case 6:
         result = CompressionLibrary::CheckCompressionLevel(
@@ -230,25 +230,6 @@ void LzoLibrary::GetFunctions(const uint8_t &mode,
       break;
     }
     case 4: {
-      decompression_work_memory_size_ = LZO1F_MEM_DECOMPRESS;
-      LZO_decompress_ = lzo1f_decompress_safe;
-      switch (compression_level) {
-        case 0: {
-          compression_work_memory_size_ = LZO1F_MEM_COMPRESS;
-          LZO_compress_ = lzo1f_1_compress;
-          break;
-        }
-        case 1: {
-          compression_work_memory_size_ = LZO1F_999_MEM_COMPRESS;
-          LZO_compress_ = lzo1f_999_compress;
-          break;
-        }
-        default:
-          break;
-      }
-      break;
-    }
-    case 5: {
       decompression_work_memory_size_ = LZO1X_MEM_DECOMPRESS;
       LZO_decompress_ = lzo1x_decompress_safe;
       switch (compression_level) {
@@ -275,6 +256,25 @@ void LzoLibrary::GetFunctions(const uint8_t &mode,
         case 4: {
           compression_work_memory_size_ = LZO1X_999_MEM_COMPRESS;
           LZO_compress_ = lzo1x_999_compress;
+          break;
+        }
+        default:
+          break;
+      }
+      break;
+    }
+    case 5: {
+      decompression_work_memory_size_ = LZO1F_MEM_DECOMPRESS;
+      LZO_decompress_ = lzo1f_decompress_safe;
+      switch (compression_level) {
+        case 0: {
+          compression_work_memory_size_ = LZO1F_MEM_COMPRESS;
+          LZO_compress_ = lzo1f_1_compress;
+          break;
+        }
+        case 1: {
+          compression_work_memory_size_ = LZO1F_999_MEM_COMPRESS;
+          LZO_compress_ = lzo1f_999_compress;
           break;
         }
         default:
@@ -411,8 +411,8 @@ bool LzoLibrary::GetCompressionLevelInformation(
     compression_level_information->push_back("Mode " + modes_[1] + ": [0-1]");
     compression_level_information->push_back("Mode " + modes_[2] + ": [0-10]");
     compression_level_information->push_back("Mode " + modes_[3] + ": [0-10]");
-    compression_level_information->push_back("Mode " + modes_[4] + ": [0-1]");
-    compression_level_information->push_back("Mode " + modes_[5] + ": [0-4]");
+    compression_level_information->push_back("Mode " + modes_[4] + ": [0-4]");
+    compression_level_information->push_back("Mode " + modes_[5] + ": [0-1]");
     compression_level_information->push_back("Mode " + modes_[6] + ": [0-1]");
     compression_level_information->push_back("Mode " + modes_[7] + ": [0]");
     compression_level_information->push_back("[compression]");
@@ -431,22 +431,95 @@ bool LzoLibrary::GetWindowSizeInformation(
 
 bool LzoLibrary::GetModeInformation(std::vector<std::string> *mode_information,
                                     uint8_t *minimum_mode,
-                                    uint8_t *maximum_mode) {
-  if (minimum_mode) *minimum_mode = 0;
-  if (maximum_mode) *maximum_mode = 7;
+                                    uint8_t *maximum_mode,
+                                    const uint8_t &compression_level) {
+  switch (compression_level) {
+    case 0:
+      if (minimum_mode) *minimum_mode = 0;
+      if (maximum_mode) *maximum_mode = 7;
+      break;
+    case 1:
+      if (minimum_mode) *minimum_mode = 0;
+      if (maximum_mode) *maximum_mode = 6;
+      break;
+    case 2:
+      if (minimum_mode) *minimum_mode = 2;
+      if (maximum_mode) *maximum_mode = 4;
+      break;
+    case 3:
+      if (minimum_mode) *minimum_mode = 2;
+      if (maximum_mode) *maximum_mode = 4;
+      break;
+    case 4:
+      if (minimum_mode) *minimum_mode = 2;
+      if (maximum_mode) *maximum_mode = 4;
+      break;
+    case 5:
+      if (minimum_mode) *minimum_mode = 2;
+      if (maximum_mode) *maximum_mode = 3;
+      break;
+    case 6:
+      if (minimum_mode) *minimum_mode = 2;
+      if (maximum_mode) *maximum_mode = 3;
+      break;
+    case 7:
+      if (minimum_mode) *minimum_mode = 2;
+      if (maximum_mode) *maximum_mode = 3;
+      break;
+    case 8:
+      if (minimum_mode) *minimum_mode = 2;
+      if (maximum_mode) *maximum_mode = 3;
+      break;
+    case 9:
+      if (minimum_mode) *minimum_mode = 2;
+      if (maximum_mode) *maximum_mode = 3;
+      break;
+    case 10:
+      if (minimum_mode) *minimum_mode = 2;
+      if (maximum_mode) *maximum_mode = 3;
+      break;
+    default:
+      break;
+  }
+
   if (mode_information) {
     mode_information->clear();
     mode_information->push_back("Available values [0-7]");
-    mode_information->push_back("0: " + modes_[0]);
-    mode_information->push_back("1: " + modes_[1]);
-    mode_information->push_back("2: " + modes_[2]);
-    mode_information->push_back("3: " + modes_[3]);
-    mode_information->push_back("4: " + modes_[4]);
-    mode_information->push_back("5: " + modes_[5]);
-    mode_information->push_back("6: " + modes_[6]);
-    mode_information->push_back("7: " + modes_[7]);
+    if ((!minimum_mode || *minimum_mode == 0) &&
+        (!maximum_mode || *maximum_mode >= 0)) {
+      mode_information->push_back("0: " + modes_[0]);
+    }
+    if ((!minimum_mode || *minimum_mode <= 1) &&
+        (!maximum_mode || *maximum_mode >= 1)) {
+      mode_information->push_back("1: " + modes_[1]);
+    }
+    if ((!minimum_mode || *minimum_mode <= 2) &&
+        (!maximum_mode || *maximum_mode >= 2)) {
+      mode_information->push_back("2: " + modes_[2]);
+    }
+    if ((!minimum_mode || *minimum_mode <= 3) &&
+        (!maximum_mode || *maximum_mode >= 3)) {
+      mode_information->push_back("3: " + modes_[3]);
+    }
+    if ((!minimum_mode || *minimum_mode <= 4) &&
+        (!maximum_mode || *maximum_mode >= 4)) {
+      mode_information->push_back("4: " + modes_[4]);
+    }
+    if ((!minimum_mode || *minimum_mode <= 5) &&
+        (!maximum_mode || *maximum_mode >= 5)) {
+      mode_information->push_back("5: " + modes_[5]);
+    }
+    if ((!minimum_mode || *minimum_mode <= 6) &&
+        (!maximum_mode || *maximum_mode >= 6)) {
+      mode_information->push_back("6: " + modes_[6]);
+    }
+    if ((!minimum_mode || *minimum_mode <= 7) &&
+        (!maximum_mode || *maximum_mode >= 7)) {
+      mode_information->push_back("7: " + modes_[7]);
+    }
     mode_information->push_back("[compression/decompression]");
   }
+
   return true;
 }
 
@@ -477,15 +550,6 @@ bool LzoLibrary::GetNumberThreadsInformation(
   return false;
 }
 
-bool LzoLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
-    uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 0;
-  if (maximum_bits) *maximum_bits = 0;
-  if (back_reference_information) back_reference_information->clear();
-  return false;
-}
-
 std::string LzoLibrary::GetModeName(const uint8_t &mode) {
   std::string result = CompressionLibrary::GetDefaultModeName();
   if (mode < number_of_modes_) {
@@ -507,8 +571,8 @@ LzoLibrary::LzoLibrary() {
   modes_[1] = "LZO1a";
   modes_[2] = "LZO1b";
   modes_[3] = "LZO1c";
-  modes_[4] = "LZO1f";
-  modes_[5] = "LZO1x";
+  modes_[4] = "LZO1x";
+  modes_[5] = "LZO1f";
   modes_[6] = "LZO1y";
   modes_[7] = "LZO1z";
 }

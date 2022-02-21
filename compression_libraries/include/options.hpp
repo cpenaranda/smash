@@ -18,7 +18,6 @@ class Options {
   uint8_t work_factor_;
   uint8_t shuffle_;
   uint8_t number_threads_;
-  uint8_t back_reference_bits_;
 
  public:
   void SetCompressionLevel(const uint8_t &compression_level);
@@ -27,7 +26,6 @@ class Options {
   void SetWorkFactor(const uint8_t &work_factor);
   void SetShuffle(const uint8_t &shuffle);
   void SetNumberThreads(const uint8_t &number_threads);
-  void SetBackReferenceBits(const uint8_t &back_reference_bits);
 
   uint8_t GetCompressionLevel();
   uint32_t GetWindowSize();
@@ -35,7 +33,6 @@ class Options {
   uint8_t GetWorkFactor();
   uint8_t GetShuffle();
   uint8_t GetNumberThreads();
-  uint8_t GetBackReferenceBits();
 
   Options();
   ~Options();

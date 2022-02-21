@@ -138,25 +138,6 @@ bool CompressionLibrary::CheckNumberThreads(std::string library_name,
   return result;
 }
 
-bool CompressionLibrary::CheckBackReferenceBits(std::string library_name,
-                                                uint8_t back_reference_bits,
-                                                uint8_t minimum_bits,
-                                                uint8_t maximum_bits) {
-  bool result{true};
-  if (minimum_bits > 0 && back_reference_bits < minimum_bits) {
-    std::cout << "ERROR: Back reference bits can not be lower than "
-              << static_cast<uint64_t>(minimum_bits) << " using "
-              << library_name << std::endl;
-    result = false;
-  } else if (maximum_bits > 0 && back_reference_bits > maximum_bits) {
-    std::cout << "ERROR: Back reference bits can not be higher than "
-              << static_cast<uint64_t>(maximum_bits) << " using "
-              << library_name << std::endl;
-    result = false;
-  }
-  return result;
-}
-
 std::string CompressionLibrary::GetDefaultModeName() { return "------------"; }
 
 std::string CompressionLibrary::GetDefaultShuffleName() {

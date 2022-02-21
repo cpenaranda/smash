@@ -183,7 +183,8 @@ bool LzmaLibrary::GetWindowSizeInformation(
 
 bool LzmaLibrary::GetModeInformation(std::vector<std::string> *mode_information,
                                      uint8_t *minimum_mode,
-                                     uint8_t *maximum_mode) {
+                                     uint8_t *maximum_mode,
+                                     const uint8_t &compression_level) {
   if (minimum_mode) *minimum_mode = 0;
   if (maximum_mode) *maximum_mode = 2;
   if (mode_information) {
@@ -226,15 +227,6 @@ bool LzmaLibrary::GetNumberThreadsInformation(
     number_threads_information->push_back("[compression]");
   }
   return true;
-}
-
-bool LzmaLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
-    uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 0;
-  if (maximum_bits) *maximum_bits = 0;
-  if (back_reference_information) back_reference_information->clear();
-  return false;
 }
 
 std::string LzmaLibrary::GetModeName(const uint8_t &mode) {

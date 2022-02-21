@@ -116,7 +116,7 @@ bool Bzip2Library::GetWindowSizeInformation(
 
 bool Bzip2Library::GetModeInformation(
     std::vector<std::string> *mode_information, uint8_t *minimum_mode,
-    uint8_t *maximum_mode) {
+    uint8_t *maximum_mode, const uint8_t &compression_level) {
   if (minimum_mode) *minimum_mode = 0;
   if (maximum_mode) *maximum_mode = 1;
   if (mode_information) {
@@ -161,15 +161,6 @@ bool Bzip2Library::GetNumberThreadsInformation(
   if (minimum_threads) *minimum_threads = 0;
   if (maximum_threads) *maximum_threads = 0;
   if (number_threads_information) number_threads_information->clear();
-  return false;
-}
-
-bool Bzip2Library::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
-    uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 0;
-  if (maximum_bits) *maximum_bits = 0;
-  if (back_reference_information) back_reference_information->clear();
   return false;
 }
 

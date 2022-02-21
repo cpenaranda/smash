@@ -96,8 +96,8 @@ bool LzfseLibrary::GetCompressionLevelInformation(
 }
 
 bool LzfseLibrary::GetWindowSizeInformation(
-    std::vector<std::string> *window_size_information,
-    uint32_t *minimum_size, uint32_t *maximum_size) {
+    std::vector<std::string> *window_size_information, uint32_t *minimum_size,
+    uint32_t *maximum_size) {
   if (minimum_size) *minimum_size = 0;
   if (maximum_size) *maximum_size = 0;
   if (window_size_information) window_size_information->clear();
@@ -105,8 +105,8 @@ bool LzfseLibrary::GetWindowSizeInformation(
 }
 
 bool LzfseLibrary::GetModeInformation(
-    std::vector<std::string> *mode_information,
-    uint8_t *minimum_mode, uint8_t *maximum_mode) {
+    std::vector<std::string> *mode_information, uint8_t *minimum_mode,
+    uint8_t *maximum_mode, const uint8_t &compression_level) {
   if (minimum_mode) *minimum_mode = 0;
   if (maximum_mode) *maximum_mode = 0;
   if (mode_information) mode_information->clear();
@@ -114,8 +114,8 @@ bool LzfseLibrary::GetModeInformation(
 }
 
 bool LzfseLibrary::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information,
-    uint8_t *minimum_factor, uint8_t *maximum_factor) {
+    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
+    uint8_t *maximum_factor) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 0;
   if (work_factor_information) work_factor_information->clear();
@@ -123,8 +123,8 @@ bool LzfseLibrary::GetWorkFactorInformation(
 }
 
 bool LzfseLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information,
-    uint8_t *minimum_shuffle, uint8_t *maximum_shuffle) {
+    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
+    uint8_t *maximum_shuffle) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 0;
   if (shuffle_information) shuffle_information->clear();
@@ -137,15 +137,6 @@ bool LzfseLibrary::GetNumberThreadsInformation(
   if (minimum_threads) *minimum_threads = 0;
   if (maximum_threads) *maximum_threads = 0;
   if (number_threads_information) number_threads_information->clear();
-  return false;
-}
-
-bool LzfseLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 0;
-  if (maximum_bits) *maximum_bits = 0;
-  if (back_reference_information) back_reference_information->clear();
   return false;
 }
 

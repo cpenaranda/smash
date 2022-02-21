@@ -105,9 +105,8 @@ void ShowMessage(const std::string &exe) {
   PrintLine("-t, --threads <number>",
             "Threads used in algorithms (1 by default)",
             "Not all compression libraries use it");
-  PrintLine("-b, --back_reference_bits <number>",
-            "Number of bits used for back-reference",
-            "Values depend of different libraries (4 by default)");
+  PrintLine("-b, --best_effort",
+            "Run all possible configurations of the selected library");
 }
 
 void ListCompressionLibraries() {
@@ -176,19 +175,13 @@ void ShowLibraryInformation(const std::string &library_name,
       PrintLine("-t, --threads <number>",
                 "Threads used in algorithms (1 by default)", information);
     }
-    lib.GetBackReferenceBitsInformation(&information);
-    if (!information.empty()) {
-      PrintLine("-b, --back_reference_bits <number>",
-                "Number of bits used for back-reference (4 by default)",
-                information);
-    }
   }
 }
 
 bool GetParams(const int &number_params, const char *const params[],
                Options *opt, std::string *input_file_name,
                std::string *output_file_name,
-               std::string *compression_library_name) {
+               std::string *compression_library_name, bool *all_options) {
   bool show_message{true};
   bool end{false};
   bool error{false};
@@ -198,7 +191,7 @@ bool GetParams(const int &number_params, const char *const params[],
   bool work_factor_set{false};
   bool shuffle_set{false};
   bool threads_set{false};
-  bool back_reference_bits_set{false};
+  bool best_effort_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (Check(params[n], "-h", "--help")) {
@@ -285,11 +278,10 @@ bool GetParams(const int &number_params, const char *const params[],
       } else {
         error = end = true;
       }
-    } else if (Check(params[n], "-b", "--back_reference_bits")) {
-      ++n;
-      if (n < number_params && !back_reference_bits_set) {
-        opt->SetBackReferenceBits(atoi(params[n]));
-        back_reference_bits_set = true;
+    } else if (Check(params[n], "-b", "--best_effort")) {
+      if (!best_effort_set) {
+        best_effort_set = true;
+        *all_options = true;
       } else {
         error = end = true;
       }
@@ -382,7 +374,7 @@ void RemoveMemories(char *uncompressed_data, char *compressed_data,
 const uint16_t size_row_library = 13;
 const uint16_t size_row_level = 8;
 const uint16_t size_row_window = 9;
-const uint16_t size_row_mode = 10;
+const uint16_t size_row_mode = 17;
 const uint16_t size_row_factor = 6;
 const uint16_t size_row_shuffle = 10;
 const uint16_t size_row_threads = 10;
@@ -536,72 +528,155 @@ void ShowResult(Smash *lib, const std::string &library_name, Options opt,
   std::cout << std::endl;
 }
 
+void SetNumberThreads(Smash *lib, std::vector<Options> *options,
+                      Options *option) {
+  uint8_t min_threads{0}, max_threads{0};
+  bool set_value =
+      lib->GetNumberThreadsInformation(nullptr, &min_threads, &max_threads);
+  do {
+    if (set_value) option->SetNumberThreads(min_threads);
+    options->push_back(*option);
+    ++min_threads;
+  } while (min_threads <= max_threads);
+}
+
+void SetShuffle(Smash *lib, std::vector<Options> *options, Options *option) {
+  uint8_t min_shuffle{0}, max_shuffle{0};
+  bool set_value =
+      lib->GetShuffleInformation(nullptr, &min_shuffle, &max_shuffle);
+  do {
+    if (set_value) option->SetShuffle(min_shuffle);
+    SetNumberThreads(lib, options, option);
+    ++min_shuffle;
+  } while (min_shuffle <= max_shuffle);
+}
+
+void SetWorkFactor(Smash *lib, std::vector<Options> *options, Options *option) {
+  uint8_t min_factor{0}, max_factor{0};
+  bool set_value =
+      lib->GetWorkFactorInformation(nullptr, &min_factor, &max_factor);
+  do {
+    if (set_value) option->SetWorkFactor(min_factor);
+    SetShuffle(lib, options, option);
+    min_factor += 50;
+  } while (min_factor <= max_factor);
+}
+
+void SetWindowSize(Smash *lib, std::vector<Options> *options, Options *option) {
+  uint32_t min_window{0}, max_window{0};
+  bool set_value =
+      lib->GetWindowSizeInformation(nullptr, &min_window, &max_window);
+  do {
+    if (set_value) option->SetWindowSize(min_window);
+    SetWorkFactor(lib, options, option);
+    ++min_window;
+  } while (min_window <= max_window);
+}
+
+void SetMode(Smash *lib, std::vector<Options> *options, Options *option,
+             const uint8_t &level) {
+  uint8_t min_mode{0}, max_mode{0};
+  bool set_value =
+      lib->GetModeInformation(nullptr, &min_mode, &max_mode, level);
+  do {
+    if (set_value) option->SetMode(min_mode);
+    SetWindowSize(lib, options, option);
+    ++min_mode;
+  } while (min_mode <= max_mode);
+}
+
+void SetCopressionLevel(Smash *lib, std::vector<Options> *options) {
+  Options option;
+  uint8_t min_level{0}, max_level{0};
+  bool set_value =
+      lib->GetCompressionLevelInformation(nullptr, &min_level, &max_level);
+  do {
+    if (set_value) option.SetCompressionLevel(min_level);
+    SetMode(lib, options, &option, min_level);
+    ++min_level;
+  } while (min_level <= max_level);
+}
+
+void GetAllOptions(Smash *lib, std::vector<Options> *options) {
+  options->clear();
+  SetCopressionLevel(lib, options);
+}
+
 int main(int argc, char *argv[]) {
   Options opt;
   Smash *lib;
   std::string input_file_name;
   std::string output_file_name;
   std::string compression_library_name;
+  std::vector<Options> options;
+  bool all_options{false};
   int result{EXIT_FAILURE};
   bool show_title{true};
   if (GetParams(argc, argv, &opt, &input_file_name, &output_file_name,
-                &compression_library_name)) {
+                &compression_library_name, &all_options)) {
     std::vector<std::string> libraries;
     if (!compression_library_name.compare("all")) {
       libraries = CompressionLibraries().GetNameLibraries();
     } else {
       libraries.push_back(compression_library_name);
     }
+    options.push_back(opt);
     for (auto &library_name : libraries) {
-      char *uncompressed_data{nullptr};
-      char *compressed_data{nullptr};
-      char *decompressed_data{nullptr};
-      uint64_t uncompressed_size{0};
-      uint64_t compressed_size{0};
-      uint64_t decompressed_size{0};
-      if (SetMemories(input_file_name, &uncompressed_data, &uncompressed_size,
-                      &compressed_data, &compressed_size, &decompressed_data,
-                      &decompressed_size)) {
-        if (show_title) {
-          ShowTitle(uncompressed_size);
-          show_title = false;
-        }
-        result = EXIT_SUCCESS;
-        lib = new Smash(library_name);
-        lib->GetCompressedDataSize(uncompressed_size, &compressed_size);
-        std::chrono::_V2::system_clock::time_point start, end;
-        std::chrono::duration<double> compression_time, decompression_time;
-        lib->SetOptionsCompressor(opt);
-        start = std::chrono::system_clock::now();
-        lib->Compress(uncompressed_data, uncompressed_size, compressed_data,
-                      &compressed_size);
-        end = std::chrono::system_clock::now();
-        compression_time = end - start;
+      lib = new Smash(library_name);
+      if (all_options) {
+        GetAllOptions(lib, &options);
+      }
+      for (auto &option : options) {
+        char *uncompressed_data{nullptr};
+        char *compressed_data{nullptr};
+        char *decompressed_data{nullptr};
+        uint64_t uncompressed_size{0};
+        uint64_t compressed_size{0};
+        uint64_t decompressed_size{0};
+        if (SetMemories(input_file_name, &uncompressed_data, &uncompressed_size,
+                        &compressed_data, &compressed_size, &decompressed_data,
+                        &decompressed_size)) {
+          if (show_title) {
+            ShowTitle(uncompressed_size);
+            show_title = false;
+          }
+          result = EXIT_SUCCESS;
+          lib->GetCompressedDataSize(uncompressed_size, &compressed_size);
+          std::chrono::_V2::system_clock::time_point start, end;
+          std::chrono::duration<double> compression_time, decompression_time;
+          lib->SetOptionsCompressor(option);
+          start = std::chrono::system_clock::now();
+          lib->Compress(uncompressed_data, uncompressed_size, compressed_data,
+                        &compressed_size);
+          end = std::chrono::system_clock::now();
+          compression_time = end - start;
 
-        lib->SetOptionsDecompressor(opt);
-        start = std::chrono::system_clock::now();
-        lib->Decompress(compressed_data, compressed_size, decompressed_data,
-                        &decompressed_size);
-        end = std::chrono::system_clock::now();
-        decompression_time = end - start;
+          lib->SetOptionsDecompressor(option);
+          start = std::chrono::system_clock::now();
+          lib->Decompress(compressed_data, compressed_size, decompressed_data,
+                          &decompressed_size);
+          end = std::chrono::system_clock::now();
+          decompression_time = end - start;
 
-        if (!lib->CompareData(uncompressed_data, uncompressed_size,
-                              decompressed_data, decompressed_size)) {
-          std::cout << "ERROR: " << library_name
-                    << " does not obtain the correct data" << std::endl;
-          result = EXIT_FAILURE;
-        } else {
-          if (CopyToFile(output_file_name, compressed_data, compressed_size)) {
-            ShowResult(lib, library_name, opt, uncompressed_size,
-                       compressed_size, compression_time.count(),
-                       decompression_time.count());
-            result = EXIT_SUCCESS;
-          } else {
+          if (!lib->CompareData(uncompressed_data, uncompressed_size,
+                                decompressed_data, decompressed_size)) {
+            std::cout << "ERROR: " << library_name
+                      << " does not obtain the correct data" << std::endl;
             result = EXIT_FAILURE;
+          } else {
+            if (CopyToFile(output_file_name, compressed_data,
+                           compressed_size)) {
+              ShowResult(lib, library_name, option, uncompressed_size,
+                         compressed_size, compression_time.count(),
+                         decompression_time.count());
+              result = EXIT_SUCCESS;
+            } else {
+              result = EXIT_FAILURE;
+            }
           }
         }
+        RemoveMemories(uncompressed_data, compressed_data, decompressed_data);
       }
-      RemoveMemories(uncompressed_data, compressed_data, decompressed_data);
     }
   }
   return result;

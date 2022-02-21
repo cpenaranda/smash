@@ -53,7 +53,8 @@ class CompressionLibrary {
 
   virtual bool GetModeInformation(
       std::vector<std::string> *mode_information = nullptr,
-      uint8_t *minimum_mode = nullptr, uint8_t *maximum_mode = nullptr) = 0;
+      uint8_t *minimum_mode = nullptr, uint8_t *maximum_mode = nullptr,
+      const uint8_t &compression_level = 0) = 0;
 
   virtual bool GetWorkFactorInformation(
       std::vector<std::string> *work_factor_information = nullptr,
@@ -68,10 +69,6 @@ class CompressionLibrary {
       std::vector<std::string> *number_threads_information = nullptr,
       uint8_t *minimum_threads = nullptr,
       uint8_t *maximum_threads = nullptr) = 0;
-
-  virtual bool GetBackReferenceBitsInformation(
-      std::vector<std::string> *back_reference_information = nullptr,
-      uint8_t *minimum_bits = nullptr, uint8_t *maximum_bits = nullptr) = 0;
 
   virtual std::string GetModeName(const uint8_t &mode) = 0;
 
@@ -97,10 +94,6 @@ class CompressionLibrary {
 
   bool CheckNumberThreads(std::string library_name, uint8_t number_threads,
                           uint8_t minimum_threads, uint8_t maximum_threads);
-
-  bool CheckBackReferenceBits(std::string library_name,
-                              uint8_t back_reference_bits, uint8_t minimum_bits,
-                              uint8_t maximum_bits);
 
   bool CompareData(char *uncompressed_data, const uint64_t &uncompressed_size,
                    char *decompressed_data, const uint64_t &decompressed_size);
