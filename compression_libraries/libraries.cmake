@@ -44,7 +44,7 @@ set(SMASH_LIBRARIES
   libdeflate
   lzfse
   liblzma
-  lzo
+  lzo_static_lib
   ms
   snappy
   xpack
