@@ -21,7 +21,9 @@ class Smash {
   CompressionLibrary *lib;
 
  public:
-  bool SetOptions(Options options);
+  bool SetOptionsCompressor(Options options);
+
+  bool SetOptionsDecompressor(Options options);
 
   void GetCompressedDataSize(uint64_t uncompressed_size,
                              uint64_t *compressed_size);

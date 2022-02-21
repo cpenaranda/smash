@@ -12,31 +12,48 @@
 #include <c-blosc2_library.hpp>
 #include <options.hpp>
 
-bool CBlosc2Library::CheckOptions(Options options) {
+bool CBlosc2Library::CheckOptions(Options options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckCompressionLevel(
-      "c-blosc2", options.GetCompressionLevel(), 0, 9);
-  if (result) {
+  result = CompressionLibrary::CheckNumberThreads(
+      "c-blosc2", options.GetNumberThreads(), 1, 8);
+  if (compressor && result) {
     result = CompressionLibrary::CheckShuffle("c-blosc2", options.GetShuffle(),
                                               0, 2);
     if (result) {
-      result = CompressionLibrary::CheckNumberThreads(
-          "c-blosc2", options.GetNumberThreads(), 1, 8);
+      result = CompressionLibrary::CheckCompressionLevel(
+          "c-blosc2", options.GetCompressionLevel(), 0, 9);
     }
   }
   return result;
 }
 
-bool CBlosc2Library::SetOptions(Options options) {
-  if (initialized_) blosc_destroy();
-  initialized_ = CheckOptions(options);
-  if (initialized_) {
+bool CBlosc2Library::SetOptionsCompressor(Options options) {
+  if (initialized_compressor_ || initialized_decompressor_) {
+    blosc_destroy();
+    initialized_decompressor_ = false;
+  }
+  initialized_compressor_ = CheckOptions(options, true);
+  if (initialized_compressor_) {
     options_ = options;
     blosc_init();
     blosc_set_compressor("blosclz");
     blosc_set_nthreads(options_.GetNumberThreads());
   }
-  return initialized_;
+  return initialized_compressor_;
+}
+
+bool CBlosc2Library::SetOptionsDecompressor(Options options) {
+  if (initialized_compressor_ || initialized_decompressor_) {
+    blosc_destroy();
+    initialized_compressor_ = false;
+  }
+  initialized_decompressor_ = CheckOptions(options, false);
+  if (initialized_decompressor_) {
+    options_ = options;
+    blosc_init();
+    blosc_set_nthreads(options_.GetNumberThreads());
+  }
+  return initialized_decompressor_;
 }
 
 void CBlosc2Library::GetCompressedDataSize(uint64_t uncompressed_size,
@@ -47,7 +64,7 @@ void CBlosc2Library::GetCompressedDataSize(uint64_t uncompressed_size,
 bool CBlosc2Library::Compress(char *uncompressed_data,
                               uint64_t uncompressed_size, char *compressed_data,
                               uint64_t *compressed_size) {
-  bool result{initialized_};
+  bool result{initialized_compressor_};
   if (result) {
     int csize =
         blosc_compress(options_.GetCompressionLevel(), options_.GetShuffle(),
@@ -73,7 +90,7 @@ void CBlosc2Library::GetDecompressedDataSize(char *compressed_data,
 bool CBlosc2Library::Decompress(char *compressed_data, uint64_t compressed_size,
                                 char *decompressed_data,
                                 uint64_t *decompressed_size) {
-  bool result{initialized_};
+  bool result{initialized_decompressor_};
   if (result) {
     int dsize = blosc_decompress(compressed_data, decompressed_data,
                                  *decompressed_size);
@@ -105,8 +122,8 @@ bool CBlosc2Library::GetCompressionLevelInformation(
 }
 
 bool CBlosc2Library::GetWindowSizeInformation(
-    std::vector<std::string> *window_size_information,
-    uint32_t *minimum_size, uint32_t *maximum_size) {
+    std::vector<std::string> *window_size_information, uint32_t *minimum_size,
+    uint32_t *maximum_size) {
   if (minimum_size) *minimum_size = 0;
   if (maximum_size) *maximum_size = 0;
   if (window_size_information) window_size_information->clear();
@@ -114,8 +131,8 @@ bool CBlosc2Library::GetWindowSizeInformation(
 }
 
 bool CBlosc2Library::GetModeInformation(
-    std::vector<std::string> *mode_information,
-    uint8_t *minimum_mode, uint8_t *maximum_mode) {
+    std::vector<std::string> *mode_information, uint8_t *minimum_mode,
+    uint8_t *maximum_mode) {
   if (minimum_mode) *minimum_mode = 0;
   if (maximum_mode) *maximum_mode = 0;
   if (mode_information) mode_information->clear();
@@ -123,8 +140,8 @@ bool CBlosc2Library::GetModeInformation(
 }
 
 bool CBlosc2Library::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information,
-    uint8_t *minimum_factor, uint8_t *maximum_factor) {
+    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
+    uint8_t *maximum_factor) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 0;
   if (work_factor_information) work_factor_information->clear();
@@ -132,8 +149,8 @@ bool CBlosc2Library::GetWorkFactorInformation(
 }
 
 bool CBlosc2Library::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information,
-    uint8_t *minimum_shuffle, uint8_t *maximum_shuffle) {
+    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
+    uint8_t *maximum_shuffle) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 2;
   if (shuffle_information) {
@@ -161,8 +178,8 @@ bool CBlosc2Library::GetNumberThreadsInformation(
 }
 
 bool CBlosc2Library::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
+    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
+    uint8_t *maximum_bits) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();
@@ -190,6 +207,6 @@ CBlosc2Library::CBlosc2Library() {
 }
 
 CBlosc2Library::~CBlosc2Library() {
-  if (initialized_) blosc_destroy();
+  if (initialized_compressor_ || initialized_decompressor_) blosc_destroy();
   delete[] shuffles_;
 }

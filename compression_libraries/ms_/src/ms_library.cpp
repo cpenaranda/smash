@@ -12,16 +12,24 @@
 #include <ms_library.hpp>
 #include <options.hpp>
 
-bool MsLibrary::CheckOptions(Options options) {
+bool MsLibrary::CheckOptions(Options options, const bool &compressor) {
   bool result{true};
   result = CompressionLibrary::CheckMode("ms", options.GetMode(), 0, 2);
   return result;
 }
 
-bool MsLibrary::SetOptions(Options options) {
-  initialized_ = CheckOptions(options);
-  if (initialized_) options_ = options;
-  return initialized_;
+bool MsLibrary::SetOptionsCompressor(Options options) {
+  if (initialized_decompressor_) initialized_decompressor_ = false;
+  initialized_compressor_ = CheckOptions(options, true);
+  if (initialized_compressor_) options_ = options;
+  return initialized_compressor_;
+}
+
+bool MsLibrary::SetOptionsDecompressor(Options options) {
+  if (initialized_compressor_) initialized_compressor_ = false;
+  initialized_decompressor_ = CheckOptions(options, false);
+  if (initialized_decompressor_) options_ = options;
+  return initialized_decompressor_;
 }
 
 void MsLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
@@ -32,7 +40,7 @@ void MsLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
 
 bool MsLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                          char *compressed_data, uint64_t *compressed_size) {
-  bool result{initialized_};
+  bool result{initialized_compressor_};
   if (result) {
     MSCompStatus error = ms_compress(
         static_cast<_MSCompFormat>(options_.GetMode() + 2),
@@ -55,7 +63,7 @@ void MsLibrary::GetDecompressedDataSize(char *compressed_data,
 bool MsLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
                            char *decompressed_data,
                            uint64_t *decompressed_size) {
-  bool result{initialized_};
+  bool result{initialized_decompressor_};
   if (result) {
     MSCompStatus error = ms_decompress(
         static_cast<_MSCompFormat>(options_.GetMode() + 2),
@@ -109,8 +117,8 @@ bool MsLibrary::GetModeInformation(std::vector<std::string> *mode_information,
 }
 
 bool MsLibrary::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information,
-    uint8_t *minimum_factor, uint8_t *maximum_factor) {
+    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
+    uint8_t *maximum_factor) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 0;
   if (work_factor_information) work_factor_information->clear();
@@ -118,8 +126,8 @@ bool MsLibrary::GetWorkFactorInformation(
 }
 
 bool MsLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information,
-    uint8_t *minimum_shuffle, uint8_t *maximum_shuffle) {
+    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
+    uint8_t *maximum_shuffle) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 0;
   if (shuffle_information) shuffle_information->clear();
@@ -136,8 +144,8 @@ bool MsLibrary::GetNumberThreadsInformation(
 }
 
 bool MsLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
+    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
+    uint8_t *maximum_bits) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();

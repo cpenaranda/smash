@@ -10,7 +10,13 @@
 #include <compression_libraries.hpp>
 #include <smash.hpp>
 
-bool Smash::SetOptions(Options options) { return lib->SetOptions(options); }
+bool Smash::SetOptionsCompressor(Options options) {
+  return lib->SetOptionsCompressor(options);
+}
+
+bool Smash::SetOptionsDecompressor(Options options) {
+  return lib->SetOptionsDecompressor(options);
+}
 
 void Smash::GetCompressedDataSize(uint64_t uncompressed_size,
                                   uint64_t *compressed_size) {
@@ -66,15 +72,15 @@ bool Smash::GetModeInformation(std::vector<std::string> *mode_information,
 }
 
 bool Smash::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information,
-    uint8_t *minimum_factor, uint8_t *maximum_factor) {
+    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
+    uint8_t *maximum_factor) {
   return lib->GetWorkFactorInformation(work_factor_information, minimum_factor,
                                        maximum_factor);
 }
 
-bool Smash::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information,
-    uint8_t *minimum_shuffle, uint8_t *maximum_shuffle) {
+bool Smash::GetShuffleInformation(std::vector<std::string> *shuffle_information,
+                                  uint8_t *minimum_shuffle,
+                                  uint8_t *maximum_shuffle) {
   return lib->GetShuffleInformation(shuffle_information, minimum_shuffle,
                                     maximum_shuffle);
 }
@@ -87,8 +93,8 @@ bool Smash::GetNumberThreadsInformation(
 }
 
 bool Smash::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
+    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
+    uint8_t *maximum_bits) {
   return lib->GetBackReferenceBitsInformation(back_reference_information,
                                               minimum_bits, maximum_bits);
 }

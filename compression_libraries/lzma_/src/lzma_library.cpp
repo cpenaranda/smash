@@ -12,20 +12,30 @@
 #include <lzma_library.hpp>
 #include <options.hpp>
 
-bool LzmaLibrary::CheckOptions(Options options) {
+bool LzmaLibrary::CheckOptions(Options options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("lzma", options.GetMode(), 0, 2);
-  if (result) {
-    result = CompressionLibrary::CheckNumberThreads(
-        "lzma", options.GetNumberThreads(), 1, 8);
+  if (compressor) {
+    result = CompressionLibrary::CheckMode("lzma", options.GetMode(), 0, 2);
+    if (result) {
+      result = CompressionLibrary::CheckNumberThreads(
+          "lzma", options.GetNumberThreads(), 1, 8);
+    }
   }
   return result;
 }
 
-bool LzmaLibrary::SetOptions(Options options) {
-  initialized_ = CheckOptions(options);
-  if (initialized_) options_ = options;
-  return initialized_;
+bool LzmaLibrary::SetOptionsCompressor(Options options) {
+  if (initialized_decompressor_) initialized_decompressor_ = false;
+  initialized_compressor_ = CheckOptions(options, true);
+  if (initialized_compressor_) options_ = options;
+  return initialized_compressor_;
+}
+
+bool LzmaLibrary::SetOptionsDecompressor(Options options) {
+  if (initialized_compressor_) initialized_compressor_ = false;
+  initialized_decompressor_ = CheckOptions(options, false);
+  if (initialized_decompressor_) options_ = options;
+  return initialized_decompressor_;
 }
 
 void LzmaLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
@@ -35,7 +45,7 @@ void LzmaLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
 
 bool LzmaLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                            char *compressed_data, uint64_t *compressed_size) {
-  bool result{initialized_};
+  bool result{initialized_compressor_};
   if (result) {
     lzma_stream strm = LZMA_STREAM_INIT;
     lzma_filter filters[2];
@@ -111,7 +121,7 @@ void LzmaLibrary::GetDecompressedDataSize(char *compressed_data,
 bool LzmaLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
                              char *decompressed_data,
                              uint64_t *decompressed_size) {
-  bool result{initialized_};
+  bool result{initialized_decompressor_};
   if (result) {
     lzma_stream strm = LZMA_STREAM_INIT;
     lzma_ret ret_lzma = lzma_stream_decoder(
@@ -163,17 +173,17 @@ bool LzmaLibrary::GetCompressionLevelInformation(
 }
 
 bool LzmaLibrary::GetWindowSizeInformation(
-    std::vector<std::string> *window_size_information,
-    uint32_t *minimum_size, uint32_t *maximum_size) {
+    std::vector<std::string> *window_size_information, uint32_t *minimum_size,
+    uint32_t *maximum_size) {
   if (minimum_size) *minimum_size = 0;
   if (maximum_size) *maximum_size = 0;
   if (window_size_information) window_size_information->clear();
   return false;
 }
 
-bool LzmaLibrary::GetModeInformation(
-    std::vector<std::string> *mode_information,
-    uint8_t *minimum_mode, uint8_t *maximum_mode) {
+bool LzmaLibrary::GetModeInformation(std::vector<std::string> *mode_information,
+                                     uint8_t *minimum_mode,
+                                     uint8_t *maximum_mode) {
   if (minimum_mode) *minimum_mode = 0;
   if (maximum_mode) *maximum_mode = 2;
   if (mode_information) {
@@ -188,8 +198,8 @@ bool LzmaLibrary::GetModeInformation(
 }
 
 bool LzmaLibrary::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information,
-    uint8_t *minimum_factor, uint8_t *maximum_factor) {
+    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
+    uint8_t *maximum_factor) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 0;
   if (work_factor_information) work_factor_information->clear();
@@ -197,8 +207,8 @@ bool LzmaLibrary::GetWorkFactorInformation(
 }
 
 bool LzmaLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information,
-    uint8_t *minimum_shuffle, uint8_t *maximum_shuffle) {
+    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
+    uint8_t *maximum_shuffle) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 0;
   if (shuffle_information) shuffle_information->clear();
@@ -219,8 +229,8 @@ bool LzmaLibrary::GetNumberThreadsInformation(
 }
 
 bool LzmaLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
+    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
+    uint8_t *maximum_bits) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();

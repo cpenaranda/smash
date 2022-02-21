@@ -12,24 +12,33 @@
 #include <bzip2_library.hpp>
 #include <options.hpp>
 
-bool Bzip2Library::CheckOptions(Options options) {
+bool Bzip2Library::CheckOptions(Options options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckCompressionLevel(
-      "bzip2", options.GetCompressionLevel(), 1, 9);
-  if (result) {
-    result = CompressionLibrary::CheckMode("bzip2", options.GetMode(), 0, 1);
+  if (compressor) {
+    result = CompressionLibrary::CheckCompressionLevel(
+        "bzip2", options.GetCompressionLevel(), 1, 9);
     if (result) {
       result = CompressionLibrary::CheckWorkFactor(
           "bzip2", options.GetWorkFactor(), 0, 250);
     }
+  } else {
+    result = CompressionLibrary::CheckMode("bzip2", options.GetMode(), 0, 1);
   }
   return result;
 }
 
-bool Bzip2Library::SetOptions(Options options) {
-  initialized_ = CheckOptions(options);
-  if (initialized_) options_ = options;
-  return initialized_;
+bool Bzip2Library::SetOptionsCompressor(Options options) {
+  if (initialized_decompressor_) initialized_decompressor_ = false;
+  initialized_compressor_ = CheckOptions(options, true);
+  if (initialized_compressor_) options_ = options;
+  return initialized_compressor_;
+}
+
+bool Bzip2Library::SetOptionsDecompressor(Options options) {
+  if (initialized_compressor_) initialized_compressor_ = false;
+  initialized_decompressor_ = CheckOptions(options, false);
+  if (initialized_decompressor_) options_ = options;
+  return initialized_decompressor_;
 }
 
 void Bzip2Library::GetCompressedDataSize(uint64_t uncompressed_size,
@@ -40,7 +49,7 @@ void Bzip2Library::GetCompressedDataSize(uint64_t uncompressed_size,
 
 bool Bzip2Library::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                             char *compressed_data, uint64_t *compressed_size) {
-  bool result{initialized_};
+  bool result{initialized_compressor_};
   if (result) {
     int bzerr = BZ2_bzBuffToBuffCompress(
         compressed_data, reinterpret_cast<uint32_t *>(compressed_size),
@@ -58,7 +67,7 @@ bool Bzip2Library::Compress(char *uncompressed_data, uint64_t uncompressed_size,
 bool Bzip2Library::Decompress(char *compressed_data, uint64_t compressed_size,
                               char *decompressed_data,
                               uint64_t *decompressed_size) {
-  bool result{initialized_};
+  bool result{initialized_decompressor_};
   if (result) {
     int bzerr = BZ2_bzBuffToBuffDecompress(
         decompressed_data, reinterpret_cast<uint32_t *>(decompressed_size),
@@ -97,8 +106,8 @@ bool Bzip2Library::GetCompressionLevelInformation(
 }
 
 bool Bzip2Library::GetWindowSizeInformation(
-    std::vector<std::string> *window_size_information,
-    uint32_t *minimum_size, uint32_t *maximum_size) {
+    std::vector<std::string> *window_size_information, uint32_t *minimum_size,
+    uint32_t *maximum_size) {
   if (minimum_size) *minimum_size = 0;
   if (maximum_size) *maximum_size = 0;
   if (window_size_information) window_size_information->clear();
@@ -106,8 +115,8 @@ bool Bzip2Library::GetWindowSizeInformation(
 }
 
 bool Bzip2Library::GetModeInformation(
-    std::vector<std::string> *mode_information,
-    uint8_t *minimum_mode, uint8_t *maximum_mode) {
+    std::vector<std::string> *mode_information, uint8_t *minimum_mode,
+    uint8_t *maximum_mode) {
   if (minimum_mode) *minimum_mode = 0;
   if (maximum_mode) *maximum_mode = 1;
   if (mode_information) {
@@ -123,8 +132,8 @@ bool Bzip2Library::GetModeInformation(
 }
 
 bool Bzip2Library::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information,
-    uint8_t *minimum_factor, uint8_t *maximum_factor) {
+    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
+    uint8_t *maximum_factor) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 250;
   if (work_factor_information) {
@@ -138,8 +147,8 @@ bool Bzip2Library::GetWorkFactorInformation(
 }
 
 bool Bzip2Library::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information,
-    uint8_t *minimum_shuffle, uint8_t *maximum_shuffle) {
+    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
+    uint8_t *maximum_shuffle) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 0;
   if (shuffle_information) shuffle_information->clear();
@@ -156,8 +165,8 @@ bool Bzip2Library::GetNumberThreadsInformation(
 }
 
 bool Bzip2Library::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
+    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
+    uint8_t *maximum_bits) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();

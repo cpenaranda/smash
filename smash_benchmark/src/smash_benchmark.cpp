@@ -571,13 +571,14 @@ int main(int argc, char *argv[]) {
         lib->GetCompressedDataSize(uncompressed_size, &compressed_size);
         std::chrono::_V2::system_clock::time_point start, end;
         std::chrono::duration<double> compression_time, decompression_time;
-        lib->SetOptions(opt);
+        lib->SetOptionsCompressor(opt);
         start = std::chrono::system_clock::now();
         lib->Compress(uncompressed_data, uncompressed_size, compressed_data,
                       &compressed_size);
         end = std::chrono::system_clock::now();
         compression_time = end - start;
 
+        lib->SetOptionsDecompressor(opt);
         start = std::chrono::system_clock::now();
         lib->Decompress(compressed_data, compressed_size, decompressed_data,
                         &decompressed_size);

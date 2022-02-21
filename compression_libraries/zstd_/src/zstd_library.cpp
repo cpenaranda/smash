@@ -12,17 +12,27 @@
 #include <options.hpp>
 #include <zstd_library.hpp>
 
-bool ZstdLibrary::CheckOptions(Options options) {
+bool ZstdLibrary::CheckOptions(Options options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckCompressionLevel(
-      "zstd", options.GetCompressionLevel(), 1, 22);
+  if (compressor) {
+    result = CompressionLibrary::CheckCompressionLevel(
+        "zstd", options.GetCompressionLevel(), 1, 22);
+  }
   return result;
 }
 
-bool ZstdLibrary::SetOptions(Options options) {
-  initialized_ = CheckOptions(options);
-  if (initialized_) options_ = options;
-  return initialized_;
+bool ZstdLibrary::SetOptionsCompressor(Options options) {
+  if (initialized_decompressor_) initialized_decompressor_ = false;
+  initialized_compressor_ = CheckOptions(options, true);
+  if (initialized_compressor_) options_ = options;
+  return initialized_compressor_;
+}
+
+bool ZstdLibrary::SetOptionsDecompressor(Options options) {
+  if (initialized_compressor_) initialized_compressor_ = false;
+  initialized_decompressor_ = CheckOptions(options, false);
+  if (initialized_decompressor_) options_ = options;
+  return initialized_decompressor_;
 }
 
 void ZstdLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
@@ -32,7 +42,7 @@ void ZstdLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
 
 bool ZstdLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                            char *compressed_data, uint64_t *compressed_size) {
-  bool result{initialized_};
+  bool result{initialized_compressor_};
   if (result) {
     uint64_t new_size =
         ZSTD_compress(compressed_data, *compressed_size, uncompressed_data,
@@ -55,7 +65,7 @@ void ZstdLibrary::GetDecompressedDataSize(char *compressed_data,
 bool ZstdLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
                              char *decompressed_data,
                              uint64_t *decompressed_size) {
-  bool result{initialized_};
+  bool result{initialized_decompressor_};
   if (result) {
     uint64_t new_size = ZSTD_decompress(decompressed_data, *decompressed_size,
                                         compressed_data, compressed_size);
@@ -89,17 +99,17 @@ bool ZstdLibrary::GetCompressionLevelInformation(
 }
 
 bool ZstdLibrary::GetWindowSizeInformation(
-    std::vector<std::string> *window_size_information,
-    uint32_t *minimum_size, uint32_t *maximum_size) {
+    std::vector<std::string> *window_size_information, uint32_t *minimum_size,
+    uint32_t *maximum_size) {
   if (minimum_size) *minimum_size = 0;
   if (maximum_size) *maximum_size = 0;
   if (window_size_information) window_size_information->clear();
   return false;
 }
 
-bool ZstdLibrary::GetModeInformation(
-    std::vector<std::string> *mode_information,
-    uint8_t *minimum_mode, uint8_t *maximum_mode) {
+bool ZstdLibrary::GetModeInformation(std::vector<std::string> *mode_information,
+                                     uint8_t *minimum_mode,
+                                     uint8_t *maximum_mode) {
   if (minimum_mode) *minimum_mode = 0;
   if (maximum_mode) *maximum_mode = 0;
   if (mode_information) mode_information->clear();
@@ -107,8 +117,8 @@ bool ZstdLibrary::GetModeInformation(
 }
 
 bool ZstdLibrary::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information,
-    uint8_t *minimum_factor, uint8_t *maximum_factor) {
+    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
+    uint8_t *maximum_factor) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 0;
   if (work_factor_information) work_factor_information->clear();
@@ -116,8 +126,8 @@ bool ZstdLibrary::GetWorkFactorInformation(
 }
 
 bool ZstdLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information,
-    uint8_t *minimum_shuffle, uint8_t *maximum_shuffle) {
+    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
+    uint8_t *maximum_shuffle) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 0;
   if (shuffle_information) shuffle_information->clear();
@@ -134,8 +144,8 @@ bool ZstdLibrary::GetNumberThreadsInformation(
 }
 
 bool ZstdLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
+    std::vector<std::string> *back_reference_information, uint8_t *minimum_bits,
+    uint8_t *maximum_bits) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();

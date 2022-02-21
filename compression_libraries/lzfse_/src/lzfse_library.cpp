@@ -12,15 +12,23 @@
 #include <lzfse_library.hpp>
 #include <options.hpp>
 
-bool LzfseLibrary::CheckOptions(Options options) {
+bool LzfseLibrary::CheckOptions(Options options, const bool &compressor) {
   bool result{true};
   return result;
 }
 
-bool LzfseLibrary::SetOptions(Options options) {
-  initialized_ = CheckOptions(options);
-  if (initialized_) options_ = options;
-  return initialized_;
+bool LzfseLibrary::SetOptionsCompressor(Options options) {
+  if (initialized_decompressor_) initialized_decompressor_ = false;
+  initialized_compressor_ = CheckOptions(options, true);
+  if (initialized_compressor_) options_ = options;
+  return initialized_compressor_;
+}
+
+bool LzfseLibrary::SetOptionsDecompressor(Options options) {
+  if (initialized_compressor_) initialized_compressor_ = false;
+  initialized_decompressor_ = CheckOptions(options, false);
+  if (initialized_decompressor_) options_ = options;
+  return initialized_decompressor_;
 }
 
 void LzfseLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
@@ -31,7 +39,7 @@ void LzfseLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
 
 bool LzfseLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                             char *compressed_data, uint64_t *compressed_size) {
-  bool result{initialized_};
+  bool result{initialized_compressor_};
   if (result) {
     char *workmem = new char[lzfse_encode_scratch_size()];
     uint64_t final_compression_size = lzfse_encode_buffer(
@@ -57,7 +65,7 @@ void LzfseLibrary::GetDecompressedDataSize(char *compressed_data,
 bool LzfseLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
                               char *decompressed_data,
                               uint64_t *decompressed_size) {
-  bool result{initialized_};
+  bool result{initialized_decompressor_};
   if (result) {
     char *workmem = new char[lzfse_decode_scratch_size()];
     uint64_t final_decompression_size = lzfse_decode_buffer(
