@@ -84,7 +84,7 @@ void BrotliLibrary::GetTitle() {
                                "General-puprose compression algorithm");
 }
 
-void BrotliLibrary::GetCompressionLevelInformation(
+bool BrotliLibrary::GetCompressionLevelInformation(
     uint8_t *minimum_level, uint8_t *maximum_level,
     std::vector<std::string> *compression_level_information) {
   if (minimum_level) *minimum_level = 0;
@@ -94,9 +94,10 @@ void BrotliLibrary::GetCompressionLevelInformation(
     compression_level_information->push_back("Available values [0-11]");
     compression_level_information->push_back("[compression]");
   }
+  return true;
 }
 
-void BrotliLibrary::GetWindowSizeInformation(
+bool BrotliLibrary::GetWindowSizeInformation(
     uint32_t *minimum_size, uint32_t *maximum_size,
     std::vector<std::string> *window_size_information) {
   if (minimum_size) *minimum_size = 10;
@@ -107,9 +108,10 @@ void BrotliLibrary::GetWindowSizeInformation(
     window_size_information->push_back("Window size = (2^value) - 16");
     window_size_information->push_back("[compression]");
   }
+  return true;
 }
 
-void BrotliLibrary::GetModeInformation(
+bool BrotliLibrary::GetModeInformation(
     uint8_t *minimum_mode, uint8_t *maximum_mode,
     std::vector<std::string> *mode_information) {
   if (minimum_mode) *minimum_mode = 0;
@@ -117,45 +119,68 @@ void BrotliLibrary::GetModeInformation(
   if (mode_information) {
     mode_information->clear();
     mode_information->push_back("Available values [0-2]");
-    mode_information->push_back("0: Generic");
-    mode_information->push_back("1: UTF-8 formatted text input");
-    mode_information->push_back("2: Web Open Font Format input");
+    mode_information->push_back("0: " + modes_[0]);
+    mode_information->push_back("1: " + modes_[1] + " input");
+    mode_information->push_back("2: " + modes_[2] + " input");
     mode_information->push_back("[compression]");
   }
+  return true;
 }
 
-void BrotliLibrary::GetWorkFactorInformation(
+bool BrotliLibrary::GetWorkFactorInformation(
     uint8_t *minimum_factor, uint8_t *maximum_factor,
     std::vector<std::string> *work_factor_information) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 0;
   if (work_factor_information) work_factor_information->clear();
+  return false;
 }
 
-void BrotliLibrary::GetShuffleInformation(
+bool BrotliLibrary::GetShuffleInformation(
     uint8_t *minimum_shuffle, uint8_t *maximum_shuffle,
     std::vector<std::string> *shuffle_information) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 0;
   if (shuffle_information) shuffle_information->clear();
+  return false;
 }
 
-void BrotliLibrary::GetNumberThreadsInformation(
+bool BrotliLibrary::GetNumberThreadsInformation(
     uint8_t *minimum_threads, uint8_t *maximum_threads,
     std::vector<std::string> *number_threads_information) {
   if (minimum_threads) *minimum_threads = 0;
   if (maximum_threads) *maximum_threads = 0;
   if (number_threads_information) number_threads_information->clear();
+  return false;
 }
 
-void BrotliLibrary::GetBackReferenceBitsInformation(
+bool BrotliLibrary::GetBackReferenceBitsInformation(
     uint8_t *minimum_bits, uint8_t *maximum_bits,
     std::vector<std::string> *back_reference_information) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();
+  return false;
 }
 
-BrotliLibrary::BrotliLibrary() {}
+std::string BrotliLibrary::GetModeName(const uint8_t &mode) {
+  std::string result = CompressionLibrary::GetDefaultModeName();
+  if (mode < number_of_modes_) {
+    result = modes_[mode];
+  }
+  return result;
+}
 
-BrotliLibrary::~BrotliLibrary() {}
+std::string BrotliLibrary::GetShuffleName(const uint8_t &shuffle) {
+  return CompressionLibrary::GetDefaultShuffleName();
+}
+
+BrotliLibrary::BrotliLibrary() {
+  number_of_modes_ = 3;
+  modes_ = new std::string[number_of_modes_];
+  modes_[0] = "Generic";
+  modes_[1] = "UTF-8";
+  modes_[2] = "WOFF";
+}
+
+BrotliLibrary::~BrotliLibrary() { delete[] modes_; }

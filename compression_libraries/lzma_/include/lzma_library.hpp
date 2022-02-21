@@ -17,6 +17,10 @@
 #include <options.hpp>
 
 class LzmaLibrary : public CompressionLibrary {
+ private:
+  uint8_t number_of_modes_;
+  std::string *modes_;
+
  public:
   bool CheckOptions(Options options);
 
@@ -36,31 +40,37 @@ class LzmaLibrary : public CompressionLibrary {
 
   void GetTitle();
 
-  void GetCompressionLevelInformation(
-      uint8_t *minimum_level, uint8_t *maximum_level,
-      std::vector<std::string> *compression_level_information);
+  bool GetCompressionLevelInformation(
+      uint8_t *minimum_level = nullptr, uint8_t *maximum_level = nullptr,
+      std::vector<std::string> *compression_level_information = nullptr);
 
-  void GetWindowSizeInformation(
-      uint32_t *minimum_size, uint32_t *maximum_size,
-      std::vector<std::string> *window_size_information);
+  bool GetWindowSizeInformation(
+      uint32_t *minimum_size = nullptr, uint32_t *maximum_size = nullptr,
+      std::vector<std::string> *window_size_information = nullptr);
 
-  void GetModeInformation(uint8_t *minimum_mode, uint8_t *maximum_mode,
-                          std::vector<std::string> *mode_information);
+  bool GetModeInformation(uint8_t *minimum_mode = nullptr,
+                          uint8_t *maximum_mode = nullptr,
+                          std::vector<std::string> *mode_information = nullptr);
 
-  void GetWorkFactorInformation(
-      uint8_t *minimum_factor, uint8_t *maximum_factor,
-      std::vector<std::string> *work_factor_information);
+  bool GetWorkFactorInformation(
+      uint8_t *minimum_factor = nullptr, uint8_t *maximum_factor = nullptr,
+      std::vector<std::string> *work_factor_information = nullptr);
 
-  void GetShuffleInformation(uint8_t *minimum_shuffle, uint8_t *maximum_shuffle,
-                             std::vector<std::string> *shuffle_information);
+  bool GetShuffleInformation(
+      uint8_t *minimum_shuffle = nullptr, uint8_t *maximum_shuffle = nullptr,
+      std::vector<std::string> *shuffle_information = nullptr);
 
-  void GetNumberThreadsInformation(
-      uint8_t *minimum_threads, uint8_t *maximum_threads,
-      std::vector<std::string> *number_threads_information);
+  bool GetNumberThreadsInformation(
+      uint8_t *minimum_threads = nullptr, uint8_t *maximum_threads = nullptr,
+      std::vector<std::string> *number_threads_information = nullptr);
 
-  void GetBackReferenceBitsInformation(
-      uint8_t *minimum_bits, uint8_t *maximum_bits,
-      std::vector<std::string> *back_reference_information);
+  bool GetBackReferenceBitsInformation(
+      uint8_t *minimum_bits = nullptr, uint8_t *maximum_bits = nullptr,
+      std::vector<std::string> *back_reference_information = nullptr);
+
+  std::string GetModeName(const uint8_t &mode);
+
+  std::string GetShuffleName(const uint8_t &shuffle);
 
   LzmaLibrary();
   ~LzmaLibrary();

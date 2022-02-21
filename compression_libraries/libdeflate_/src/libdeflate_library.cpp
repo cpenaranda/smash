@@ -145,7 +145,7 @@ void LibdeflateLibrary::GetTitle() {
       "Fast, whole-buffer DEFLATE-based compression and decompression");
 }
 
-void LibdeflateLibrary::GetCompressionLevelInformation(
+bool LibdeflateLibrary::GetCompressionLevelInformation(
     uint8_t *minimum_level, uint8_t *maximum_level,
     std::vector<std::string> *compression_level_information) {
   if (minimum_level) *minimum_level = 0;
@@ -155,17 +155,19 @@ void LibdeflateLibrary::GetCompressionLevelInformation(
     compression_level_information->push_back("Available values [0-12]");
     compression_level_information->push_back("[compression]");
   }
+  return true;
 }
 
-void LibdeflateLibrary::GetWindowSizeInformation(
+bool LibdeflateLibrary::GetWindowSizeInformation(
     uint32_t *minimum_size, uint32_t *maximum_size,
     std::vector<std::string> *window_size_information) {
   if (minimum_size) *minimum_size = 0;
   if (maximum_size) *maximum_size = 0;
   if (window_size_information) window_size_information->clear();
+  return false;
 }
 
-void LibdeflateLibrary::GetModeInformation(
+bool LibdeflateLibrary::GetModeInformation(
     uint8_t *minimum_mode, uint8_t *maximum_mode,
     std::vector<std::string> *mode_information) {
   if (minimum_mode) *minimum_mode = 0;
@@ -173,45 +175,68 @@ void LibdeflateLibrary::GetModeInformation(
   if (mode_information) {
     mode_information->clear();
     mode_information->push_back("Available values [0-2]");
-    mode_information->push_back("0: Deflate");
-    mode_information->push_back("1: Zlib");
-    mode_information->push_back("2: Gzip");
+    mode_information->push_back("0: " + modes_[0]);
+    mode_information->push_back("1: " + modes_[1]);
+    mode_information->push_back("2: " + modes_[2]);
     mode_information->push_back("[compression/decompression]");
   }
+  return true;
 }
 
-void LibdeflateLibrary::GetWorkFactorInformation(
+bool LibdeflateLibrary::GetWorkFactorInformation(
     uint8_t *minimum_factor, uint8_t *maximum_factor,
     std::vector<std::string> *work_factor_information) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 0;
   if (work_factor_information) work_factor_information->clear();
+  return false;
 }
 
-void LibdeflateLibrary::GetShuffleInformation(
+bool LibdeflateLibrary::GetShuffleInformation(
     uint8_t *minimum_shuffle, uint8_t *maximum_shuffle,
     std::vector<std::string> *shuffle_information) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 0;
   if (shuffle_information) shuffle_information->clear();
+  return false;
 }
 
-void LibdeflateLibrary::GetNumberThreadsInformation(
+bool LibdeflateLibrary::GetNumberThreadsInformation(
     uint8_t *minimum_threads, uint8_t *maximum_threads,
     std::vector<std::string> *number_threads_information) {
   if (minimum_threads) *minimum_threads = 0;
   if (maximum_threads) *maximum_threads = 0;
   if (number_threads_information) number_threads_information->clear();
+  return false;
 }
 
-void LibdeflateLibrary::GetBackReferenceBitsInformation(
+bool LibdeflateLibrary::GetBackReferenceBitsInformation(
     uint8_t *minimum_bits, uint8_t *maximum_bits,
     std::vector<std::string> *back_reference_information) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();
+  return false;
 }
 
-LibdeflateLibrary::LibdeflateLibrary() {}
+std::string LibdeflateLibrary::GetModeName(const uint8_t &mode) {
+  std::string result = CompressionLibrary::GetDefaultModeName();
+  if (mode < number_of_modes_) {
+    result = modes_[mode];
+  }
+  return result;
+}
 
-LibdeflateLibrary::~LibdeflateLibrary() {}
+std::string LibdeflateLibrary::GetShuffleName(const uint8_t &shuffle) {
+  return CompressionLibrary::GetDefaultShuffleName();
+}
+
+LibdeflateLibrary::LibdeflateLibrary() {
+  number_of_modes_ = 3;
+  modes_ = new std::string[number_of_modes_];
+  modes_[0] = "Deflate";
+  modes_[1] = "Zlib";
+  modes_[2] = "Gzip";
+}
+
+LibdeflateLibrary::~LibdeflateLibrary() { delete[] modes_; }

@@ -387,7 +387,7 @@ void LzoLibrary::GetTitle() {
   CompressionLibrary::GetTitle("lzo", "A real-time data compression library");
 }
 
-void LzoLibrary::GetCompressionLevelInformation(
+bool LzoLibrary::GetCompressionLevelInformation(
     uint8_t *minimum_level, uint8_t *maximum_level,
     std::vector<std::string> *compression_level_information) {
   if (minimum_level) *minimum_level = 0;
@@ -396,27 +396,29 @@ void LzoLibrary::GetCompressionLevelInformation(
     compression_level_information->clear();
     compression_level_information->push_back(
         "Available values depend on the mode:");
-    compression_level_information->push_back("Mode 0: [0-1]");
-    compression_level_information->push_back("Mode 1: [0-1]");
-    compression_level_information->push_back("Mode 2: [0-10]");
-    compression_level_information->push_back("Mode 3: [0-10]");
-    compression_level_information->push_back("Mode 4: [0-1]");
-    compression_level_information->push_back("Mode 5: [0-4]");
-    compression_level_information->push_back("Mode 6: [0-1]");
-    compression_level_information->push_back("Mode 7: [0]");
+    compression_level_information->push_back("Mode " + modes_[0] + ": [0-1]");
+    compression_level_information->push_back("Mode " + modes_[1] + ": [0-1]");
+    compression_level_information->push_back("Mode " + modes_[2] + ": [0-10]");
+    compression_level_information->push_back("Mode " + modes_[3] + ": [0-10]");
+    compression_level_information->push_back("Mode " + modes_[4] + ": [0-1]");
+    compression_level_information->push_back("Mode " + modes_[5] + ": [0-4]");
+    compression_level_information->push_back("Mode " + modes_[6] + ": [0-1]");
+    compression_level_information->push_back("Mode " + modes_[7] + ": [0]");
     compression_level_information->push_back("[compression]");
   }
+  return true;
 }
 
-void LzoLibrary::GetWindowSizeInformation(
+bool LzoLibrary::GetWindowSizeInformation(
     uint32_t *minimum_size, uint32_t *maximum_size,
     std::vector<std::string> *window_size_information) {
   if (minimum_size) *minimum_size = 0;
   if (maximum_size) *maximum_size = 0;
   if (window_size_information) window_size_information->clear();
+  return false;
 }
 
-void LzoLibrary::GetModeInformation(
+bool LzoLibrary::GetModeInformation(
     uint8_t *minimum_mode, uint8_t *maximum_mode,
     std::vector<std::string> *mode_information) {
   if (minimum_mode) *minimum_mode = 0;
@@ -424,53 +426,80 @@ void LzoLibrary::GetModeInformation(
   if (mode_information) {
     mode_information->clear();
     mode_information->push_back("Available values [0-7]");
-    mode_information->push_back("0: LZO1");
-    mode_information->push_back("1: LZO1a");
-    mode_information->push_back("2: LZO1b");
-    mode_information->push_back("3: LZO1c");
-    mode_information->push_back("4: LZO1f");
-    mode_information->push_back("5: LZO1x");
-    mode_information->push_back("6: LZO1y");
-    mode_information->push_back("7: LZO1z");
+    mode_information->push_back("0: " + modes_[0]);
+    mode_information->push_back("1: " + modes_[1]);
+    mode_information->push_back("2: " + modes_[2]);
+    mode_information->push_back("3: " + modes_[3]);
+    mode_information->push_back("4: " + modes_[4]);
+    mode_information->push_back("5: " + modes_[5]);
+    mode_information->push_back("6: " + modes_[6]);
+    mode_information->push_back("7: " + modes_[7]);
     mode_information->push_back("[compression/decompression]");
   }
+  return true;
 }
 
-void LzoLibrary::GetWorkFactorInformation(
+bool LzoLibrary::GetWorkFactorInformation(
     uint8_t *minimum_factor, uint8_t *maximum_factor,
     std::vector<std::string> *work_factor_information) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 0;
   if (work_factor_information) work_factor_information->clear();
+  return false;
 }
 
-void LzoLibrary::GetShuffleInformation(
+bool LzoLibrary::GetShuffleInformation(
     uint8_t *minimum_shuffle, uint8_t *maximum_shuffle,
     std::vector<std::string> *shuffle_information) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 0;
   if (shuffle_information) shuffle_information->clear();
+  return false;
 }
 
-void LzoLibrary::GetNumberThreadsInformation(
+bool LzoLibrary::GetNumberThreadsInformation(
     uint8_t *minimum_threads, uint8_t *maximum_threads,
     std::vector<std::string> *number_threads_information) {
   if (minimum_threads) *minimum_threads = 0;
   if (maximum_threads) *maximum_threads = 0;
   if (number_threads_information) number_threads_information->clear();
+  return false;
 }
 
-void LzoLibrary::GetBackReferenceBitsInformation(
+bool LzoLibrary::GetBackReferenceBitsInformation(
     uint8_t *minimum_bits, uint8_t *maximum_bits,
     std::vector<std::string> *back_reference_information) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();
+  return false;
+}
+
+std::string LzoLibrary::GetModeName(const uint8_t &mode) {
+  std::string result = CompressionLibrary::GetDefaultModeName();
+  if (mode < number_of_modes_) {
+    result = modes_[mode];
+  }
+  return result;
+}
+
+std::string LzoLibrary::GetShuffleName(const uint8_t &shuffle) {
+  return CompressionLibrary::GetDefaultShuffleName();
 }
 
 LzoLibrary::LzoLibrary() {
   compression_work_memory_size_ = 0;
   decompression_work_memory_size_ = 0;
+  number_of_modes_ = 8;
+  modes_ = new std::string[number_of_modes_];
+  modes_[0] = "LZO1";
+  modes_[1] = "LZO1a";
+  modes_[2] = "LZO1b";
+  modes_[3] = "LZO1c";
+  modes_[4] = "LZO1f";
+  modes_[5] = "LZO1x";
+  modes_[6] = "LZO1y";
+  modes_[7] = "LZO1z";
 }
 
-LzoLibrary::~LzoLibrary() {}
+LzoLibrary::~LzoLibrary() { delete[] modes_; }

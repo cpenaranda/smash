@@ -157,5 +157,13 @@ bool CompressionLibrary::CheckBackReferenceBits(std::string library_name,
   return result;
 }
 
+std::string CompressionLibrary::GetDefaultModeName() {
+  return "------------";
+}
+
+std::string CompressionLibrary::GetDefaultShuffleName() {
+  return "------------";
+}
+
 CompressionLibrary::CompressionLibrary() { initialized_ = false; }
 CompressionLibrary::~CompressionLibrary() {}

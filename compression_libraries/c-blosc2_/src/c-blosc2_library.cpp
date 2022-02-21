@@ -91,7 +91,7 @@ void CBlosc2Library::GetTitle() {
       "c-blosc2", "High performance compressor optimized for binary data");
 }
 
-void CBlosc2Library::GetCompressionLevelInformation(
+bool CBlosc2Library::GetCompressionLevelInformation(
     uint8_t *minimum_level, uint8_t *maximum_level,
     std::vector<std::string> *compression_level_information) {
   if (minimum_level) *minimum_level = 0;
@@ -101,33 +101,37 @@ void CBlosc2Library::GetCompressionLevelInformation(
     compression_level_information->push_back("Available values [0-9]");
     compression_level_information->push_back("[compression]");
   }
+  return true;
 }
 
-void CBlosc2Library::GetWindowSizeInformation(
+bool CBlosc2Library::GetWindowSizeInformation(
     uint32_t *minimum_size, uint32_t *maximum_size,
     std::vector<std::string> *window_size_information) {
   if (minimum_size) *minimum_size = 0;
   if (maximum_size) *maximum_size = 0;
   if (window_size_information) window_size_information->clear();
+  return false;
 }
 
-void CBlosc2Library::GetModeInformation(
+bool CBlosc2Library::GetModeInformation(
     uint8_t *minimum_mode, uint8_t *maximum_mode,
     std::vector<std::string> *mode_information) {
   if (minimum_mode) *minimum_mode = 0;
   if (maximum_mode) *maximum_mode = 0;
   if (mode_information) mode_information->clear();
+  return false;
 }
 
-void CBlosc2Library::GetWorkFactorInformation(
+bool CBlosc2Library::GetWorkFactorInformation(
     uint8_t *minimum_factor, uint8_t *maximum_factor,
     std::vector<std::string> *work_factor_information) {
   if (minimum_factor) *minimum_factor = 0;
   if (maximum_factor) *maximum_factor = 0;
   if (work_factor_information) work_factor_information->clear();
+  return false;
 }
 
-void CBlosc2Library::GetShuffleInformation(
+bool CBlosc2Library::GetShuffleInformation(
     uint8_t *minimum_shuffle, uint8_t *maximum_shuffle,
     std::vector<std::string> *shuffle_information) {
   if (minimum_shuffle) *minimum_shuffle = 0;
@@ -135,14 +139,15 @@ void CBlosc2Library::GetShuffleInformation(
   if (shuffle_information) {
     shuffle_information->clear();
     shuffle_information->push_back("Available values [0-2]");
-    shuffle_information->push_back("0: No Shuffle");
-    shuffle_information->push_back("1: Byte Shuffle");
-    shuffle_information->push_back("2: Bit Shuffle");
+    shuffle_information->push_back("0: " + shuffles_[0]);
+    shuffle_information->push_back("1: " + shuffles_[1]);
+    shuffle_information->push_back("2: " + shuffles_[2]);
     shuffle_information->push_back("[compression]");
   }
+  return true;
 }
 
-void CBlosc2Library::GetNumberThreadsInformation(
+bool CBlosc2Library::GetNumberThreadsInformation(
     uint8_t *minimum_threads, uint8_t *maximum_threads,
     std::vector<std::string> *number_threads_information) {
   if (minimum_threads) *minimum_threads = 1;
@@ -152,18 +157,39 @@ void CBlosc2Library::GetNumberThreadsInformation(
     number_threads_information->push_back("Available values [1-8]");
     number_threads_information->push_back("[compression/decompression]");
   }
+  return true;
 }
 
-void CBlosc2Library::GetBackReferenceBitsInformation(
+bool CBlosc2Library::GetBackReferenceBitsInformation(
     uint8_t *minimum_bits, uint8_t *maximum_bits,
     std::vector<std::string> *back_reference_information) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();
+  return false;
 }
 
-CBlosc2Library::CBlosc2Library() {}
+std::string CBlosc2Library::GetModeName(const uint8_t &mode) {
+  return CompressionLibrary::GetDefaultModeName();
+}
+
+std::string CBlosc2Library::GetShuffleName(const uint8_t &shuffle) {
+  std::string result = CompressionLibrary::GetDefaultShuffleName();
+  if (shuffle < number_of_shuffles_) {
+    result = shuffles_[shuffle];
+  }
+  return result;
+}
+
+CBlosc2Library::CBlosc2Library() {
+  number_of_shuffles_ = 3;
+  shuffles_ = new std::string[number_of_shuffles_];
+  shuffles_[0] = "None";
+  shuffles_[1] = "Byte";
+  shuffles_[2] = "Bit";
+}
 
 CBlosc2Library::~CBlosc2Library() {
   if (initialized_) blosc_destroy();
+  delete[] shuffles_;
 }

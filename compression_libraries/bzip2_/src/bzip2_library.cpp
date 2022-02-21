@@ -83,7 +83,7 @@ void Bzip2Library::GetTitle() {
       "bzip2", "Based on Burrows-Wheeler algorithm and Huffman coding");
 }
 
-void Bzip2Library::GetCompressionLevelInformation(
+bool Bzip2Library::GetCompressionLevelInformation(
     uint8_t *minimum_level, uint8_t *maximum_level,
     std::vector<std::string> *compression_level_information) {
   if (minimum_level) *minimum_level = 1;
@@ -93,17 +93,19 @@ void Bzip2Library::GetCompressionLevelInformation(
     compression_level_information->push_back("Available values [1-9]");
     compression_level_information->push_back("[compression]");
   }
+  return true;
 }
 
-void Bzip2Library::GetWindowSizeInformation(
+bool Bzip2Library::GetWindowSizeInformation(
     uint32_t *minimum_size, uint32_t *maximum_size,
     std::vector<std::string> *window_size_information) {
   if (minimum_size) *minimum_size = 0;
   if (maximum_size) *maximum_size = 0;
   if (window_size_information) window_size_information->clear();
+  return false;
 }
 
-void Bzip2Library::GetModeInformation(
+bool Bzip2Library::GetModeInformation(
     uint8_t *minimum_mode, uint8_t *maximum_mode,
     std::vector<std::string> *mode_information) {
   if (minimum_mode) *minimum_mode = 0;
@@ -111,13 +113,16 @@ void Bzip2Library::GetModeInformation(
   if (mode_information) {
     mode_information->clear();
     mode_information->push_back("Available values [0-1]");
-    mode_information->push_back("0: Faster decompression using more memory");
-    mode_information->push_back("1: Slower decompression using less memory");
+    mode_information->push_back("0: " + modes_[0] +
+                                " decompression using more memory");
+    mode_information->push_back("1: " + modes_[1] +
+                                " decompression using less memory");
     mode_information->push_back("[decompression]");
   }
+  return true;
 }
 
-void Bzip2Library::GetWorkFactorInformation(
+bool Bzip2Library::GetWorkFactorInformation(
     uint8_t *minimum_factor, uint8_t *maximum_factor,
     std::vector<std::string> *work_factor_information) {
   if (minimum_factor) *minimum_factor = 0;
@@ -129,32 +134,53 @@ void Bzip2Library::GetWorkFactorInformation(
         "Controls the compression behaviour when there is repetitive data");
     work_factor_information->push_back("[compression]");
   }
+  return true;
 }
 
-void Bzip2Library::GetShuffleInformation(
+bool Bzip2Library::GetShuffleInformation(
     uint8_t *minimum_shuffle, uint8_t *maximum_shuffle,
     std::vector<std::string> *shuffle_information) {
   if (minimum_shuffle) *minimum_shuffle = 0;
   if (maximum_shuffle) *maximum_shuffle = 0;
   if (shuffle_information) shuffle_information->clear();
+  return false;
 }
 
-void Bzip2Library::GetNumberThreadsInformation(
+bool Bzip2Library::GetNumberThreadsInformation(
     uint8_t *minimum_threads, uint8_t *maximum_threads,
     std::vector<std::string> *number_threads_information) {
   if (minimum_threads) *minimum_threads = 0;
   if (maximum_threads) *maximum_threads = 0;
   if (number_threads_information) number_threads_information->clear();
+  return false;
 }
 
-void Bzip2Library::GetBackReferenceBitsInformation(
+bool Bzip2Library::GetBackReferenceBitsInformation(
     uint8_t *minimum_bits, uint8_t *maximum_bits,
     std::vector<std::string> *back_reference_information) {
   if (minimum_bits) *minimum_bits = 0;
   if (maximum_bits) *maximum_bits = 0;
   if (back_reference_information) back_reference_information->clear();
+  return false;
 }
 
-Bzip2Library::Bzip2Library() {}
+std::string Bzip2Library::GetModeName(const uint8_t &mode) {
+  std::string result = CompressionLibrary::GetDefaultModeName();
+  if (mode < number_of_modes_) {
+    result = modes_[mode];
+  }
+  return result;
+}
 
-Bzip2Library::~Bzip2Library() {}
+std::string Bzip2Library::GetShuffleName(const uint8_t &shuffle) {
+  return CompressionLibrary::GetDefaultShuffleName();
+}
+
+Bzip2Library::Bzip2Library() {
+  number_of_modes_ = 2;
+  modes_ = new std::string[number_of_modes_];
+  modes_[0] = "Faster";
+  modes_[1] = "Slower";
+}
+
+Bzip2Library::~Bzip2Library() { delete[] modes_; }
