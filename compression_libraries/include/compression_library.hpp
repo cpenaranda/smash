@@ -41,32 +41,34 @@ class CompressionLibrary {
   virtual void GetTitle() = 0;
 
   virtual bool GetCompressionLevelInformation(
-      uint8_t *minimum_level = nullptr, uint8_t *maximum_level = nullptr,
-      std::vector<std::string> *compression_level_information = nullptr) = 0;
+      std::vector<std::string> *compression_level_information = nullptr,
+      uint8_t *minimum_level = nullptr, uint8_t *maximum_level = nullptr) = 0;
 
   virtual bool GetWindowSizeInformation(
-      uint32_t *minimum_size = nullptr, uint32_t *maximum_size = nullptr,
-      std::vector<std::string> *window_size_information = nullptr) = 0;
+      std::vector<std::string> *window_size_information = nullptr,
+      uint32_t *minimum_size = nullptr, uint32_t *maximum_size = nullptr) = 0;
 
   virtual bool GetModeInformation(
-      uint8_t *minimum_mode = nullptr, uint8_t *maximum_mode = nullptr,
-      std::vector<std::string> *mode_information = nullptr) = 0;
+      std::vector<std::string> *mode_information = nullptr,
+      uint8_t *minimum_mode = nullptr, uint8_t *maximum_mode = nullptr) = 0;
 
   virtual bool GetWorkFactorInformation(
-      uint8_t *minimum_factor = nullptr, uint8_t *maximum_factor = nullptr,
-      std::vector<std::string> *work_factor_information = nullptr) = 0;
+      std::vector<std::string> *work_factor_information = nullptr,
+      uint8_t *minimum_factor = nullptr, uint8_t *maximum_factor = nullptr) = 0;
 
   virtual bool GetShuffleInformation(
-      uint8_t *minimum_shuffle = nullptr, uint8_t *maximum_shuffle = nullptr,
-      std::vector<std::string> *shuffle_information = nullptr) = 0;
+      std::vector<std::string> *shuffle_information = nullptr,
+      uint8_t *minimum_shuffle = nullptr,
+      uint8_t *maximum_shuffle = nullptr) = 0;
 
   virtual bool GetNumberThreadsInformation(
-      uint8_t *minimum_threads = nullptr, uint8_t *maximum_threads = nullptr,
-      std::vector<std::string> *number_threads_information = nullptr) = 0;
+      std::vector<std::string> *number_threads_information = nullptr,
+      uint8_t *minimum_threads = nullptr,
+      uint8_t *maximum_threads = nullptr) = 0;
 
   virtual bool GetBackReferenceBitsInformation(
-      uint8_t *minimum_bits = nullptr, uint8_t *maximum_bits = nullptr,
-      std::vector<std::string> *back_reference_information = nullptr) = 0;
+      std::vector<std::string> *back_reference_information = nullptr,
+      uint8_t *minimum_bits = nullptr, uint8_t *maximum_bits = nullptr) = 0;
 
   virtual std::string GetModeName(const uint8_t &mode) = 0;
 

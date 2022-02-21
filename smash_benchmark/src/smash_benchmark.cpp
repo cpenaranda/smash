@@ -143,22 +143,22 @@ void ShowLibraryInformation(const std::string &library_name,
     PrintLine("-o, --output_file <file_name>",
               "File name where the compress data is stored");
     std::vector<std::string> information;
-    lib.GetCompressionLevelInformation(nullptr, nullptr, &information);
+    lib.GetCompressionLevelInformation(&information);
     if (!information.empty()) {
       PrintLine("-l, --level <number>",
                 "Compression level to use (1 by default)", information);
     }
-    lib.GetWindowSizeInformation(nullptr, nullptr, &information);
+    lib.GetWindowSizeInformation(&information);
     if (!information.empty()) {
       PrintLine("-w, --window <number>", "Set window size (10 by default)",
                 information);
     }
-    lib.GetModeInformation(nullptr, nullptr, &information);
+    lib.GetModeInformation(&information);
     if (!information.empty()) {
       PrintLine("-m, --mode <number>", "Specifies the mode used (0 by default)",
                 information);
     }
-    lib.GetWorkFactorInformation(nullptr, nullptr, &information);
+    lib.GetWorkFactorInformation(&information);
     if (!information.empty()) {
       PrintLine(
           "-wf, --work_factor <number>",
@@ -166,17 +166,17 @@ void ShowLibraryInformation(const std::string &library_name,
           "default)",
           information);
     }
-    lib.GetShuffleInformation(nullptr, nullptr, &information);
+    lib.GetShuffleInformation(&information);
     if (!information.empty()) {
       PrintLine("-s, --shuffle <number>",
                 "Shuffle filter applied (0 by default)", information);
     }
-    lib.GetNumberThreadsInformation(nullptr, nullptr, &information);
+    lib.GetNumberThreadsInformation(&information);
     if (!information.empty()) {
       PrintLine("-t, --threads <number>",
                 "Threads used in algorithms (1 by default)", information);
     }
-    lib.GetBackReferenceBitsInformation(nullptr, nullptr, &information);
+    lib.GetBackReferenceBitsInformation(&information);
     if (!information.empty()) {
       PrintLine("-b, --back_reference_bits <number>",
                 "Number of bits used for back-reference (4 by default)",
