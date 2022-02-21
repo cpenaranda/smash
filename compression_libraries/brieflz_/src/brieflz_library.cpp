@@ -12,7 +12,8 @@
 #include <brieflz_library.hpp>
 #include <options.hpp>
 
-bool BrieflzLibrary::CheckOptions(Options options, const bool &compressor) {
+bool BrieflzLibrary::CheckOptions(const Options &options,
+                                  const bool &compressor) {
   bool result{true};
   if (compressor) {
     result = CompressionLibrary::CheckCompressionLevel(
@@ -21,14 +22,14 @@ bool BrieflzLibrary::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool BrieflzLibrary::SetOptionsCompressor(Options options) {
+bool BrieflzLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool BrieflzLibrary::SetOptionsDecompressor(Options options) {
+bool BrieflzLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

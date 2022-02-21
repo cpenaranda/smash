@@ -12,7 +12,8 @@
 #include <density_library.hpp>
 #include <options.hpp>
 
-bool DensityLibrary::CheckOptions(Options options, const bool &compressor) {
+bool DensityLibrary::CheckOptions(const Options &options,
+                                  const bool &compressor) {
   bool result{true};
   if (compressor) {
     result = CompressionLibrary::CheckMode("density", options.GetMode(), 1, 3);
@@ -20,14 +21,14 @@ bool DensityLibrary::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool DensityLibrary::SetOptionsCompressor(Options options) {
+bool DensityLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool DensityLibrary::SetOptionsDecompressor(Options options) {
+bool DensityLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;
@@ -147,8 +148,8 @@ bool DensityLibrary::GetNumberThreadsInformation(
 
 std::string DensityLibrary::GetModeName(const uint8_t &mode) {
   std::string result = CompressionLibrary::GetDefaultModeName();
-  if (mode-1 < number_of_modes_) {
-    result = modes_[mode-1];
+  if (mode - 1 < number_of_modes_) {
+    result = modes_[mode - 1];
   }
   return result;
 }

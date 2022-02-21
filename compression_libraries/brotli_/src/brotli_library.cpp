@@ -14,7 +14,8 @@
 #include <brotli_library.hpp>
 #include <options.hpp>
 
-bool BrotliLibrary::CheckOptions(Options options, const bool &compressor) {
+bool BrotliLibrary::CheckOptions(const Options &options,
+                                 const bool &compressor) {
   bool result{true};
   if (compressor) {
     result = CompressionLibrary::CheckCompressionLevel(
@@ -30,14 +31,14 @@ bool BrotliLibrary::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool BrotliLibrary::SetOptionsCompressor(Options options) {
+bool BrotliLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool BrotliLibrary::SetOptionsDecompressor(Options options) {
+bool BrotliLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

@@ -12,7 +12,8 @@
 #include <bzip2_library.hpp>
 #include <options.hpp>
 
-bool Bzip2Library::CheckOptions(Options options, const bool &compressor) {
+bool Bzip2Library::CheckOptions(const Options &options,
+                                const bool &compressor) {
   bool result{true};
   if (compressor) {
     result = CompressionLibrary::CheckCompressionLevel(
@@ -27,14 +28,14 @@ bool Bzip2Library::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool Bzip2Library::SetOptionsCompressor(Options options) {
+bool Bzip2Library::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool Bzip2Library::SetOptionsDecompressor(Options options) {
+bool Bzip2Library::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

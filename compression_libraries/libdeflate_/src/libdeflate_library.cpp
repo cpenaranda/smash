@@ -12,7 +12,8 @@
 #include <libdeflate_library.hpp>
 #include <options.hpp>
 
-bool LibdeflateLibrary::CheckOptions(Options options, const bool &compressor) {
+bool LibdeflateLibrary::CheckOptions(const Options &options,
+                                     const bool &compressor) {
   bool result{true};
   result = CompressionLibrary::CheckMode("libdeflate", options.GetMode(), 0, 2);
   if (compressor && result) {
@@ -22,14 +23,14 @@ bool LibdeflateLibrary::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool LibdeflateLibrary::SetOptionsCompressor(Options options) {
+bool LibdeflateLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool LibdeflateLibrary::SetOptionsDecompressor(Options options) {
+bool LibdeflateLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

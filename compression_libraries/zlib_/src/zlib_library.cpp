@@ -12,7 +12,7 @@
 #include <options.hpp>
 #include <zlib_library.hpp>
 
-bool ZlibLibrary::CheckOptions(Options options, const bool &compressor) {
+bool ZlibLibrary::CheckOptions(const Options &options, const bool &compressor) {
   bool result{true};
   if (compressor) {
     result = CompressionLibrary::CheckCompressionLevel(
@@ -21,14 +21,14 @@ bool ZlibLibrary::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool ZlibLibrary::SetOptionsCompressor(Options options) {
+bool ZlibLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool ZlibLibrary::SetOptionsDecompressor(Options options) {
+bool ZlibLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

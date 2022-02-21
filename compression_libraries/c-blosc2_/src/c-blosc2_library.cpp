@@ -12,7 +12,8 @@
 #include <c-blosc2_library.hpp>
 #include <options.hpp>
 
-bool CBlosc2Library::CheckOptions(Options options, const bool &compressor) {
+bool CBlosc2Library::CheckOptions(const Options &options,
+                                  const bool &compressor) {
   bool result{true};
   result = CompressionLibrary::CheckNumberThreads(
       "c-blosc2", options.GetNumberThreads(), 1, 8);
@@ -27,7 +28,7 @@ bool CBlosc2Library::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool CBlosc2Library::SetOptionsCompressor(Options options) {
+bool CBlosc2Library::SetOptionsCompressor(const Options &options) {
   if (initialized_compressor_ || initialized_decompressor_) {
     blosc_destroy();
     initialized_decompressor_ = false;
@@ -42,7 +43,7 @@ bool CBlosc2Library::SetOptionsCompressor(Options options) {
   return initialized_compressor_;
 }
 
-bool CBlosc2Library::SetOptionsDecompressor(Options options) {
+bool CBlosc2Library::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_ || initialized_decompressor_) {
     blosc_destroy();
     initialized_compressor_ = false;

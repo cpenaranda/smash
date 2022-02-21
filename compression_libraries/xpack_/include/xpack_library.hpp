@@ -18,11 +18,11 @@
 
 class XpackLibrary : public CompressionLibrary {
  public:
-  bool CheckOptions(Options options, const bool &compressor);
+  bool CheckOptions(const Options &options, const bool &compressor);
 
-  bool SetOptionsCompressor(Options options);
+  bool SetOptionsCompressor(const Options &options);
 
-  bool SetOptionsDecompressor(Options options);
+  bool SetOptionsDecompressor(const Options &options);
 
   void GetCompressedDataSize(uint64_t uncompressed_size,
                              uint64_t *compressed_size);

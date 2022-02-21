@@ -27,12 +27,12 @@ class Options {
   void SetShuffle(const uint8_t &shuffle);
   void SetNumberThreads(const uint8_t &number_threads);
 
-  uint8_t GetCompressionLevel();
-  uint32_t GetWindowSize();
-  uint8_t GetMode();
-  uint8_t GetWorkFactor();
-  uint8_t GetShuffle();
-  uint8_t GetNumberThreads();
+  uint8_t GetCompressionLevel() const;
+  uint32_t GetWindowSize() const;
+  uint8_t GetMode() const;
+  uint8_t GetWorkFactor() const;
+  uint8_t GetShuffle() const;
+  uint8_t GetNumberThreads() const;
 
   Options();
   ~Options();

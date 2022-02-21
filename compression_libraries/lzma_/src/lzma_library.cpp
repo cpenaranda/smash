@@ -12,7 +12,7 @@
 #include <lzma_library.hpp>
 #include <options.hpp>
 
-bool LzmaLibrary::CheckOptions(Options options, const bool &compressor) {
+bool LzmaLibrary::CheckOptions(const Options &options, const bool &compressor) {
   bool result{true};
   if (compressor) {
     result = CompressionLibrary::CheckMode("lzma", options.GetMode(), 0, 2);
@@ -24,14 +24,14 @@ bool LzmaLibrary::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool LzmaLibrary::SetOptionsCompressor(Options options) {
+bool LzmaLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool LzmaLibrary::SetOptionsDecompressor(Options options) {
+bool LzmaLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

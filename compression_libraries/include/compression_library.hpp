@@ -21,11 +21,11 @@ class CompressionLibrary {
   bool initialized_compressor_;
   bool initialized_decompressor_;
 
-  virtual bool CheckOptions(Options options, const bool &compressor) = 0;
+  virtual bool CheckOptions(const Options &options, const bool &compressor) = 0;
 
-  virtual bool SetOptionsCompressor(Options options) = 0;
+  virtual bool SetOptionsCompressor(const Options &options) = 0;
 
-  virtual bool SetOptionsDecompressor(Options options) = 0;
+  virtual bool SetOptionsDecompressor(const Options &options) = 0;
 
   virtual void GetCompressedDataSize(uint64_t uncompressed_size,
                                      uint64_t *compressed_size) = 0;

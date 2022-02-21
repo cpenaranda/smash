@@ -37,7 +37,7 @@ bool CompressionLibrary::CheckCompressionLevel(std::string library_name,
               << static_cast<uint64_t>(minimum_level) << " using "
               << library_name << std::endl;
     result = false;
-  } else if (maximum_level > 0 && level > maximum_level) {
+  } else if (maximum_level >= 0 && level > maximum_level) {
     std::cout << "ERROR: Compression level can not be higher than "
               << static_cast<uint64_t>(maximum_level) << " using "
               << library_name << std::endl;

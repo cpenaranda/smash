@@ -10,11 +10,11 @@
 #include <compression_libraries.hpp>
 #include <smash.hpp>
 
-bool Smash::SetOptionsCompressor(Options options) {
+bool Smash::SetOptionsCompressor(const Options &options) {
   return lib->SetOptionsCompressor(options);
 }
 
-bool Smash::SetOptionsDecompressor(Options options) {
+bool Smash::SetOptionsDecompressor(const Options &options) {
   return lib->SetOptionsDecompressor(options);
 }
 

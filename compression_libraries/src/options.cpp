@@ -29,17 +29,17 @@ void Options::SetNumberThreads(const uint8_t &number_threads) {
   number_threads_ = number_threads;
 }
 
-uint8_t Options::GetCompressionLevel() { return compression_level_; }
+uint8_t Options::GetCompressionLevel() const { return compression_level_; }
 
-uint32_t Options::GetWindowSize() { return window_size_; }
+uint32_t Options::GetWindowSize() const { return window_size_; }
 
-uint8_t Options::GetMode() { return mode_; }
+uint8_t Options::GetMode() const { return mode_; }
 
-uint8_t Options::GetWorkFactor() { return work_factor_; }
+uint8_t Options::GetWorkFactor() const { return work_factor_; }
 
-uint8_t Options::GetShuffle() { return shuffle_; }
+uint8_t Options::GetShuffle() const { return shuffle_; }
 
-uint8_t Options::GetNumberThreads() { return number_threads_; }
+uint8_t Options::GetNumberThreads() const { return number_threads_; }
 
 Options::Options() {
   compression_level_ = 1;

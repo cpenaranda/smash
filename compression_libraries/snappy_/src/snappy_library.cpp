@@ -12,19 +12,20 @@
 #include <options.hpp>
 #include <snappy_library.hpp>
 
-bool SnappyLibrary::CheckOptions(Options options, const bool &compressor) {
+bool SnappyLibrary::CheckOptions(const Options &options,
+                                 const bool &compressor) {
   bool result{true};
   return result;
 }
 
-bool SnappyLibrary::SetOptionsCompressor(Options options) {
+bool SnappyLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool SnappyLibrary::SetOptionsDecompressor(Options options) {
+bool SnappyLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

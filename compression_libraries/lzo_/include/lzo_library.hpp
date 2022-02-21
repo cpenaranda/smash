@@ -42,11 +42,11 @@ class LzoLibrary : public CompressionLibrary {
   void GetFunctions(const uint8_t &mode, const uint8_t &compression_level);
 
  public:
-  bool CheckOptions(Options options, const bool &compressor);
+  bool CheckOptions(const Options &options, const bool &compressor);
 
-  bool SetOptionsCompressor(Options options);
+  bool SetOptionsCompressor(const Options &options);
 
-  bool SetOptionsDecompressor(Options options);
+  bool SetOptionsDecompressor(const Options &options);
 
   void GetCompressedDataSize(uint64_t uncompressed_size,
                              uint64_t *compressed_size);

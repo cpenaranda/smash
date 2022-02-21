@@ -12,20 +12,20 @@
 #include <ms_library.hpp>
 #include <options.hpp>
 
-bool MsLibrary::CheckOptions(Options options, const bool &compressor) {
+bool MsLibrary::CheckOptions(const Options &options, const bool &compressor) {
   bool result{true};
   result = CompressionLibrary::CheckMode("ms", options.GetMode(), 0, 2);
   return result;
 }
 
-bool MsLibrary::SetOptionsCompressor(Options options) {
+bool MsLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool MsLibrary::SetOptionsDecompressor(Options options) {
+bool MsLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

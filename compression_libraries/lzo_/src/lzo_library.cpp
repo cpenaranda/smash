@@ -20,7 +20,7 @@
 #include <lzo_library.hpp>
 #include <options.hpp>
 
-bool LzoLibrary::CheckOptions(Options options, const bool &compressor) {
+bool LzoLibrary::CheckOptions(const Options &options, const bool &compressor) {
   bool result{true};
   result = CompressionLibrary::CheckMode("lzo", options.GetMode(), 0, 7);
   if (compressor && result) {
@@ -52,6 +52,10 @@ bool LzoLibrary::CheckOptions(Options options, const bool &compressor) {
       case 6:
         result = CompressionLibrary::CheckCompressionLevel(
             "mode value 6 in lzo", options.GetCompressionLevel(), 0, 1);
+        break;
+      case 7:
+        result = CompressionLibrary::CheckCompressionLevel(
+            "mode value 7 in lzo", options.GetCompressionLevel(), 0, 0);
         break;
       default:
         break;
@@ -313,7 +317,7 @@ void LzoLibrary::GetFunctions(const uint8_t &mode,
   }
 }
 
-bool LzoLibrary::SetOptionsCompressor(Options options) {
+bool LzoLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) {
@@ -323,7 +327,7 @@ bool LzoLibrary::SetOptionsCompressor(Options options) {
   return initialized_compressor_;
 }
 
-bool LzoLibrary::SetOptionsDecompressor(Options options) {
+bool LzoLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) {

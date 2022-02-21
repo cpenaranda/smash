@@ -12,19 +12,19 @@
 #include <lzfx_library.hpp>
 #include <options.hpp>
 
-bool LzfxLibrary::CheckOptions(Options options, const bool &compressor) {
+bool LzfxLibrary::CheckOptions(const Options &options, const bool &compressor) {
   bool result{true};
   return result;
 }
 
-bool LzfxLibrary::SetOptionsCompressor(Options options) {
+bool LzfxLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool LzfxLibrary::SetOptionsDecompressor(Options options) {
+bool LzfxLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

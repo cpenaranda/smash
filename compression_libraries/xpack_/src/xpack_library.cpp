@@ -12,7 +12,8 @@
 #include <options.hpp>
 #include <xpack_library.hpp>
 
-bool XpackLibrary::CheckOptions(Options options, const bool &compressor) {
+bool XpackLibrary::CheckOptions(const Options &options,
+                                const bool &compressor) {
   bool result{true};
   if (compressor) {
     result = CompressionLibrary::CheckCompressionLevel(
@@ -21,14 +22,14 @@ bool XpackLibrary::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool XpackLibrary::SetOptionsCompressor(Options options) {
+bool XpackLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool XpackLibrary::SetOptionsDecompressor(Options options) {
+bool XpackLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;

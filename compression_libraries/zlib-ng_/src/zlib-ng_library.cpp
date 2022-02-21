@@ -12,7 +12,8 @@
 #include <options.hpp>
 #include <zlib-ng_library.hpp>
 
-bool ZlibNgLibrary::CheckOptions(Options options, const bool &compressor) {
+bool ZlibNgLibrary::CheckOptions(const Options &options,
+                                 const bool &compressor) {
   bool result{true};
   if (compressor) {
     result = CompressionLibrary::CheckCompressionLevel(
@@ -21,14 +22,14 @@ bool ZlibNgLibrary::CheckOptions(Options options, const bool &compressor) {
   return result;
 }
 
-bool ZlibNgLibrary::SetOptionsCompressor(Options options) {
+bool ZlibNgLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool ZlibNgLibrary::SetOptionsDecompressor(Options options) {
+bool ZlibNgLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;
