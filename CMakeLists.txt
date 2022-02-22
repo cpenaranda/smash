@@ -44,24 +44,33 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 find_package(Git REQUIRED)
 
-set (git_update_submodule "${GIT_EXECUTABLE} submodule update --init --recursive --remote")
-
-execute_process(
-  COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive --remote
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
+# execute_process(
+#   COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive --remote
+#   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+# )
 
 function(update_repository VERSION_LIBRARY LIBRARY_NAME)
-  if (VERSION_LIBRARY MATCHES "last_tag")
-    execute_process(
-      COMMAND ${GIT_EXECUTABLE} checkout $(${GIT_EXECUTABLE} describe --tags `git rev-list --tags --max-count=1`)
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}
-    )
-  else()
-    execute_process(
-      COMMAND ${GIT_EXECUTABLE} checkout ${VERSION_LIBRARY}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}
-    )
+  execute_process(
+    COMMAND ${GIT_EXECUTABLE} status
+    COMMAND grep ${VERSION_LIBRARY}
+    ERROR_VARIABLE RESULT_1
+    RESULT_VARIABLE RESULT_2
+    OUTPUT_VARIABLE RESULT_3
+    ERROR_VARIABLE RESULT_4
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}
+  )
+  if (RESULT_2)
+    if (VERSION_LIBRARY MATCHES "last_tag")
+      execute_process(
+        COMMAND ${GIT_EXECUTABLE} checkout $(${GIT_EXECUTABLE} describe --tags `git rev-list --tags --max-count=1`)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}
+      )
+    else()
+      execute_process(
+        COMMAND ${GIT_EXECUTABLE} checkout ${VERSION_LIBRARY}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}
+      )
+    endif()
   endif()
 endfunction()
 
