@@ -15,6 +15,7 @@ set(ZLIB_VERSION "v1.2.11")
 set(ZLIBNG_VERSION "2.0.2")
 set(ZSTD_VERSION "v1.5.2")
 set(FARI_VERSION "main")
+set(FLZ_VERSION "master")
 
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
@@ -36,6 +37,7 @@ add_subdirectory(zlib-ng_)
 add_subdirectory(zstd_)
 add_subdirectory(lzfx_)
 add_subdirectory(fari_)
+add_subdirectory(flz_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -56,6 +58,7 @@ set(SMASH_LIBRARIES
   libzstd_static
   lzfx
   fari
+  flz
 )
 
 set(SMASH_INCLUDES
@@ -94,6 +97,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzfx_/lzfx
   ${CMAKE_CURRENT_SOURCE_DIR}/fari_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/fari_/FastARI
+  ${CMAKE_CURRENT_SOURCE_DIR}/flz_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/flz_/fastlz
 )
 
 set(SMASH_SOURCES
@@ -114,4 +119,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/zstd_/src/zstd_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzfx_/src/lzfx_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/fari_/src/fari_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/flz_/src/flz_library.cpp
 )

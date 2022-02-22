@@ -16,6 +16,7 @@
 #include <compression_libraries.hpp>
 #include <density_library.hpp>
 #include <fari_library.hpp>
+#include <flz_library.hpp>
 #include <libdeflate_library.hpp>
 #include <lzfse_library.hpp>
 #include <lzfx_library.hpp>
@@ -62,6 +63,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["c-blosc2"] = []() { return new CBlosc2Library(); };
   map_["density"] = []() { return new DensityLibrary(); };
   map_["fari"] = []() { return new FariLibrary(); };
+  map_["flz"] = []() { return new FlzLibrary(); };
   map_["libdeflate"] = []() { return new LibdeflateLibrary(); };
   map_["lzfse"] = []() { return new LzfseLibrary(); };
   map_["lzfx"] = []() { return new LzfxLibrary(); };
