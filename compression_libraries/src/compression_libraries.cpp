@@ -19,6 +19,7 @@
 #include <flz_library.hpp>
 #include <gipfeli_library.hpp>
 #include <libdeflate_library.hpp>
+#include <lzf_library.hpp>
 #include <lzfse_library.hpp>
 #include <lzfx_library.hpp>
 #include <lzma_library.hpp>
@@ -67,6 +68,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["flz"] = []() { return new FlzLibrary(); };
   map_["gipfeli"] = []() { return new GipfeliLibrary(); };
   map_["libdeflate"] = []() { return new LibdeflateLibrary(); };
+  map_["lzf"] = []() { return new LzfLibrary(); };
   map_["lzfse"] = []() { return new LzfseLibrary(); };
   map_["lzfx"] = []() { return new LzfxLibrary(); };
   map_["lzma"] = []() { return new LzmaLibrary(); };

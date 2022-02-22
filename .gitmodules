@@ -52,3 +52,6 @@
 [submodule "compression_libraries/gipfeli_/gipfeli"]
 	path = compression_libraries/gipfeli_/gipfeli
 	url = https://github.com/google/gipfeli.git
+[submodule "compression_libraries/lzf_/liblzf"]
+	path = compression_libraries/lzf_/liblzf
+	url = https://github.com/nemequ/liblzf.git
