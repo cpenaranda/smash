@@ -43,3 +43,6 @@
 [submodule "compression_libraries/zstd_/zstd"]
 	path = compression_libraries/zstd_/zstd
 	url = https://github.com/facebook/zstd.git
+[submodule "compression_libraries/fari_/FastARI"]
+	path = compression_libraries/fari_/FastARI
+	url = https://github.com/davidcatt/FastARI.git
