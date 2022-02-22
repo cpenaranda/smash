@@ -38,7 +38,8 @@ bool LzmaLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void LzmaLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void LzmaLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                        uint64_t uncompressed_size,
                                         uint64_t *compressed_size) {
   *compressed_size = lzma_stream_buffer_bound(uncompressed_size);
 }

@@ -57,7 +57,8 @@ bool CBlosc2Library::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void CBlosc2Library::GetCompressedDataSize(uint64_t uncompressed_size,
+void CBlosc2Library::GetCompressedDataSize(char *uncompressed_data,
+                                           uint64_t uncompressed_size,
                                            uint64_t *compressed_size) {
   *compressed_size = uncompressed_size + BLOSC_MAX_OVERHEAD;
 }

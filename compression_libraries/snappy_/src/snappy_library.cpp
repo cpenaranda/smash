@@ -32,7 +32,8 @@ bool SnappyLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void SnappyLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void SnappyLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                          uint64_t uncompressed_size,
                                           uint64_t *compressed_size) {
   *compressed_size = snappy_max_compressed_length(uncompressed_size);
 }

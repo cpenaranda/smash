@@ -16,11 +16,7 @@
 #include <compression_library.hpp>
 #include <options.hpp>
 
-class BrotliLibrary : public CompressionLibrary {
- private:
-  uint8_t number_of_modes_;
-  std::string *modes_;
-
+class QuicklzLibrary : public CompressionLibrary {
  public:
   bool CheckOptions(const Options &options, const bool &compressor);
 
@@ -72,6 +68,6 @@ class BrotliLibrary : public CompressionLibrary {
 
   std::string GetShuffleName(const uint8_t &shuffle);
 
-  BrotliLibrary();
-  ~BrotliLibrary();
+  QuicklzLibrary();
+  ~QuicklzLibrary();
 };

@@ -739,7 +739,8 @@ int main(int argc, char *argv[]) {
                         &compressed_data, &compressed_size, &decompressed_data,
                         &decompressed_size)) {
           result = EXIT_SUCCESS;
-          lib->GetCompressedDataSize(uncompressed_size, &compressed_size);
+          lib->GetCompressedDataSize(uncompressed_data, uncompressed_size,
+                                     &compressed_size);
           std::chrono::_V2::system_clock::time_point start, end;
           std::chrono::duration<double> compression_time, decompression_time;
           lib->SetOptionsCompressor(option);

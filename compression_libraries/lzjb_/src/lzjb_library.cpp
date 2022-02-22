@@ -33,7 +33,8 @@ bool LzjbLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void LzjbLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void LzjbLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                        uint64_t uncompressed_size,
                                         uint64_t *compressed_size) {
   *compressed_size = LZJB_MAX_COMPRESSED_SIZE(uncompressed_size);
 }

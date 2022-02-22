@@ -18,9 +18,11 @@ bool Smash::SetOptionsDecompressor(const Options &options) {
   return lib->SetOptionsDecompressor(options);
 }
 
-void Smash::GetCompressedDataSize(uint64_t uncompressed_size,
+void Smash::GetCompressedDataSize(char *uncompressed_data,
+                                  uint64_t uncompressed_size,
                                   uint64_t *compressed_size) {
-  lib->GetCompressedDataSize(uncompressed_size, compressed_size);
+  lib->GetCompressedDataSize(uncompressed_data, uncompressed_size,
+                             compressed_size);
 }
 
 void Smash::Compress(char *uncompressed_data, uint64_t uncompressed_size,

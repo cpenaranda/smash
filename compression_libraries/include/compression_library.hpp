@@ -27,7 +27,8 @@ class CompressionLibrary {
 
   virtual bool SetOptionsDecompressor(const Options &options) = 0;
 
-  virtual void GetCompressedDataSize(uint64_t uncompressed_size,
+  virtual void GetCompressedDataSize(char *uncompressed_data,
+                                     uint64_t uncompressed_size,
                                      uint64_t *compressed_size) = 0;
 
   virtual bool Compress(char *uncompressed_data, uint64_t uncompressed_size,

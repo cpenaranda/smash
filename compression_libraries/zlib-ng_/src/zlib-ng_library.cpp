@@ -36,7 +36,8 @@ bool ZlibNgLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void ZlibNgLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void ZlibNgLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                          uint64_t uncompressed_size,
                                           uint64_t *compressed_size) {
   *compressed_size = zng_compressBound(uncompressed_size);
 }

@@ -25,7 +25,8 @@ class Smash {
 
   bool SetOptionsDecompressor(const Options &options);
 
-  void GetCompressedDataSize(uint64_t uncompressed_size,
+  void GetCompressedDataSize(char *uncompressed_data,
+                             uint64_t uncompressed_size,
                              uint64_t *compressed_size);
 
   void Compress(char *uncompressed_data, uint64_t uncompressed_size,

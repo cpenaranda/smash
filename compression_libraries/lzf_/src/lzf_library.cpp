@@ -39,7 +39,8 @@ bool LzfLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void LzfLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void LzfLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                       uint64_t uncompressed_size,
                                        uint64_t *compressed_size) {
 #if LZF_VERSION >= 0x0106
   *compressed_size = LZF_MAX_COMPRESSED_SIZE(uncompressed_size);

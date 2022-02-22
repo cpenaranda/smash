@@ -35,7 +35,8 @@ bool DensityLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void DensityLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void DensityLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                           uint64_t uncompressed_size,
                                            uint64_t *compressed_size) {
   *compressed_size = density_compress_safe_size(uncompressed_size);
 }

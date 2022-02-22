@@ -37,7 +37,8 @@ bool LibdeflateLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void LibdeflateLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void LibdeflateLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                              uint64_t uncompressed_size,
                                               uint64_t *compressed_size) {
   switch (options_.GetMode()) {
     case 0:

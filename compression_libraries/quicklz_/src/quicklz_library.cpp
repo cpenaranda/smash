@@ -6,106 +6,94 @@
  * Universidad Politécnica de Valencia (Spain)
  */
 
-#include <brieflz.h>
+#include <quicklz.h>
 
 // SMASH LIBRARIES
-#include <brieflz_library.hpp>
 #include <options.hpp>
+#include <quicklz_library.hpp>
 
-bool BrieflzLibrary::CheckOptions(const Options &options,
+bool QuicklzLibrary::CheckOptions(const Options &options,
                                   const bool &compressor) {
   bool result{true};
-  if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "brieflz", options.GetCompressionLevel(), 1, 10);
-  }
   return result;
 }
 
-bool BrieflzLibrary::SetOptionsCompressor(const Options &options) {
+bool QuicklzLibrary::SetOptionsCompressor(const Options &options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = options;
   return initialized_compressor_;
 }
 
-bool BrieflzLibrary::SetOptionsDecompressor(const Options &options) {
+bool QuicklzLibrary::SetOptionsDecompressor(const Options &options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = options;
   return initialized_decompressor_;
 }
 
-void BrieflzLibrary::GetCompressedDataSize(char *uncompressed_data,
+void QuicklzLibrary::GetCompressedDataSize(char *uncompressed_data,
                                            uint64_t uncompressed_size,
                                            uint64_t *compressed_size) {
-  *compressed_size = blz_max_packed_size(uncompressed_size);
+  *compressed_size = qlz_size_compressed(uncompressed_data);
 }
 
-bool BrieflzLibrary::Compress(char *uncompressed_data,
+bool QuicklzLibrary::Compress(char *uncompressed_data,
                               uint64_t uncompressed_size, char *compressed_data,
                               uint64_t *compressed_size) {
   bool result{initialized_compressor_};
   if (result) {
-    char *workmem = new char[blz_workmem_size_level(
-        uncompressed_size, options_.GetCompressionLevel())];
-    uint64_t final_compression_size{0};
-    final_compression_size =
-        blz_pack_level(uncompressed_data, compressed_data, uncompressed_size,
-                       workmem, options_.GetCompressionLevel());
-    if (final_compression_size == BLZ_ERROR ||
-        final_compression_size > *compressed_size) {
-      std::cout << "ERROR: brieflz error when compress data" << std::endl;
+    qlz_state_compress state;
+    uint64_t final_size = qlz_compress(uncompressed_data, compressed_data,
+                                       uncompressed_size, &state);
+    if (final_size == 0) {
+      std::cout << "ERROR: quicklz error when compress data" << std::endl;
       result = false;
+    } else {
+      *compressed_size = final_size;
     }
-    delete[] workmem;
-    *compressed_size = final_compression_size;
   }
   return result;
 }
 
-void BrieflzLibrary::GetDecompressedDataSize(char *compressed_data,
-                                             uint64_t compressed_size,
-                                             uint64_t *decompressed_size) {
-  // There is no way to obtain with Brieflz
-}
-
-bool BrieflzLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool QuicklzLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
                                 char *decompressed_data,
                                 uint64_t *decompressed_size) {
   bool result{initialized_decompressor_};
   if (result) {
-    uint64_t final_decompression_size{0};
-    final_decompression_size =
-        blz_depack_safe(compressed_data, compressed_size, decompressed_data,
-                        *decompressed_size);
-    if (final_decompression_size != *decompressed_size) {
-      std::cout << "ERROR: brieflz error when decompress data" << std::endl;
+    qlz_state_decompress state;
+    uint64_t final_size =
+        qlz_decompress(compressed_data, decompressed_data, &state);
+    if (final_size == 0) {
+      std::cout << "ERROR: quicklz error when decompress data" << std::endl;
       result = false;
+    } else {
+      *decompressed_size = final_size;
     }
   }
   return result;
 }
 
-void BrieflzLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("brieflz",
-                               "Fast Lempel-Ziv compression library");
+void QuicklzLibrary::GetDecompressedDataSize(char *compressed_data,
+                                             uint64_t compressed_size,
+                                             uint64_t *decompressed_size) {
+  *decompressed_size = qlz_size_decompressed(compressed_data);
 }
 
-bool BrieflzLibrary::GetCompressionLevelInformation(
+void QuicklzLibrary::GetTitle() {
+  CompressionLibrary::GetTitle("quicklz", "A fast GPL'd compression library.");
+}
+
+bool QuicklzLibrary::GetCompressionLevelInformation(
     std::vector<std::string> *compression_level_information,
     uint8_t *minimum_level, uint8_t *maximum_level) {
-  if (minimum_level) *minimum_level = 1;
-  if (maximum_level) *maximum_level = 10;
-  if (compression_level_information) {
-    compression_level_information->clear();
-    compression_level_information->push_back("Available values [1-10]");
-    compression_level_information->push_back("[compression]");
-  }
-  return true;
+  if (minimum_level) *minimum_level = 0;
+  if (maximum_level) *maximum_level = 0;
+  if (compression_level_information) compression_level_information->clear();
+  return false;
 }
 
-bool BrieflzLibrary::GetWindowSizeInformation(
+bool QuicklzLibrary::GetWindowSizeInformation(
     std::vector<std::string> *window_size_information, uint32_t *minimum_size,
     uint32_t *maximum_size) {
   if (minimum_size) *minimum_size = 0;
@@ -114,7 +102,7 @@ bool BrieflzLibrary::GetWindowSizeInformation(
   return false;
 }
 
-bool BrieflzLibrary::GetModeInformation(
+bool QuicklzLibrary::GetModeInformation(
     std::vector<std::string> *mode_information, uint8_t *minimum_mode,
     uint8_t *maximum_mode, const uint8_t &compression_level) {
   if (minimum_mode) *minimum_mode = 0;
@@ -123,7 +111,7 @@ bool BrieflzLibrary::GetModeInformation(
   return false;
 }
 
-bool BrieflzLibrary::GetWorkFactorInformation(
+bool QuicklzLibrary::GetWorkFactorInformation(
     std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
     uint8_t *maximum_factor) {
   if (minimum_factor) *minimum_factor = 0;
@@ -132,7 +120,7 @@ bool BrieflzLibrary::GetWorkFactorInformation(
   return false;
 }
 
-bool BrieflzLibrary::GetShuffleInformation(
+bool QuicklzLibrary::GetShuffleInformation(
     std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
     uint8_t *maximum_shuffle) {
   if (minimum_shuffle) *minimum_shuffle = 0;
@@ -141,7 +129,7 @@ bool BrieflzLibrary::GetShuffleInformation(
   return false;
 }
 
-bool BrieflzLibrary::GetNumberThreadsInformation(
+bool QuicklzLibrary::GetNumberThreadsInformation(
     std::vector<std::string> *number_threads_information,
     uint8_t *minimum_threads, uint8_t *maximum_threads) {
   if (minimum_threads) *minimum_threads = 0;
@@ -150,14 +138,14 @@ bool BrieflzLibrary::GetNumberThreadsInformation(
   return false;
 }
 
-std::string BrieflzLibrary::GetModeName(const uint8_t &mode) {
+std::string QuicklzLibrary::GetModeName(const uint8_t &mode) {
   return CompressionLibrary::GetDefaultModeName();
 }
 
-std::string BrieflzLibrary::GetShuffleName(const uint8_t &shuffle) {
+std::string QuicklzLibrary::GetShuffleName(const uint8_t &shuffle) {
   return CompressionLibrary::GetDefaultShuffleName();
 }
 
-BrieflzLibrary::BrieflzLibrary() {}
+QuicklzLibrary::QuicklzLibrary() {}
 
-BrieflzLibrary::~BrieflzLibrary() {}
+QuicklzLibrary::~QuicklzLibrary() {}

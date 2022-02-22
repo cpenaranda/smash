@@ -44,7 +44,8 @@ bool GipfeliLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void GipfeliLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void GipfeliLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                           uint64_t uncompressed_size,
                                            uint64_t *compressed_size) {
   util::compression::Compressor *compressor =
       util::compression::NewGipfeliCompressor();

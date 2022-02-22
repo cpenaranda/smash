@@ -45,7 +45,8 @@ bool BrotliLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void BrotliLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void BrotliLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                          uint64_t uncompressed_size,
                                           uint64_t *compressed_size) {
   *compressed_size = BrotliEncoderMaxCompressedSize(uncompressed_size);
 }

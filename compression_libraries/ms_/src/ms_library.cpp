@@ -32,7 +32,8 @@ bool MsLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void MsLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void MsLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                      uint64_t uncompressed_size,
                                       uint64_t *compressed_size) {
   *compressed_size = ms_max_compressed_size(
       static_cast<_MSCompFormat>(options_.GetMode() + 2), uncompressed_size);

@@ -42,7 +42,8 @@ bool Bzip2Library::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void Bzip2Library::GetCompressedDataSize(uint64_t uncompressed_size,
+void Bzip2Library::GetCompressedDataSize(char *uncompressed_data,
+                                         uint64_t uncompressed_size,
                                          uint64_t *compressed_size) {
   // There is no way to obtain with Bzip2
   *compressed_size = ((uncompressed_size / 5000) + 1) * 5000;

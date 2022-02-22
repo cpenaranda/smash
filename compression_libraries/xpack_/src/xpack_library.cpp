@@ -36,7 +36,8 @@ bool XpackLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void XpackLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void XpackLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                         uint64_t uncompressed_size,
                                          uint64_t *compressed_size) {
   // There is no way to obtain with Xpack
   *compressed_size = ((uncompressed_size / 5000) + 1) * 5000;

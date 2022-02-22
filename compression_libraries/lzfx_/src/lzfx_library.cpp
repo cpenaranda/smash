@@ -31,7 +31,8 @@ bool LzfxLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void LzfxLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void LzfxLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                        uint64_t uncompressed_size,
                                         uint64_t *compressed_size) {
   // There is no way to obtain with Lzfx
   *compressed_size = ((uncompressed_size / 5000) + 1) * 5000;

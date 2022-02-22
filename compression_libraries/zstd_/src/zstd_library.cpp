@@ -35,7 +35,8 @@ bool ZstdLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void ZstdLibrary::GetCompressedDataSize(uint64_t uncompressed_size,
+void ZstdLibrary::GetCompressedDataSize(char *uncompressed_data,
+                                        uint64_t uncompressed_size,
                                         uint64_t *compressed_size) {
   *compressed_size = ZSTD_compressBound(uncompressed_size);
 }
