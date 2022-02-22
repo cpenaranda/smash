@@ -16,6 +16,7 @@ set(ZLIBNG_VERSION "2.0.2")
 set(ZSTD_VERSION "v1.5.2")
 set(FARI_VERSION "main")
 set(FLZ_VERSION "master")
+set(GIPFELI_VERSION "master")
 
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
@@ -38,6 +39,7 @@ add_subdirectory(zstd_)
 add_subdirectory(lzfx_)
 add_subdirectory(fari_)
 add_subdirectory(flz_)
+add_subdirectory(gipfeli_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -59,6 +61,7 @@ set(SMASH_LIBRARIES
   lzfx
   fari
   flz
+  gipfeli
 )
 
 set(SMASH_INCLUDES
@@ -99,6 +102,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/fari_/FastARI
   ${CMAKE_CURRENT_SOURCE_DIR}/flz_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/flz_/fastlz
+  ${CMAKE_CURRENT_SOURCE_DIR}/gipfeli_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/gipfeli_/gipfeli
 )
 
 set(SMASH_SOURCES
@@ -120,4 +125,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzfx_/src/lzfx_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/fari_/src/fari_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/flz_/src/flz_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/gipfeli_/src/gipfeli_library.cpp
 )
