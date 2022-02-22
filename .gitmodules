@@ -19,8 +19,8 @@
 [submodule "compression_libraries/lzfse_/lzfse"]
 	path = compression_libraries/lzfse_/lzfse
 	url = https://github.com/lzfse/lzfse.git
-[submodule "compression_libraries/xz_/xz"]
-	path = compression_libraries/xz_/xz
+[submodule "compression_libraries/lzma_/xz"]
+	path = compression_libraries/lzma_/xz
 	url = https://git.tukaani.org/xz.git
 [submodule "compression_libraries/lzo_/lzo"]
 	path = compression_libraries/lzo_/lzo
