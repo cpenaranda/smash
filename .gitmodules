@@ -55,3 +55,6 @@
 [submodule "compression_libraries/lzf_/liblzf"]
 	path = compression_libraries/lzf_/liblzf
 	url = https://github.com/nemequ/liblzf.git
+[submodule "compression_libraries/lzjb_/lzjb"]
+	path = compression_libraries/lzjb_/lzjb
+	url = https://github.com/nemequ/lzjb.git
