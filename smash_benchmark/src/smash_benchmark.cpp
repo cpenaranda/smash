@@ -424,19 +424,19 @@ const uint16_t size_row_mode = 17;
 const uint16_t size_row_factor = 6;
 const uint16_t size_row_shuffle = 10;
 const uint16_t size_row_threads = 10;
-uint16_t size_rows_original_data = 16;
-uint16_t size_rows_packed_data = 14;
+const uint16_t size_rows_original_data = 16;
+const uint16_t size_rows_packed_data = 14;
 const uint16_t size_rows_ratio = 9;
 const uint16_t size_rows_compress = 14;
 const uint16_t size_rows_decompress = 14;
 const uint16_t size_rows_total = 14;
 
 void ShowTitle(const uint64_t &size) {
-  size_rows_original_data =
+  *const_cast<uint16_t *>(&size_rows_original_data) =
       (size_rows_original_data < (std::to_string(size).size() + 9))
           ? std::to_string(size).size() + 9
           : size_rows_original_data;
-  size_rows_packed_data =
+  *const_cast<uint16_t *>(&size_rows_packed_data) =
       (size_rows_packed_data < (std::to_string(size).size() + 9))
           ? std::to_string(size).size() + 9
           : size_rows_packed_data;
@@ -781,16 +781,18 @@ int main(int argc, char *argv[]) {
         RemoveMemories(uncompressed_data, compressed_data, decompressed_data);
       }
     }
-    ShowTitle(uncompressed_size);
-    if (!best_options) {
-      best_result_number = results.size();
-    } else {
-      std::sort(results.begin(), results.end());
-    }
-    while (best_result_number && !results.empty()) {
-      std::cout << results.back().message_;
-      results.pop_back();
-      --best_result_number;
+    if (!results.empty()) {
+      ShowTitle(uncompressed_size);
+      if (!best_options) {
+        best_result_number = results.size();
+      } else {
+        std::sort(results.begin(), results.end());
+      }
+      while (best_result_number && !results.empty()) {
+        std::cout << results.back().message_;
+        results.pop_back();
+        --best_result_number;
+      }
     }
   }
   return result;

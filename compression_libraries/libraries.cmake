@@ -19,6 +19,7 @@ set(FLZ_VERSION "master")
 set(GIPFELI_VERSION "master")
 set(LZF_VERSION "master")
 set(LZJB_VERSION "master")
+set(WFLZ_VERSION "master")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -45,6 +46,7 @@ add_subdirectory(gipfeli_)
 add_subdirectory(lzf_)
 add_subdirectory(lzjb_)
 add_subdirectory(quicklz_)
+add_subdirectory(wflz_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -70,6 +72,7 @@ set(SMASH_LIBRARIES
   lzf
   lzjb
   quicklz
+  wflz
 )
 
 set(SMASH_INCLUDES
@@ -118,6 +121,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzjb_/lzjb
   ${CMAKE_CURRENT_SOURCE_DIR}/quicklz_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/quicklz_/quicklz
+  ${CMAKE_CURRENT_SOURCE_DIR}/wflz_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/wflz_/wflz
 )
 
 set(SMASH_SOURCES
@@ -143,4 +148,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzf_/src/lzf_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzjb_/src/lzjb_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/quicklz_/src/quicklz_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/wflz_/src/wflz_library.cpp
 )

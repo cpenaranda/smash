@@ -58,3 +58,6 @@
 [submodule "compression_libraries/lzjb_/lzjb"]
 	path = compression_libraries/lzjb_/lzjb
 	url = https://github.com/nemequ/lzjb.git
+[submodule "compression_libraries/wflz_/wflz"]
+	path = compression_libraries/wflz_/wflz
+	url = https://github.com/ShaneYCG/wflz.git
