@@ -21,6 +21,7 @@ set(LZF_VERSION "master")
 set(LZJB_VERSION "master")
 set(WFLZ_VERSION "master")
 set(YALZ77_VERSION "master")
+set(ZPAQ_VERSION "7.15")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -49,6 +50,7 @@ add_subdirectory(lzjb_)
 add_subdirectory(quicklz_)
 add_subdirectory(wflz_)
 add_subdirectory(yalz77_)
+add_subdirectory(zpaq_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -76,6 +78,7 @@ set(SMASH_LIBRARIES
   quicklz
   wflz
   yalz77
+  zpaq
 )
 
 set(SMASH_INCLUDES
@@ -128,6 +131,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/wflz_/wflz
   ${CMAKE_CURRENT_SOURCE_DIR}/yalz77_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/yalz77_/
+  ${CMAKE_CURRENT_SOURCE_DIR}/zpaq_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/zpaq_/zpaq
 )
 
 set(SMASH_SOURCES
@@ -155,4 +160,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/quicklz_/src/quicklz_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/wflz_/src/wflz_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/yalz77_/src/yalz77_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/zpaq_/src/zpaq_library.cpp
 )

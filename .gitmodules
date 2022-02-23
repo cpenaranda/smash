@@ -64,3 +64,6 @@
 [submodule "compression_libraries/yalz77_/yalz77"]
 	path = compression_libraries/yalz77_/yalz77
 	url = https://bitbucket.org/tkatchev/yalz77.git
+[submodule "compression_libraries/zpaq_/zpaq"]
+	path = compression_libraries/zpaq_/zpaq
+	url = https://github.com/zpaq/zpaq.git

@@ -33,6 +33,7 @@
 #include <yalz77_library.hpp>
 #include <zlib-ng_library.hpp>
 #include <zlib_library.hpp>
+#include <zpaq_library.hpp>
 #include <zstd_library.hpp>
 
 CompressionLibrary *CompressionLibraries::GetCompressionLibrary(
@@ -86,6 +87,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["yalz77"] = []() { return new Yalz77Library(); };
   map_["zlib"] = []() { return new ZlibLibrary(); };
   map_["zlib-ng"] = []() { return new ZlibNgLibrary(); };
+  map_["zpaq"] = []() { return new ZpaqLibrary(); };
   map_["zstd"] = []() { return new ZstdLibrary(); };
 }
 
