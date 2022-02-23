@@ -61,3 +61,6 @@
 [submodule "compression_libraries/wflz_/wflz"]
 	path = compression_libraries/wflz_/wflz
 	url = https://github.com/ShaneYCG/wflz.git
+[submodule "compression_libraries/yalz77_/yalz77"]
+	path = compression_libraries/yalz77_/yalz77
+	url = https://bitbucket.org/tkatchev/yalz77.git
