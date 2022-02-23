@@ -780,6 +780,7 @@ int main(int argc, char *argv[]) {
         }
         RemoveMemories(uncompressed_data, compressed_data, decompressed_data);
       }
+      delete lib;
     }
     if (!results.empty()) {
       ShowTitle(uncompressed_size);
