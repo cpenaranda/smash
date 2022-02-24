@@ -79,17 +79,17 @@ void PrintLine(std::string l_message, std::string r_message,
 
 void ShowMessage(const std::string &exe) {
   std::cout << "To run the specific library: " << std::endl;
-  std::cout << " " << exe << " -c <library_name> -f <name_file>" << std::endl
+  std::cout << " " << exe << " -c <library_name> -i <name_file>" << std::endl
             << std::endl;
   std::cout << "Arguments availables:" << std::endl << std::endl;
   PrintLine("-h, --help", "Show this message");
+  PrintLine("-h, --help <library_name>",
+            "Show information about a specific library");
   PrintLine("-a, --available_libraries",
             "Show a list of the available libraries");
-  PrintLine("-i, --information <library_name>",
-            "Show information about a specific library");
   PrintLine("-c, --compression_library <library_name>",
             "Library name to use in compression/decompression");
-  PrintLine("-f, --file <file_name>", "File name to compress");
+  PrintLine("-i, --input_file <file_name>", "File name to compress");
   PrintLine("-o, --output_file <file_name>",
             "File name where the compress data is stored");
   PrintLine("-b, --best_effort",
@@ -101,14 +101,14 @@ void ShowMessage(const std::string &exe) {
       "1: Compression time", "2: Decompression time", "3: Total time");
   PrintLine("-l, --level <number>", "Compression level to use",
             "Values depend of different libraries (1 by default)");
-  PrintLine("-w, --window <number>", "Set window size",
+  PrintLine("-s, --window_size <number>", "Set window size",
             "Values depend of different libraries (15 by default)");
   PrintLine("-m, --mode <number>", "Specifies the mode used",
             "Values depend of different libraries (0 by default)");
-  PrintLine("-wf, --work_factor <number>",
+  PrintLine("-w, --work_factor <number>",
             "Controls how the compression works with repetitive data",
             "Values depend of different libraries (30 by default)");
-  PrintLine("-s, --shuffle <number>", "Shuffle filter applied",
+  PrintLine("-f, --flags <number>", "Flags to use",
             "Values depend of different libraries (0 by default)");
   PrintLine("-t, --threads <number>",
             "Threads used in algorithms (1 by default)",
@@ -141,10 +141,10 @@ void ShowLibraryInformation(const std::string &library_name,
     Smash lib(lib_name);
     lib.GetTitle();
     std::cout << "To run the smash benchmark: " << std::endl;
-    std::cout << " " << exe << " -c " << lib_name << " -f <name_file>"
+    std::cout << " " << exe << " -c " << lib_name << " -i <name_file>"
               << std::endl
               << std::endl;
-    PrintLine("-f, --file <file_name>", "File name to compress");
+    PrintLine("-i, --input_file <file_name>", "File name to compress");
     PrintLine("-o, --output_file <file_name>",
               "File name where the compress data is stored");
     std::vector<std::string> information;
@@ -155,7 +155,7 @@ void ShowLibraryInformation(const std::string &library_name,
     }
     lib.GetWindowSizeInformation(&information);
     if (!information.empty()) {
-      PrintLine("-w, --window <number>", "Set window size (15 by default)",
+      PrintLine("-s, --window_size <number>", "Set window size (15 by default)",
                 information);
     }
     lib.GetModeInformation(&information);
@@ -166,15 +166,15 @@ void ShowLibraryInformation(const std::string &library_name,
     lib.GetWorkFactorInformation(&information);
     if (!information.empty()) {
       PrintLine(
-          "-wf, --work_factor <number>",
+          "-w, --work_factor <number>",
           "Controls how the compression works with repetitive data (30 by "
           "default)",
           information);
     }
     lib.GetShuffleInformation(&information);
     if (!information.empty()) {
-      PrintLine("-s, --shuffle <number>",
-                "Shuffle filter applied (0 by default)", information);
+      PrintLine("-f, --flags <number>", "Flags to use (0 by default)",
+                information);
     }
     lib.GetNumberThreadsInformation(&information);
     if (!information.empty()) {
@@ -203,20 +203,16 @@ bool GetParams(const int &number_params, const char *const params[],
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (Check(params[n], "-h", "--help")) {
-      ShowMessage(params[0]);
+      if (n + 1 < number_params &&
+          std::string(params[n + 1]).find("-") == std::string::npos) {
+        ShowLibraryInformation(params[n + 1], params[0]);
+      } else {
+        ShowMessage(params[0]);
+      }
       exit(EXIT_SUCCESS);
     } else if (Check(params[n], "-a", "--available_libraries")) {
       ListCompressionLibraries();
       exit(EXIT_SUCCESS);
-    } else if (Check(params[n], "-i", "--information")) {
-      ++n;
-      if (n < number_params) {
-        ShowLibraryInformation(params[n], params[0]);
-        exit(EXIT_SUCCESS);
-      } else {
-        error = true;
-      }
-      end = true;
     } else if (Check(params[n], "-c", "--compression_library")) {
       ++n;
       if (n < number_params && compression_library_name->empty()) {
@@ -224,7 +220,7 @@ bool GetParams(const int &number_params, const char *const params[],
       } else {
         error = end = true;
       }
-    } else if (Check(params[n], "-f", "--file")) {
+    } else if (Check(params[n], "-i", "--input_file")) {
       ++n;
       if (n < number_params && input_file_name->empty()) {
         *input_file_name = params[n];
@@ -246,7 +242,7 @@ bool GetParams(const int &number_params, const char *const params[],
       } else {
         error = end = true;
       }
-    } else if (Check(params[n], "-w", "--window")) {
+    } else if (Check(params[n], "-s", "--window_size")) {
       ++n;
       if (n < number_params && !window_size_set) {
         opt->SetWindowSize(atoi(params[n]));
@@ -262,7 +258,7 @@ bool GetParams(const int &number_params, const char *const params[],
       } else {
         error = end = true;
       }
-    } else if (Check(params[n], "-wf", "--work_factor")) {
+    } else if (Check(params[n], "-w", "--work_factor")) {
       ++n;
       if (n < number_params && !work_factor_set) {
         opt->SetWorkFactor(atoi(params[n]));
@@ -270,7 +266,7 @@ bool GetParams(const int &number_params, const char *const params[],
       } else {
         error = end = true;
       }
-    } else if (Check(params[n], "-s", "--shuffle")) {
+    } else if (Check(params[n], "-f", "--flags")) {
       ++n;
       if (n < number_params && !shuffle_set) {
         opt->SetShuffle(atoi(params[n]));
