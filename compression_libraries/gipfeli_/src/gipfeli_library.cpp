@@ -60,8 +60,8 @@ bool GipfeliLibrary::Compress(char *uncompressed_data,
                               uint64_t *compressed_size) {
   bool result{initialized_compressor_};
   if (result) {
-    uint64_t real_compressed_size =
-        compressor_->RawCompress(uncompressed_data, compressed_data);
+    uint64_t real_compressed_size = compressor_->RawCompress(
+        std::string(uncompressed_data, uncompressed_size), compressed_data);
     if (real_compressed_size > *compressed_size) {
       std::cout << "ERROR: gipfeli error when compress data" << std::endl;
       result = false;
