@@ -26,6 +26,7 @@ set(LZHAM_VERSION "master")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
+set(Z3LIB_URL "https://scara.com/~schirmer/o/z3lib/z3lib-1.3.tar.gz")
 
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
@@ -53,6 +54,7 @@ add_subdirectory(wflz_)
 add_subdirectory(yalz77_)
 add_subdirectory(zpaq_)
 add_subdirectory(lzham_)
+add_subdirectory(z3lib_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -82,6 +84,7 @@ set(SMASH_LIBRARIES
   yalz77
   zpaq
   lzhamdll
+  z3lib
 )
 
 set(SMASH_INCLUDES
@@ -140,6 +143,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzham_/lzham_codec_devel/include
   ${CMAKE_CURRENT_SOURCE_DIR}/lzham_/lzham_codec_devel/lzhamcomp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzham_/lzham_codec_devel/lzhamdecomp
+  ${CMAKE_CURRENT_SOURCE_DIR}/z3lib_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/z3lib_/z3lib
 )
 
 set(SMASH_SOURCES
@@ -169,4 +174,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/yalz77_/src/yalz77_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/zpaq_/src/zpaq_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzham_/src/lzham_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/z3lib_/src/z3lib_library.cpp
 )

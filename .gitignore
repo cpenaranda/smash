@@ -50,3 +50,5 @@ nbproject
 .nfs*
 compression_libraries/lzfx_/lzfx-0.1.tar.gz
 compression_libraries/lzfx_/lzfx
+compression_libraries/z3lib_/z3lib-1.3.tar.gz
+compression_libraries/z3lib_/z3lib

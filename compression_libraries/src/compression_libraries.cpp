@@ -32,6 +32,7 @@
 #include <wflz_library.hpp>
 #include <xpack_library.hpp>
 #include <yalz77_library.hpp>
+#include <z3lib_library.hpp>
 #include <zlib-ng_library.hpp>
 #include <zlib_library.hpp>
 #include <zpaq_library.hpp>
@@ -87,6 +88,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["wflz"] = []() { return new WflzLibrary(); };
   map_["xpack"] = []() { return new XpackLibrary(); };
   map_["yalz77"] = []() { return new Yalz77Library(); };
+  map_["z3lib"] = []() { return new Z3libLibrary(); };
   map_["zlib"] = []() { return new ZlibLibrary(); };
   map_["zlib-ng"] = []() { return new ZlibNgLibrary(); };
   map_["zpaq"] = []() { return new ZpaqLibrary(); };
