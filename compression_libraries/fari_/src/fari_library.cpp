@@ -85,8 +85,10 @@ bool FariLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
         reinterpret_cast<unsigned char *>(compressed_data),
         reinterpret_cast<unsigned char *>(decompressed_data), compressed_size,
         decompressed_size, work_mem_decompression_);
-    if (fari_result) {
-      std::cout << "ERROR: fari error when decompress data" << std::endl;
+    // It could return 2 because we incremente the uncompressed size by 1 to fix
+    // a fari error where the last byte is not compressed
+    if (fari_result != 2 && fari_result) {
+      std::cout << "ERROR: fari error when decompress datas" << std::endl;
       result = false;
     }
   }
