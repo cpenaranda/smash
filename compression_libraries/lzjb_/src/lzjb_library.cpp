@@ -66,7 +66,7 @@ bool LzjbLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
         lzjb_decompress(reinterpret_cast<uint8_t *>(compressed_data),
                         reinterpret_cast<uint8_t *>(decompressed_data),
                         compressed_size, decompressed_size);
-    if (lzjb_result == LZJB_OK) {
+    if (lzjb_result != LZJB_OK) {
       std::cout << "ERROR: lzjb error when decompress data" << std::endl;
       result = false;
     }
