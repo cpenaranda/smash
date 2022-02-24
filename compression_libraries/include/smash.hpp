@@ -60,9 +60,9 @@ class Smash {
       std::vector<std::string> *work_factor_information = nullptr,
       uint8_t *minimum_factor = nullptr, uint8_t *maximum_factor = nullptr);
 
-  bool GetShuffleInformation(
-      std::vector<std::string> *shuffle_information = nullptr,
-      uint8_t *minimum_shuffle = nullptr, uint8_t *maximum_shuffle = nullptr);
+  bool GetFlagsInformation(
+      std::vector<std::string> *flags_information = nullptr,
+      uint8_t *minimum_flags = nullptr, uint8_t *maximum_flags = nullptr);
 
   bool GetNumberThreadsInformation(
       std::vector<std::string> *number_threads_information = nullptr,
@@ -70,7 +70,7 @@ class Smash {
 
   std::string GetModeName(const uint8_t &mode);
 
-  std::string GetShuffleName(const uint8_t &shuffle);
+  std::string GetFlagsName(const uint8_t &flags);
 
   explicit Smash(const std::string &compression_library_name);
 

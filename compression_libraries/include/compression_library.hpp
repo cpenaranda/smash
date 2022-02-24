@@ -61,19 +61,17 @@ class CompressionLibrary {
       std::vector<std::string> *work_factor_information = nullptr,
       uint8_t *minimum_factor = nullptr, uint8_t *maximum_factor = nullptr);
 
-  virtual bool GetShuffleInformation(
-      std::vector<std::string> *shuffle_information = nullptr,
-      uint8_t *minimum_shuffle = nullptr,
-      uint8_t *maximum_shuffle = nullptr);
+  virtual bool GetFlagsInformation(
+      std::vector<std::string> *flags_information = nullptr,
+      uint8_t *minimum_flags = nullptr, uint8_t *maximum_flags = nullptr);
 
   virtual bool GetNumberThreadsInformation(
       std::vector<std::string> *number_threads_information = nullptr,
-      uint8_t *minimum_threads = nullptr,
-      uint8_t *maximum_threads = nullptr);
+      uint8_t *minimum_threads = nullptr, uint8_t *maximum_threads = nullptr);
 
   virtual std::string GetModeName(const uint8_t &mode);
 
-  virtual std::string GetShuffleName(const uint8_t &shuffle);
+  virtual std::string GetFlagsName(const uint8_t &flags);
 
   void GetTitle(const std::string &library_name,
                 const std::string &description);
@@ -90,8 +88,8 @@ class CompressionLibrary {
   bool CheckWorkFactor(std::string library_name, uint8_t work_factor,
                        uint8_t minimum_factor, uint8_t maximum_factor);
 
-  bool CheckShuffle(std::string library_name, uint8_t shuffle,
-                    uint8_t minimum_shuffle, uint8_t maximum_shuffle);
+  bool CheckFlags(std::string library_name, uint8_t flags,
+                  uint8_t minimum_flags, uint8_t maximum_flags);
 
   bool CheckNumberThreads(std::string library_name, uint8_t number_threads,
                           uint8_t minimum_threads, uint8_t maximum_threads);

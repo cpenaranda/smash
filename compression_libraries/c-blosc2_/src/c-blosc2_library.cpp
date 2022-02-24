@@ -18,8 +18,8 @@ bool CBlosc2Library::CheckOptions(const Options &options,
   result = CompressionLibrary::CheckNumberThreads(
       "c-blosc2", options.GetNumberThreads(), 1, 8);
   if (compressor && result) {
-    result = CompressionLibrary::CheckShuffle("c-blosc2", options.GetShuffle(),
-                                              0, 2);
+    result =
+        CompressionLibrary::CheckFlags("c-blosc2", options.GetFlags(), 0, 2);
     if (result) {
       result = CompressionLibrary::CheckCompressionLevel(
           "c-blosc2", options.GetCompressionLevel(), 0, 9);
@@ -69,7 +69,7 @@ bool CBlosc2Library::Compress(char *uncompressed_data,
   bool result{initialized_compressor_};
   if (result) {
     int csize =
-        blosc_compress(options_.GetCompressionLevel(), options_.GetShuffle(),
+        blosc_compress(options_.GetCompressionLevel(), options_.GetFlags(),
                        sizeof(char), uncompressed_size, uncompressed_data,
                        compressed_data, *compressed_size);
     if (csize == 0 || csize < 0) {
@@ -123,18 +123,18 @@ bool CBlosc2Library::GetCompressionLevelInformation(
   return true;
 }
 
-bool CBlosc2Library::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
-    uint8_t *maximum_shuffle) {
-  if (minimum_shuffle) *minimum_shuffle = 0;
-  if (maximum_shuffle) *maximum_shuffle = 2;
-  if (shuffle_information) {
-    shuffle_information->clear();
-    shuffle_information->push_back("Available values [0-2]");
-    shuffle_information->push_back("0: " + shuffles_[0]);
-    shuffle_information->push_back("1: " + shuffles_[1]);
-    shuffle_information->push_back("2: " + shuffles_[2]);
-    shuffle_information->push_back("[compression]");
+bool CBlosc2Library::GetFlagsInformation(
+    std::vector<std::string> *flags_information, uint8_t *minimum_flags,
+    uint8_t *maximum_flags) {
+  if (minimum_flags) *minimum_flags = 0;
+  if (maximum_flags) *maximum_flags = 2;
+  if (flags_information) {
+    flags_information->clear();
+    flags_information->push_back("Available values [0-2]");
+    flags_information->push_back("0: " + flags_[0]);
+    flags_information->push_back("1: " + flags_[1]);
+    flags_information->push_back("2: " + flags_[2]);
+    flags_information->push_back("[compression]");
   }
   return true;
 }
@@ -152,23 +152,23 @@ bool CBlosc2Library::GetNumberThreadsInformation(
   return true;
 }
 
-std::string CBlosc2Library::GetShuffleName(const uint8_t &shuffle) {
+std::string CBlosc2Library::GetFlagsName(const uint8_t &flags) {
   std::string result = "ERROR";
-  if (shuffle < number_of_shuffles_) {
-    result = shuffles_[shuffle];
+  if (flags < number_of_flags_) {
+    result = flags_[flags];
   }
   return result;
 }
 
 CBlosc2Library::CBlosc2Library() {
-  number_of_shuffles_ = 3;
-  shuffles_ = new std::string[number_of_shuffles_];
-  shuffles_[0] = "None";
-  shuffles_[1] = "Byte";
-  shuffles_[2] = "Bit";
+  number_of_flags_ = 3;
+  flags_ = new std::string[number_of_flags_];
+  flags_[0] = "None";
+  flags_[1] = "Byte";
+  flags_[2] = "Bit";
 }
 
 CBlosc2Library::~CBlosc2Library() {
   if (initialized_compressor_ || initialized_decompressor_) blosc_destroy();
-  delete[] shuffles_;
+  delete[] flags_;
 }

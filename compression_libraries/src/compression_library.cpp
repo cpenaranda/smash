@@ -87,12 +87,12 @@ bool CompressionLibrary::GetWorkFactorInformation(
   return false;
 }
 
-bool CompressionLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
-    uint8_t *maximum_shuffle) {
-  if (minimum_shuffle) *minimum_shuffle = 0;
-  if (maximum_shuffle) *maximum_shuffle = 0;
-  if (shuffle_information) shuffle_information->clear();
+bool CompressionLibrary::GetFlagsInformation(
+    std::vector<std::string> *flags_information, uint8_t *minimum_flags,
+    uint8_t *maximum_flags) {
+  if (minimum_flags) *minimum_flags = 0;
+  if (maximum_flags) *maximum_flags = 0;
+  if (flags_information) flags_information->clear();
   return false;
 }
 
@@ -109,7 +109,7 @@ std::string CompressionLibrary::GetModeName(const uint8_t &mode) {
   return "------------";
 }
 
-std::string CompressionLibrary::GetShuffleName(const uint8_t &shuffle) {
+std::string CompressionLibrary::GetFlagsName(const uint8_t &flags) {
   return "------------";
 }
 
@@ -195,18 +195,18 @@ bool CompressionLibrary::CheckWorkFactor(std::string library_name,
   return result;
 }
 
-bool CompressionLibrary::CheckShuffle(std::string library_name, uint8_t shuffle,
-                                      uint8_t minimum_shuffle,
-                                      uint8_t maximum_shuffle) {
+bool CompressionLibrary::CheckFlags(std::string library_name, uint8_t flags,
+                                      uint8_t minimum_flags,
+                                      uint8_t maximum_flags) {
   bool result{true};
-  if (minimum_shuffle > 0 && shuffle < minimum_shuffle) {
-    std::cout << "ERROR: Shuffle can not be lower than "
-              << static_cast<uint64_t>(minimum_shuffle) << " using "
+  if (minimum_flags > 0 && flags < minimum_flags) {
+    std::cout << "ERROR: Flags can not be lower than "
+              << static_cast<uint64_t>(minimum_flags) << " using "
               << library_name << std::endl;
     result = false;
-  } else if (maximum_shuffle > 0 && shuffle > maximum_shuffle) {
-    std::cout << "ERROR: Shuffle can not be higher than "
-              << static_cast<uint64_t>(maximum_shuffle) << " using "
+  } else if (maximum_flags > 0 && flags > maximum_flags) {
+    std::cout << "ERROR: Flags can not be higher than "
+              << static_cast<uint64_t>(maximum_flags) << " using "
               << library_name << std::endl;
     result = false;
   }

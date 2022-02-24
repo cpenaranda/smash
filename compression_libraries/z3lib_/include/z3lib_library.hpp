@@ -18,8 +18,8 @@
 
 class Z3libLibrary : public CompressionLibrary {
  private:
-  uint8_t number_of_shuffles_;
-  std::string *shuffles_;
+  uint8_t number_of_flags_;
+  std::string *flags_;
 
  public:
   bool CheckOptions(const Options &options, const bool &compressor);
@@ -32,11 +32,11 @@ class Z3libLibrary : public CompressionLibrary {
 
   void GetTitle();
 
-  bool GetShuffleInformation(
-      std::vector<std::string> *shuffle_information = nullptr,
-      uint8_t *minimum_shuffle = nullptr, uint8_t *maximum_shuffle = nullptr);
+  bool GetFlagsInformation(
+      std::vector<std::string> *flags_information = nullptr,
+      uint8_t *minimum_flags = nullptr, uint8_t *maximum_flags = nullptr);
 
-  std::string GetShuffleName(const uint8_t &shuffle);
+  std::string GetFlagsName(const uint8_t &flags);
 
   Z3libLibrary();
   ~Z3libLibrary();

@@ -82,11 +82,11 @@ bool Smash::GetWorkFactorInformation(
                                        maximum_factor);
 }
 
-bool Smash::GetShuffleInformation(std::vector<std::string> *shuffle_information,
-                                  uint8_t *minimum_shuffle,
-                                  uint8_t *maximum_shuffle) {
-  return lib->GetShuffleInformation(shuffle_information, minimum_shuffle,
-                                    maximum_shuffle);
+bool Smash::GetFlagsInformation(std::vector<std::string> *flags_information,
+                                uint8_t *minimum_flags,
+                                uint8_t *maximum_flags) {
+  return lib->GetFlagsInformation(flags_information, minimum_flags,
+                                  maximum_flags);
 }
 
 bool Smash::GetNumberThreadsInformation(
@@ -100,8 +100,8 @@ std::string Smash::GetModeName(const uint8_t &mode) {
   return lib->GetModeName(mode);
 }
 
-std::string Smash::GetShuffleName(const uint8_t &shuffle) {
-  return lib->GetShuffleName(shuffle);
+std::string Smash::GetFlagsName(const uint8_t &flags) {
+  return lib->GetFlagsName(flags);
 }
 
 Smash::Smash(const std::string &compression_library_name) {

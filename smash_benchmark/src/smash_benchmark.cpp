@@ -171,7 +171,7 @@ void ShowLibraryInformation(const std::string &library_name,
           "default)",
           information);
     }
-    lib.GetShuffleInformation(&information);
+    lib.GetFlagsInformation(&information);
     if (!information.empty()) {
       PrintLine("-f, --flags <number>", "Flags to use (0 by default)",
                 information);
@@ -196,7 +196,7 @@ bool GetParams(const int &number_params, const char *const params[],
   bool window_size_set{false};
   bool mode_set{false};
   bool work_factor_set{false};
-  bool shuffle_set{false};
+  bool flags_set{false};
   bool threads_set{false};
   bool best_effort_set{false};
   bool best_set{false};
@@ -268,9 +268,9 @@ bool GetParams(const int &number_params, const char *const params[],
       }
     } else if (Check(params[n], "-f", "--flags")) {
       ++n;
-      if (n < number_params && !shuffle_set) {
-        opt->SetShuffle(atoi(params[n]));
-        shuffle_set = true;
+      if (n < number_params && !flags_set) {
+        opt->SetFlags(atoi(params[n]));
+        flags_set = true;
       } else {
         error = end = true;
       }
@@ -418,7 +418,7 @@ const uint16_t size_row_level = 8;
 const uint16_t size_row_window = 9;
 const uint16_t size_row_mode = 17;
 const uint16_t size_row_factor = 6;
-const uint16_t size_row_shuffle = 16;
+const uint16_t size_row_flags = 16;
 const uint16_t size_row_threads = 10;
 const uint16_t size_rows_original_data = 16;
 const uint16_t size_rows_packed_data = 14;
@@ -446,8 +446,8 @@ void ShowTitle(const uint64_t &size) {
             << "| Mode";
   std::cout << std::left << std::setw(size_row_factor) << std::setfill(' ')
             << "| WF";
-  std::cout << std::left << std::setw(size_row_shuffle) << std::setfill(' ')
-            << "| Shuffle";
+  std::cout << std::left << std::setw(size_row_flags) << std::setfill(' ')
+            << "| Flags";
   std::cout << std::left << std::setw(size_row_threads) << std::setfill(' ')
             << "| Threads";
   std::cout << std::left << std::setw(size_rows_original_data)
@@ -467,7 +467,7 @@ void ShowTitle(const uint64_t &size) {
 
   std::cout << std::left
             << std::setw(size_row_library + size_row_level + size_row_window +
-                         size_row_mode + size_row_factor + size_row_shuffle +
+                         size_row_mode + size_row_factor + size_row_flags +
                          size_row_threads + size_rows_original_data +
                          size_rows_packed_data + size_rows_ratio +
                          size_rows_compress + size_rows_decompress +
@@ -534,11 +534,11 @@ std::string ShowResult(Smash *lib, const std::string &library_name, Options opt,
            << " ";
   }
 
-  if (lib->GetShuffleInformation()) {
-    result << std::left << std::setw(size_row_shuffle) << std::setfill(' ')
-           << "| " + lib->GetShuffleName(opt.GetShuffle());
+  if (lib->GetFlagsInformation()) {
+    result << std::left << std::setw(size_row_flags) << std::setfill(' ')
+           << "| " + lib->GetFlagsName(opt.GetFlags());
   } else {
-    result << std::left << std::setw(size_row_shuffle - 1) << std::setfill('-')
+    result << std::left << std::setw(size_row_flags - 1) << std::setfill('-')
            << "| "
            << " ";
   }
@@ -583,15 +583,14 @@ void SetNumberThreads(Smash *lib, std::vector<Options> *options,
   } while (min_threads <= max_threads);
 }
 
-void SetShuffle(Smash *lib, std::vector<Options> *options, Options *option) {
-  uint8_t min_shuffle{0}, max_shuffle{0};
-  bool set_value =
-      lib->GetShuffleInformation(nullptr, &min_shuffle, &max_shuffle);
+void SetFlags(Smash *lib, std::vector<Options> *options, Options *option) {
+  uint8_t min_flag{0}, max_flag{0};
+  bool set_value = lib->GetFlagsInformation(nullptr, &min_flag, &max_flag);
   do {
-    if (set_value) option->SetShuffle(min_shuffle);
+    if (set_value) option->SetFlags(min_flag);
     SetNumberThreads(lib, options, option);
-    ++min_shuffle;
-  } while (min_shuffle <= max_shuffle);
+    ++min_flag;
+  } while (min_flag <= max_flag);
 }
 
 void SetWorkFactor(Smash *lib, std::vector<Options> *options, Options *option) {
@@ -600,7 +599,7 @@ void SetWorkFactor(Smash *lib, std::vector<Options> *options, Options *option) {
       lib->GetWorkFactorInformation(nullptr, &min_factor, &max_factor);
   do {
     if (set_value) option->SetWorkFactor(min_factor);
-    SetShuffle(lib, options, option);
+    SetFlags(lib, options, option);
     min_factor += 51;
   } while (min_factor <= max_factor);
 }

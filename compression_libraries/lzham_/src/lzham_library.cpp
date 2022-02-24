@@ -21,7 +21,7 @@ bool LzhamLibrary::CheckOptions(const Options &options,
         "lzham", options.GetCompressionLevel(), 0, 4);
     if (result) {
       result =
-          CompressionLibrary::CheckShuffle("lzham", options.GetShuffle(), 0, 7);
+          CompressionLibrary::CheckFlags("lzham", options.GetFlags(), 0, 7);
     }
   }
   return result;
@@ -42,7 +42,7 @@ bool LzhamLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
     params.m_table_update_interval_slow_rate = 0;
     params.m_table_update_rate = 0;
     params.m_table_max_update_interval = 0;
-    params.m_compress_flags = shuffle_values_[options_.GetShuffle()];
+    params.m_compress_flags = flags_values_[options_.GetFlags()];
     params.m_extreme_parsing_max_best_arrivals = 0;
     params.m_fast_bytes = 0;
 
@@ -117,61 +117,59 @@ bool LzhamLibrary::GetWindowSizeInformation(
   return true;
 }
 
-bool LzhamLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
-    uint8_t *maximum_shuffle) {
-  if (minimum_shuffle) *minimum_shuffle = 0;
-  if (maximum_shuffle) *maximum_shuffle = 7;
-  if (shuffle_information) {
-    shuffle_information->clear();
-    shuffle_information->push_back("Available values [0-7]");
-    shuffle_information->push_back("0: " + shuffles_[0]);
-    shuffle_information->push_back("1: " + shuffles_[1] + " parsing");
-    shuffle_information->push_back("2: " + shuffles_[2] + " parsing");
-    shuffle_information->push_back("3: " + shuffles_[3] + " flags");
-    shuffle_information->push_back("4: " + shuffles_[4] +
-                                   " decompression rate for compression ratio");
-    shuffle_information->push_back("5: " + shuffles_[5] + " flags");
-    shuffle_information->push_back("6: " + shuffles_[6] + " flags");
-    shuffle_information->push_back("7: " + shuffles_[7] + " flags");
-    shuffle_information->push_back("[compression]");
+bool LzhamLibrary::GetFlagsInformation(
+    std::vector<std::string> *flags_information, uint8_t *minimum_flags,
+    uint8_t *maximum_flags) {
+  if (minimum_flags) *minimum_flags = 0;
+  if (maximum_flags) *maximum_flags = 7;
+  if (flags_information) {
+    flags_information->clear();
+    flags_information->push_back("Available values [0-7]");
+    flags_information->push_back("0: " + flags_[0]);
+    flags_information->push_back("1: " + flags_[1] + " parsing");
+    flags_information->push_back("2: " + flags_[2] + " parsing");
+    flags_information->push_back("3: " + flags_[3] + " flags");
+    flags_information->push_back("4: " + flags_[4] +
+                                 " decompression rate for compression ratio");
+    flags_information->push_back("5: " + flags_[5] + " flags");
+    flags_information->push_back("6: " + flags_[6] + " flags");
+    flags_information->push_back("7: " + flags_[7] + " flags");
+    flags_information->push_back("[compression]");
   }
   return true;
 }
 
-std::string LzhamLibrary::GetShuffleName(const uint8_t &shuffle) {
+std::string LzhamLibrary::GetFlagsName(const uint8_t &flags) {
   std::string result = "ERROR";
-  if (shuffle < number_of_shuffles_) {
-    result = shuffles_[shuffle];
+  if (flags < number_of_flags_) {
+    result = flags_[flags];
   }
   return result;
 }
 
 LzhamLibrary::LzhamLibrary() {
-  number_of_shuffles_ = 8;
-  shuffles_ = new std::string[number_of_shuffles_];
-  shuffle_values_ = new uint8_t[number_of_shuffles_];
-  shuffles_[0] = "None";
-  shuffle_values_[0] = 0;
-  shuffles_[1] = "Extreme";
-  shuffle_values_[1] = LZHAM_COMP_FLAG_EXTREME_PARSING;
-  shuffles_[2] = "Deterministic";
-  shuffle_values_[2] = LZHAM_COMP_FLAG_DETERMINISTIC_PARSING;
-  shuffles_[3] = "1 & 2";
-  shuffle_values_[3] = shuffle_values_[1] + shuffle_values_[2];
-  shuffles_[4] = "Trade offf";
-  shuffle_values_[4] =
-      LZHAM_COMP_FLAG_TRADEOFF_DECOMPRESSION_RATE_FOR_COMP_RATIO;
-  shuffles_[5] = "1 & 4";
-  shuffle_values_[5] = shuffle_values_[1] + shuffle_values_[4];
-  shuffles_[6] = "2 & 4";
-  shuffle_values_[6] = shuffle_values_[2] + shuffle_values_[4];
-  shuffles_[7] = "1 & 2 & 4";
-  shuffle_values_[7] =
-      shuffle_values_[1] + shuffle_values_[2] + shuffle_values_[4];
+  number_of_flags_ = 8;
+  flags_ = new std::string[number_of_flags_];
+  flags_values_ = new uint8_t[number_of_flags_];
+  flags_[0] = "None";
+  flags_values_[0] = 0;
+  flags_[1] = "Extreme";
+  flags_values_[1] = LZHAM_COMP_FLAG_EXTREME_PARSING;
+  flags_[2] = "Deterministic";
+  flags_values_[2] = LZHAM_COMP_FLAG_DETERMINISTIC_PARSING;
+  flags_[3] = "1 & 2";
+  flags_values_[3] = flags_values_[1] + flags_values_[2];
+  flags_[4] = "Trade offf";
+  flags_values_[4] = LZHAM_COMP_FLAG_TRADEOFF_DECOMPRESSION_RATE_FOR_COMP_RATIO;
+  flags_[5] = "1 & 4";
+  flags_values_[5] = flags_values_[1] + flags_values_[4];
+  flags_[6] = "2 & 4";
+  flags_values_[6] = flags_values_[2] + flags_values_[4];
+  flags_[7] = "1 & 2 & 4";
+  flags_values_[7] = flags_values_[1] + flags_values_[2] + flags_values_[4];
 }
 
 LzhamLibrary::~LzhamLibrary() {
-  delete[] shuffles_;
-  delete[] shuffle_values_;
+  delete[] flags_;
+  delete[] flags_values_;
 }

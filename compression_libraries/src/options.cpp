@@ -23,7 +23,7 @@ void Options::SetWorkFactor(const uint8_t &work_factor) {
   work_factor_ = work_factor;
 }
 
-void Options::SetShuffle(const uint8_t &shuffle) { shuffle_ = shuffle; }
+void Options::SetFlags(const uint8_t &flags) { flags_ = flags; }
 
 void Options::SetNumberThreads(const uint8_t &number_threads) {
   number_threads_ = number_threads;
@@ -37,7 +37,7 @@ uint8_t Options::GetMode() const { return mode_; }
 
 uint8_t Options::GetWorkFactor() const { return work_factor_; }
 
-uint8_t Options::GetShuffle() const { return shuffle_; }
+uint8_t Options::GetFlags() const { return flags_; }
 
 uint8_t Options::GetNumberThreads() const { return number_threads_; }
 
@@ -46,7 +46,7 @@ Options::Options() {
   window_size_ = 15;
   mode_ = 1;
   work_factor_ = 30;
-  shuffle_ = 0;
+  flags_ = 0;
   number_threads_ = 1;
 }
 

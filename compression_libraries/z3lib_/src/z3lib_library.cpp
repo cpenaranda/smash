@@ -20,8 +20,7 @@ bool Z3libLibrary::CheckOptions(const Options &options,
                                 const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result =
-        CompressionLibrary::CheckShuffle("z3lib", options.GetShuffle(), 0, 3);
+    result = CompressionLibrary::CheckFlags("z3lib", options.GetFlags(), 0, 3);
   }
   return result;
 }
@@ -32,15 +31,15 @@ bool Z3libLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   if (result) {
     uint64_t work_memory_size =
         Z3BE_MEMSIZE_MIN +
-        ((options_.GetShuffle() & 2) ? Z3BE_MEMSIZE_EXTRA3 : 0);
+        ((options_.GetFlags() & 2) ? Z3BE_MEMSIZE_EXTRA3 : 0);
     char *work_memory = new char[work_memory_size];
     uint64_t bytes{0};
     uint64_t final_compressed_size{0};
     z3be_weighing weighing;
     uint32_t inpipe;
     z3be_handle *handle =
-        z3be_start(work_memory, work_memory_size, options_.GetShuffle() & 1,
-                   options_.GetShuffle() & 2);
+        z3be_start(work_memory, work_memory_size, options_.GetFlags() & 1,
+                   options_.GetFlags() & 2);
     if (result = handle) {
       while (uncompressed_size) {
         do {
@@ -125,39 +124,39 @@ bool Z3libLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void Z3libLibrary::GetTitle() { CompressionLibrary::GetTitle("z3lib", ""); }
 
-bool Z3libLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
-    uint8_t *maximum_shuffle) {
-  if (minimum_shuffle) *minimum_shuffle = 0;
-  if (maximum_shuffle) *maximum_shuffle = 3;
-  if (shuffle_information) {
-    shuffle_information->clear();
-    shuffle_information->push_back("Available values [0-3]");
-    shuffle_information->push_back("0: " + shuffles_[0]);
-    shuffle_information->push_back("1: " + shuffles_[1] + " match");
-    shuffle_information->push_back(
-        "2: " + shuffles_[2] + " for codes with length 3 and large distance");
-    shuffle_information->push_back("3: " + shuffles_[3] + " flags");
-    shuffle_information->push_back("[compression]");
+bool Z3libLibrary::GetFlagsInformation(
+    std::vector<std::string> *flags_information, uint8_t *minimum_flags,
+    uint8_t *maximum_flags) {
+  if (minimum_flags) *minimum_flags = 0;
+  if (maximum_flags) *maximum_flags = 3;
+  if (flags_information) {
+    flags_information->clear();
+    flags_information->push_back("Available values [0-3]");
+    flags_information->push_back("0: " + flags_[0]);
+    flags_information->push_back("1: " + flags_[1] + " match");
+    flags_information->push_back("2: " + flags_[2] +
+                                 " for codes with length 3 and large distance");
+    flags_information->push_back("3: " + flags_[3] + " flags");
+    flags_information->push_back("[compression]");
   }
   return true;
 }
 
-std::string Z3libLibrary::GetShuffleName(const uint8_t &shuffle) {
+std::string Z3libLibrary::GetFlagsName(const uint8_t &flags) {
   std::string result = "ERROR";
-  if (shuffle < number_of_shuffles_) {
-    result = shuffles_[shuffle];
+  if (flags < number_of_flags_) {
+    result = flags_[flags];
   }
   return result;
 }
 
 Z3libLibrary::Z3libLibrary() {
-  number_of_shuffles_ = 4;
-  shuffles_ = new std::string[number_of_shuffles_];
-  shuffles_[0] = "None";
-  shuffles_[1] = "Prefer longer";
-  shuffles_[2] = "Limit length";
-  shuffles_[3] = "1 & 2";
+  number_of_flags_ = 4;
+  flags_ = new std::string[number_of_flags_];
+  flags_[0] = "None";
+  flags_[1] = "Prefer longer";
+  flags_[2] = "Limit length";
+  flags_[3] = "1 & 2";
 }
 
-Z3libLibrary::~Z3libLibrary() { delete[] shuffles_; }
+Z3libLibrary::~Z3libLibrary() { delete[] flags_; }
