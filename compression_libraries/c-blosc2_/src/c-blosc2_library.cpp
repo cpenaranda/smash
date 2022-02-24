@@ -123,33 +123,6 @@ bool CBlosc2Library::GetCompressionLevelInformation(
   return true;
 }
 
-bool CBlosc2Library::GetWindowSizeInformation(
-    std::vector<std::string> *window_size_information, uint32_t *minimum_size,
-    uint32_t *maximum_size) {
-  if (minimum_size) *minimum_size = 0;
-  if (maximum_size) *maximum_size = 0;
-  if (window_size_information) window_size_information->clear();
-  return false;
-}
-
-bool CBlosc2Library::GetModeInformation(
-    std::vector<std::string> *mode_information, uint8_t *minimum_mode,
-    uint8_t *maximum_mode, const uint8_t &compression_level) {
-  if (minimum_mode) *minimum_mode = 0;
-  if (maximum_mode) *maximum_mode = 0;
-  if (mode_information) mode_information->clear();
-  return false;
-}
-
-bool CBlosc2Library::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
-    uint8_t *maximum_factor) {
-  if (minimum_factor) *minimum_factor = 0;
-  if (maximum_factor) *maximum_factor = 0;
-  if (work_factor_information) work_factor_information->clear();
-  return false;
-}
-
 bool CBlosc2Library::GetShuffleInformation(
     std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
     uint8_t *maximum_shuffle) {
@@ -179,12 +152,8 @@ bool CBlosc2Library::GetNumberThreadsInformation(
   return true;
 }
 
-std::string CBlosc2Library::GetModeName(const uint8_t &mode) {
-  return CompressionLibrary::GetDefaultModeName();
-}
-
 std::string CBlosc2Library::GetShuffleName(const uint8_t &shuffle) {
-  std::string result = CompressionLibrary::GetDefaultShuffleName();
+  std::string result = "ERROR";
   if (shuffle < number_of_shuffles_) {
     result = shuffles_[shuffle];
   }

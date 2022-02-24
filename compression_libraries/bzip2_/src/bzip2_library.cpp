@@ -28,27 +28,6 @@ bool Bzip2Library::CheckOptions(const Options &options,
   return result;
 }
 
-bool Bzip2Library::SetOptionsCompressor(const Options &options) {
-  if (initialized_decompressor_) initialized_decompressor_ = false;
-  initialized_compressor_ = CheckOptions(options, true);
-  if (initialized_compressor_) options_ = options;
-  return initialized_compressor_;
-}
-
-bool Bzip2Library::SetOptionsDecompressor(const Options &options) {
-  if (initialized_compressor_) initialized_compressor_ = false;
-  initialized_decompressor_ = CheckOptions(options, false);
-  if (initialized_decompressor_) options_ = options;
-  return initialized_decompressor_;
-}
-
-void Bzip2Library::GetCompressedDataSize(char *uncompressed_data,
-                                         uint64_t uncompressed_size,
-                                         uint64_t *compressed_size) {
-  // There is no way to obtain with Bzip2
-  *compressed_size = ((uncompressed_size / 5000) + 1) * 5000;
-}
-
 bool Bzip2Library::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                             char *compressed_data, uint64_t *compressed_size) {
   bool result{initialized_compressor_};
@@ -83,12 +62,6 @@ bool Bzip2Library::Decompress(char *compressed_data, uint64_t compressed_size,
   return result;
 }
 
-void Bzip2Library::GetDecompressedDataSize(char *compressed_data,
-                                           uint64_t compressed_size,
-                                           uint64_t *decompressed_size) {
-  // There is no way to obtain with Bzip2
-}
-
 void Bzip2Library::GetTitle() {
   CompressionLibrary::GetTitle(
       "bzip2", "Based on Burrows-Wheeler algorithm and Huffman coding");
@@ -105,15 +78,6 @@ bool Bzip2Library::GetCompressionLevelInformation(
     compression_level_information->push_back("[compression]");
   }
   return true;
-}
-
-bool Bzip2Library::GetWindowSizeInformation(
-    std::vector<std::string> *window_size_information, uint32_t *minimum_size,
-    uint32_t *maximum_size) {
-  if (minimum_size) *minimum_size = 0;
-  if (maximum_size) *maximum_size = 0;
-  if (window_size_information) window_size_information->clear();
-  return false;
 }
 
 bool Bzip2Library::GetModeInformation(
@@ -148,34 +112,12 @@ bool Bzip2Library::GetWorkFactorInformation(
   return true;
 }
 
-bool Bzip2Library::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
-    uint8_t *maximum_shuffle) {
-  if (minimum_shuffle) *minimum_shuffle = 0;
-  if (maximum_shuffle) *maximum_shuffle = 0;
-  if (shuffle_information) shuffle_information->clear();
-  return false;
-}
-
-bool Bzip2Library::GetNumberThreadsInformation(
-    std::vector<std::string> *number_threads_information,
-    uint8_t *minimum_threads, uint8_t *maximum_threads) {
-  if (minimum_threads) *minimum_threads = 0;
-  if (maximum_threads) *maximum_threads = 0;
-  if (number_threads_information) number_threads_information->clear();
-  return false;
-}
-
 std::string Bzip2Library::GetModeName(const uint8_t &mode) {
-  std::string result = CompressionLibrary::GetDefaultModeName();
+  std::string result = "ERROR";
   if (mode < number_of_modes_) {
     result = modes_[mode];
   }
   return result;
-}
-
-std::string Bzip2Library::GetShuffleName(const uint8_t &shuffle) {
-  return CompressionLibrary::GetDefaultShuffleName();
 }
 
 Bzip2Library::Bzip2Library() {

@@ -337,13 +337,6 @@ bool LzoLibrary::SetOptionsDecompressor(const Options &options) {
   return initialized_decompressor_;
 }
 
-void LzoLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                       uint64_t uncompressed_size,
-                                       uint64_t *compressed_size) {
-  // There is no way to obtain with Lzo
-  *compressed_size = ((uncompressed_size / 5000) + 1) * 5000;
-}
-
 bool LzoLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                           char *compressed_data, uint64_t *compressed_size) {
   bool result{initialized_compressor_};
@@ -366,12 +359,6 @@ bool LzoLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
     }
   }
   return result;
-}
-
-void LzoLibrary::GetDecompressedDataSize(char *compressed_data,
-                                         uint64_t compressed_size,
-                                         uint64_t *decompressed_size) {
-  // There is no way to obtain with Lzo
 }
 
 bool LzoLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
@@ -423,15 +410,6 @@ bool LzoLibrary::GetCompressionLevelInformation(
     compression_level_information->push_back("[compression]");
   }
   return true;
-}
-
-bool LzoLibrary::GetWindowSizeInformation(
-    std::vector<std::string> *window_size_information, uint32_t *minimum_size,
-    uint32_t *maximum_size) {
-  if (minimum_size) *minimum_size = 0;
-  if (maximum_size) *maximum_size = 0;
-  if (window_size_information) window_size_information->clear();
-  return false;
 }
 
 bool LzoLibrary::GetModeInformation(std::vector<std::string> *mode_information,
@@ -528,43 +506,12 @@ bool LzoLibrary::GetModeInformation(std::vector<std::string> *mode_information,
   return true;
 }
 
-bool LzoLibrary::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
-    uint8_t *maximum_factor) {
-  if (minimum_factor) *minimum_factor = 0;
-  if (maximum_factor) *maximum_factor = 0;
-  if (work_factor_information) work_factor_information->clear();
-  return false;
-}
-
-bool LzoLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
-    uint8_t *maximum_shuffle) {
-  if (minimum_shuffle) *minimum_shuffle = 0;
-  if (maximum_shuffle) *maximum_shuffle = 0;
-  if (shuffle_information) shuffle_information->clear();
-  return false;
-}
-
-bool LzoLibrary::GetNumberThreadsInformation(
-    std::vector<std::string> *number_threads_information,
-    uint8_t *minimum_threads, uint8_t *maximum_threads) {
-  if (minimum_threads) *minimum_threads = 0;
-  if (maximum_threads) *maximum_threads = 0;
-  if (number_threads_information) number_threads_information->clear();
-  return false;
-}
-
 std::string LzoLibrary::GetModeName(const uint8_t &mode) {
-  std::string result = CompressionLibrary::GetDefaultModeName();
+  std::string result = "ERROR";
   if (mode < number_of_modes_) {
     result = modes_[mode];
   }
   return result;
-}
-
-std::string LzoLibrary::GetShuffleName(const uint8_t &shuffle) {
-  return CompressionLibrary::GetDefaultShuffleName();
 }
 
 LzoLibrary::LzoLibrary() {

@@ -31,20 +31,6 @@ bool BrotliLibrary::CheckOptions(const Options &options,
   return result;
 }
 
-bool BrotliLibrary::SetOptionsCompressor(const Options &options) {
-  if (initialized_decompressor_) initialized_decompressor_ = false;
-  initialized_compressor_ = CheckOptions(options, true);
-  if (initialized_compressor_) options_ = options;
-  return initialized_compressor_;
-}
-
-bool BrotliLibrary::SetOptionsDecompressor(const Options &options) {
-  if (initialized_compressor_) initialized_compressor_ = false;
-  initialized_decompressor_ = CheckOptions(options, false);
-  if (initialized_decompressor_) options_ = options;
-  return initialized_decompressor_;
-}
-
 void BrotliLibrary::GetCompressedDataSize(char *uncompressed_data,
                                           uint64_t uncompressed_size,
                                           uint64_t *compressed_size) {
@@ -67,12 +53,6 @@ bool BrotliLibrary::Compress(char *uncompressed_data,
     }
   }
   return result;
-}
-
-void BrotliLibrary::GetDecompressedDataSize(char *compressed_data,
-                                            uint64_t compressed_size,
-                                            uint64_t *decompressed_size) {
-  // There is no way to obtain with Brotli
 }
 
 bool BrotliLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
@@ -139,43 +119,12 @@ bool BrotliLibrary::GetModeInformation(
   return true;
 }
 
-bool BrotliLibrary::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
-    uint8_t *maximum_factor) {
-  if (minimum_factor) *minimum_factor = 0;
-  if (maximum_factor) *maximum_factor = 0;
-  if (work_factor_information) work_factor_information->clear();
-  return false;
-}
-
-bool BrotliLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
-    uint8_t *maximum_shuffle) {
-  if (minimum_shuffle) *minimum_shuffle = 0;
-  if (maximum_shuffle) *maximum_shuffle = 0;
-  if (shuffle_information) shuffle_information->clear();
-  return false;
-}
-
-bool BrotliLibrary::GetNumberThreadsInformation(
-    std::vector<std::string> *number_threads_information,
-    uint8_t *minimum_threads, uint8_t *maximum_threads) {
-  if (minimum_threads) *minimum_threads = 0;
-  if (maximum_threads) *maximum_threads = 0;
-  if (number_threads_information) number_threads_information->clear();
-  return false;
-}
-
 std::string BrotliLibrary::GetModeName(const uint8_t &mode) {
-  std::string result = CompressionLibrary::GetDefaultModeName();
+  std::string result = "ERROR";
   if (mode < number_of_modes_) {
     result = modes_[mode];
   }
   return result;
-}
-
-std::string BrotliLibrary::GetShuffleName(const uint8_t &shuffle) {
-  return CompressionLibrary::GetDefaultShuffleName();
 }
 
 BrotliLibrary::BrotliLibrary() {

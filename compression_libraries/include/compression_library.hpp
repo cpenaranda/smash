@@ -21,22 +21,22 @@ class CompressionLibrary {
   bool initialized_compressor_;
   bool initialized_decompressor_;
 
-  virtual bool CheckOptions(const Options &options, const bool &compressor) = 0;
+  virtual bool CheckOptions(const Options &options, const bool &compressor);
 
-  virtual bool SetOptionsCompressor(const Options &options) = 0;
+  virtual bool SetOptionsCompressor(const Options &options);
 
-  virtual bool SetOptionsDecompressor(const Options &options) = 0;
+  virtual bool SetOptionsDecompressor(const Options &options);
 
   virtual void GetCompressedDataSize(char *uncompressed_data,
                                      uint64_t uncompressed_size,
-                                     uint64_t *compressed_size) = 0;
+                                     uint64_t *compressed_size);
 
   virtual bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
                         char *compressed_data, uint64_t *compressed_size) = 0;
 
   virtual void GetDecompressedDataSize(char *compressed_data,
                                        uint64_t compressed_size,
-                                       uint64_t *decompressed_size) = 0;
+                                       uint64_t *decompressed_size);
 
   virtual bool Decompress(char *compressed_data, uint64_t compressed_size,
                           char *decompressed_data,
@@ -46,34 +46,34 @@ class CompressionLibrary {
 
   virtual bool GetCompressionLevelInformation(
       std::vector<std::string> *compression_level_information = nullptr,
-      uint8_t *minimum_level = nullptr, uint8_t *maximum_level = nullptr) = 0;
+      uint8_t *minimum_level = nullptr, uint8_t *maximum_level = nullptr);
 
   virtual bool GetWindowSizeInformation(
       std::vector<std::string> *window_size_information = nullptr,
-      uint32_t *minimum_size = nullptr, uint32_t *maximum_size = nullptr) = 0;
+      uint32_t *minimum_size = nullptr, uint32_t *maximum_size = nullptr);
 
   virtual bool GetModeInformation(
       std::vector<std::string> *mode_information = nullptr,
       uint8_t *minimum_mode = nullptr, uint8_t *maximum_mode = nullptr,
-      const uint8_t &compression_level = 0) = 0;
+      const uint8_t &compression_level = 0);
 
   virtual bool GetWorkFactorInformation(
       std::vector<std::string> *work_factor_information = nullptr,
-      uint8_t *minimum_factor = nullptr, uint8_t *maximum_factor = nullptr) = 0;
+      uint8_t *minimum_factor = nullptr, uint8_t *maximum_factor = nullptr);
 
   virtual bool GetShuffleInformation(
       std::vector<std::string> *shuffle_information = nullptr,
       uint8_t *minimum_shuffle = nullptr,
-      uint8_t *maximum_shuffle = nullptr) = 0;
+      uint8_t *maximum_shuffle = nullptr);
 
   virtual bool GetNumberThreadsInformation(
       std::vector<std::string> *number_threads_information = nullptr,
       uint8_t *minimum_threads = nullptr,
-      uint8_t *maximum_threads = nullptr) = 0;
+      uint8_t *maximum_threads = nullptr);
 
-  virtual std::string GetModeName(const uint8_t &mode) = 0;
+  virtual std::string GetModeName(const uint8_t &mode);
 
-  virtual std::string GetShuffleName(const uint8_t &shuffle) = 0;
+  virtual std::string GetShuffleName(const uint8_t &shuffle);
 
   void GetTitle(const std::string &library_name,
                 const std::string &description);
@@ -98,10 +98,6 @@ class CompressionLibrary {
 
   bool CompareData(char *uncompressed_data, const uint64_t &uncompressed_size,
                    char *decompressed_data, const uint64_t &decompressed_size);
-
-  std::string GetDefaultModeName();
-
-  std::string GetDefaultShuffleName();
 
   CompressionLibrary();
   virtual ~CompressionLibrary();

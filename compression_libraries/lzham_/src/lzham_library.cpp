@@ -27,27 +27,6 @@ bool LzhamLibrary::CheckOptions(const Options &options,
   return result;
 }
 
-bool LzhamLibrary::SetOptionsCompressor(const Options &options) {
-  if (initialized_decompressor_) initialized_decompressor_ = false;
-  initialized_compressor_ = CheckOptions(options, true);
-  if (initialized_compressor_) options_ = options;
-  return initialized_compressor_;
-}
-
-bool LzhamLibrary::SetOptionsDecompressor(const Options &options) {
-  if (initialized_compressor_) initialized_compressor_ = false;
-  initialized_decompressor_ = CheckOptions(options, false);
-  if (initialized_decompressor_) options_ = options;
-  return initialized_decompressor_;
-}
-
-void LzhamLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                         uint64_t uncompressed_size,
-                                         uint64_t *compressed_size) {
-  // There is no way to obtain with Lzham
-  *compressed_size = ((uncompressed_size / 5000) + 1) * 5000;
-}
-
 bool LzhamLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                             char *compressed_data, uint64_t *compressed_size) {
   bool result{initialized_compressor_};
@@ -108,12 +87,6 @@ bool LzhamLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
   return result;
 }
 
-void LzhamLibrary::GetDecompressedDataSize(char *compressed_data,
-                                           uint64_t compressed_size,
-                                           uint64_t *decompressed_size) {
-  // There is no way to obtain with Lzham
-}
-
 void LzhamLibrary::GetTitle() {
   CompressionLibrary::GetTitle("lzham", "A lossless data compression codec");
 }
@@ -144,24 +117,6 @@ bool LzhamLibrary::GetWindowSizeInformation(
   return true;
 }
 
-bool LzhamLibrary::GetModeInformation(
-    std::vector<std::string> *mode_information, uint8_t *minimum_mode,
-    uint8_t *maximum_mode, const uint8_t &compression_level) {
-  if (minimum_mode) *minimum_mode = 0;
-  if (maximum_mode) *maximum_mode = 0;
-  if (mode_information) mode_information->clear();
-  return false;
-}
-
-bool LzhamLibrary::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
-    uint8_t *maximum_factor) {
-  if (minimum_factor) *minimum_factor = 0;
-  if (maximum_factor) *maximum_factor = 0;
-  if (work_factor_information) work_factor_information->clear();
-  return false;
-}
-
 bool LzhamLibrary::GetShuffleInformation(
     std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
     uint8_t *maximum_shuffle) {
@@ -184,21 +139,8 @@ bool LzhamLibrary::GetShuffleInformation(
   return true;
 }
 
-bool LzhamLibrary::GetNumberThreadsInformation(
-    std::vector<std::string> *number_threads_information,
-    uint8_t *minimum_threads, uint8_t *maximum_threads) {
-  if (minimum_threads) *minimum_threads = 0;
-  if (maximum_threads) *maximum_threads = 0;
-  if (number_threads_information) number_threads_information->clear();
-  return false;
-}
-
-std::string LzhamLibrary::GetModeName(const uint8_t &mode) {
-  return CompressionLibrary::GetDefaultModeName();
-}
-
 std::string LzhamLibrary::GetShuffleName(const uint8_t &shuffle) {
-  std::string result = CompressionLibrary::GetDefaultShuffleName();
+  std::string result = "ERROR";
   if (shuffle < number_of_shuffles_) {
     result = shuffles_[shuffle];
   }

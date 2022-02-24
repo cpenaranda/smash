@@ -47,19 +47,6 @@ class CBlosc2Library : public CompressionLibrary {
       std::vector<std::string> *compression_level_information = nullptr,
       uint8_t *minimum_level = nullptr, uint8_t *maximum_level = nullptr);
 
-  bool GetWindowSizeInformation(
-      std::vector<std::string> *window_size_information = nullptr,
-      uint32_t *minimum_size = nullptr, uint32_t *maximum_size = nullptr);
-
-  bool GetModeInformation(std::vector<std::string> *mode_information = nullptr,
-                          uint8_t *minimum_mode = nullptr,
-                          uint8_t *maximum_mode = nullptr,
-                          const uint8_t &compression_level = 0);
-
-  bool GetWorkFactorInformation(
-      std::vector<std::string> *work_factor_information = nullptr,
-      uint8_t *minimum_factor = nullptr, uint8_t *maximum_factor = nullptr);
-
   bool GetShuffleInformation(
       std::vector<std::string> *shuffle_information = nullptr,
       uint8_t *minimum_shuffle = nullptr, uint8_t *maximum_shuffle = nullptr);
@@ -67,8 +54,6 @@ class CBlosc2Library : public CompressionLibrary {
   bool GetNumberThreadsInformation(
       std::vector<std::string> *number_threads_information = nullptr,
       uint8_t *minimum_threads = nullptr, uint8_t *maximum_threads = nullptr);
-
-  std::string GetModeName(const uint8_t &mode);
 
   std::string GetShuffleName(const uint8_t &shuffle);
 

@@ -21,20 +21,6 @@ bool ZlibLibrary::CheckOptions(const Options &options, const bool &compressor) {
   return result;
 }
 
-bool ZlibLibrary::SetOptionsCompressor(const Options &options) {
-  if (initialized_decompressor_) initialized_decompressor_ = false;
-  initialized_compressor_ = CheckOptions(options, true);
-  if (initialized_compressor_) options_ = options;
-  return initialized_compressor_;
-}
-
-bool ZlibLibrary::SetOptionsDecompressor(const Options &options) {
-  if (initialized_compressor_) initialized_compressor_ = false;
-  initialized_decompressor_ = CheckOptions(options, false);
-  if (initialized_decompressor_) options_ = options;
-  return initialized_decompressor_;
-}
-
 void ZlibLibrary::GetCompressedDataSize(char *uncompressed_data,
                                         uint64_t uncompressed_size,
                                         uint64_t *compressed_size) {
@@ -55,12 +41,6 @@ bool ZlibLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
     }
   }
   return result;
-}
-
-void ZlibLibrary::GetDecompressedDataSize(char *compressed_data,
-                                          uint64_t compressed_size,
-                                          uint64_t *decompressed_size) {
-  // There is no way to obtain with Zlib
 }
 
 bool ZlibLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
@@ -95,60 +75,6 @@ bool ZlibLibrary::GetCompressionLevelInformation(
     compression_level_information->push_back("[compression]");
   }
   return true;
-}
-
-bool ZlibLibrary::GetWindowSizeInformation(
-    std::vector<std::string> *window_size_information, uint32_t *minimum_size,
-    uint32_t *maximum_size) {
-  if (minimum_size) *minimum_size = 0;
-  if (maximum_size) *maximum_size = 0;
-  if (window_size_information) window_size_information->clear();
-  return false;
-}
-
-bool ZlibLibrary::GetModeInformation(std::vector<std::string> *mode_information,
-                                     uint8_t *minimum_mode,
-                                     uint8_t *maximum_mode,
-                                     const uint8_t &compression_level) {
-  if (minimum_mode) *minimum_mode = 0;
-  if (maximum_mode) *maximum_mode = 0;
-  if (mode_information) mode_information->clear();
-  return false;
-}
-
-bool ZlibLibrary::GetWorkFactorInformation(
-    std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
-    uint8_t *maximum_factor) {
-  if (minimum_factor) *minimum_factor = 0;
-  if (maximum_factor) *maximum_factor = 0;
-  if (work_factor_information) work_factor_information->clear();
-  return false;
-}
-
-bool ZlibLibrary::GetShuffleInformation(
-    std::vector<std::string> *shuffle_information, uint8_t *minimum_shuffle,
-    uint8_t *maximum_shuffle) {
-  if (minimum_shuffle) *minimum_shuffle = 0;
-  if (maximum_shuffle) *maximum_shuffle = 0;
-  if (shuffle_information) shuffle_information->clear();
-  return false;
-}
-
-bool ZlibLibrary::GetNumberThreadsInformation(
-    std::vector<std::string> *number_threads_information,
-    uint8_t *minimum_threads, uint8_t *maximum_threads) {
-  if (minimum_threads) *minimum_threads = 0;
-  if (maximum_threads) *maximum_threads = 0;
-  if (number_threads_information) number_threads_information->clear();
-  return false;
-}
-
-std::string ZlibLibrary::GetModeName(const uint8_t &mode) {
-  return CompressionLibrary::GetDefaultModeName();
-}
-
-std::string ZlibLibrary::GetShuffleName(const uint8_t &shuffle) {
-  return CompressionLibrary::GetDefaultShuffleName();
 }
 
 ZlibLibrary::ZlibLibrary() {}
