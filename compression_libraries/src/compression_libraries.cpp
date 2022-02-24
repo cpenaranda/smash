@@ -22,6 +22,7 @@
 #include <lzf_library.hpp>
 #include <lzfse_library.hpp>
 #include <lzfx_library.hpp>
+#include <lzham_library.hpp>
 #include <lzjb_library.hpp>
 #include <lzma_library.hpp>
 #include <lzo_library.hpp>
@@ -76,6 +77,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["lzf"] = []() { return new LzfLibrary(); };
   map_["lzfse"] = []() { return new LzfseLibrary(); };
   map_["lzfx"] = []() { return new LzfxLibrary(); };
+  map_["lzham"] = []() { return new LzhamLibrary(); };
   map_["lzjb"] = []() { return new LzjbLibrary(); };
   map_["lzma"] = []() { return new LzmaLibrary(); };
   map_["lzo"] = []() { return new LzoLibrary(); };

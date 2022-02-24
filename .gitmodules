@@ -67,3 +67,6 @@
 [submodule "compression_libraries/zpaq_/zpaq"]
 	path = compression_libraries/zpaq_/zpaq
 	url = https://github.com/zpaq/zpaq.git
+[submodule "compression_libraries/lzham_/lzham_codec_devel"]
+	path = compression_libraries/lzham_/lzham_codec_devel
+	url = https://github.com/richgel999/lzham_codec_devel.git

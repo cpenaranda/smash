@@ -102,7 +102,7 @@ void ShowMessage(const std::string &exe) {
   PrintLine("-l, --level <number>", "Compression level to use",
             "Values depend of different libraries (1 by default)");
   PrintLine("-w, --window <number>", "Set window size",
-            "Values depend of different libraries (10 by default)");
+            "Values depend of different libraries (15 by default)");
   PrintLine("-m, --mode <number>", "Specifies the mode used",
             "Values depend of different libraries (0 by default)");
   PrintLine("-wf, --work_factor <number>",
@@ -155,7 +155,7 @@ void ShowLibraryInformation(const std::string &library_name,
     }
     lib.GetWindowSizeInformation(&information);
     if (!information.empty()) {
-      PrintLine("-w, --window <number>", "Set window size (10 by default)",
+      PrintLine("-w, --window <number>", "Set window size (15 by default)",
                 information);
     }
     lib.GetModeInformation(&information);
@@ -422,7 +422,7 @@ const uint16_t size_row_level = 8;
 const uint16_t size_row_window = 9;
 const uint16_t size_row_mode = 17;
 const uint16_t size_row_factor = 6;
-const uint16_t size_row_shuffle = 10;
+const uint16_t size_row_shuffle = 16;
 const uint16_t size_row_threads = 10;
 const uint16_t size_rows_original_data = 16;
 const uint16_t size_rows_packed_data = 14;

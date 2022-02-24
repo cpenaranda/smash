@@ -43,7 +43,7 @@ uint8_t Options::GetNumberThreads() const { return number_threads_; }
 
 Options::Options() {
   compression_level_ = 1;
-  window_size_ = 10;
+  window_size_ = 15;
   mode_ = 1;
   work_factor_ = 30;
   shuffle_ = 0;
