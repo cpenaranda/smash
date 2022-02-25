@@ -96,6 +96,13 @@ bool Smash::GetNumberThreadsInformation(
                                           minimum_threads, maximum_threads);
 }
 
+bool Smash::GetBackReferenceBitsInformation(
+    std::vector<std::string> *back_reference_bits_information,
+    uint8_t *minimum_bits, uint8_t *maximum_bits) {
+  return lib->GetBackReferenceBitsInformation(back_reference_bits_information,
+                                              minimum_bits, maximum_bits);
+}
+
 std::string Smash::GetModeName(const uint8_t &mode) {
   return lib->GetModeName(mode);
 }

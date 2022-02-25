@@ -92,7 +92,7 @@ void ShowMessage(const std::string &exe) {
   PrintLine("-i, --input_file <file_name>", "File name to compress");
   PrintLine("-o, --output_file <file_name>",
             "File name where the compress data is stored");
-  PrintLine("-b, --best_effort",
+  PrintLine("-e, --best_effort",
             "Run all possible configurations of the selected library");
   PrintLine(
       "-b, --best <option> <number>",
@@ -110,6 +110,9 @@ void ShowMessage(const std::string &exe) {
             "Values depend of different libraries (30 by default)");
   PrintLine("-f, --flags <number>", "Flags to use",
             "Values depend of different libraries (0 by default)");
+  PrintLine("-r, --back_reference_bits <number>",
+            "Number of bits used for back-reference",
+            "Values depend of different libraries (4 by default)");
   PrintLine("-t, --threads <number>",
             "Threads used in algorithms (1 by default)",
             "Not all compression libraries use it");
@@ -176,6 +179,14 @@ void ShowLibraryInformation(const std::string &library_name,
       PrintLine("-f, --flags <number>", "Flags to use (0 by default)",
                 information);
     }
+    lib.GetBackReferenceBitsInformation(&information);
+    if (!information.empty()) {
+      PrintLine("-r, --back_reference_bits <number>",
+                "Number of bits used for back-reference (4 by default)",
+                information);
+    } else {
+      std::cout << "ESTA VACIO" << std::endl;
+    }
     lib.GetNumberThreadsInformation(&information);
     if (!information.empty()) {
       PrintLine("-t, --threads <number>",
@@ -200,6 +211,7 @@ bool GetParams(const int &number_params, const char *const params[],
   bool threads_set{false};
   bool best_effort_set{false};
   bool best_set{false};
+  bool back_reference_bits_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (Check(params[n], "-h", "--help")) {
@@ -274,6 +286,14 @@ bool GetParams(const int &number_params, const char *const params[],
       } else {
         error = end = true;
       }
+    } else if (Check(params[n], "-r", "--back_reference_bits")) {
+      ++n;
+      if (n < number_params && !back_reference_bits_set) {
+        opt->SetBackReferenceBits(atoi(params[n]));
+        back_reference_bits_set = true;
+      } else {
+        error = end = true;
+      }
     } else if (Check(params[n], "-t", "--threads")) {
       ++n;
       if (n < number_params && !threads_set) {
@@ -282,14 +302,14 @@ bool GetParams(const int &number_params, const char *const params[],
       } else {
         error = end = true;
       }
-    } else if (!strcmp(params[n], "--best_effort")) {
+    } else if (Check(params[n], "-e", "--best_effort")) {
       if (!best_effort_set) {
         best_effort_set = true;
         *all_options = true;
       } else {
         error = end = true;
       }
-    } else if (!strcmp(params[n], "--best")) {
+    } else if (Check(params[n], "-b", "--best")) {
       ++n;
       if (n + 1 < number_params && !best_set) {
         best_set = true;
@@ -304,29 +324,6 @@ bool GetParams(const int &number_params, const char *const params[],
         error = end = true;
       }
     } else if (!strcmp(params[n], "-b")) {
-      if (n + 1 < number_params &&
-          std::string(params[n + 1]).find("-") == std::string::npos) {
-        if (n + 2 < number_params && !best_set) {
-          ++n;
-          best_set = true;
-          *option = atoi(params[n]) + 1;
-          if (*option > 4) {
-            error = end = true;
-          } else {
-            ++n;
-            *result_number = atoi(params[n]);
-          }
-        } else {
-          error = end = true;
-        }
-      } else {
-        if (!best_effort_set) {
-          best_effort_set = true;
-          *all_options = true;
-        } else {
-          error = end = true;
-        }
-      }
     } else {
       error = end = true;
     }

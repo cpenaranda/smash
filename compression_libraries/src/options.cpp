@@ -29,6 +29,10 @@ void Options::SetNumberThreads(const uint8_t &number_threads) {
   number_threads_ = number_threads;
 }
 
+void Options::SetBackReferenceBits(const uint8_t &back_reference_bits) {
+  back_reference_bits_ = back_reference_bits;
+}
+
 uint8_t Options::GetCompressionLevel() const { return compression_level_; }
 
 uint32_t Options::GetWindowSize() const { return window_size_; }
@@ -41,6 +45,8 @@ uint8_t Options::GetFlags() const { return flags_; }
 
 uint8_t Options::GetNumberThreads() const { return number_threads_; }
 
+uint8_t Options::GetBackReferenceBits() const { return back_reference_bits_; }
+
 Options::Options() {
   compression_level_ = 1;
   window_size_ = 15;
@@ -48,6 +54,7 @@ Options::Options() {
   work_factor_ = 30;
   flags_ = 0;
   number_threads_ = 1;
+  back_reference_bits_ = 4;
 }
 
 Options::~Options() {}

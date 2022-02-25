@@ -105,6 +105,15 @@ bool CompressionLibrary::GetNumberThreadsInformation(
   return false;
 }
 
+bool CompressionLibrary::GetBackReferenceBitsInformation(
+    std::vector<std::string> *back_reference_bits_information,
+    uint8_t *minimum_bits, uint8_t *maximum_bits) {
+  if (minimum_bits) *minimum_bits = 0;
+  if (maximum_bits) *maximum_bits = 0;
+  if (back_reference_bits_information) back_reference_bits_information->clear();
+  return false;
+}
+
 std::string CompressionLibrary::GetModeName(const uint8_t &mode) {
   return "------------";
 }
@@ -196,8 +205,8 @@ bool CompressionLibrary::CheckWorkFactor(std::string library_name,
 }
 
 bool CompressionLibrary::CheckFlags(std::string library_name, uint8_t flags,
-                                      uint8_t minimum_flags,
-                                      uint8_t maximum_flags) {
+                                    uint8_t minimum_flags,
+                                    uint8_t maximum_flags) {
   bool result{true};
   if (minimum_flags > 0 && flags < minimum_flags) {
     std::cout << "ERROR: Flags can not be lower than "
@@ -226,6 +235,25 @@ bool CompressionLibrary::CheckNumberThreads(std::string library_name,
   } else if (maximum_threads > 0 && number_threads > maximum_threads) {
     std::cout << "ERROR: Number of threads can not be higher than "
               << static_cast<uint64_t>(maximum_threads) << " using "
+              << library_name << std::endl;
+    result = false;
+  }
+  return result;
+}
+
+bool CompressionLibrary::CheckBackReferenceBits(std::string library_name,
+                                                uint8_t back_reference_bits,
+                                                uint8_t minimum_bits,
+                                                uint8_t maximum_bits) {
+  bool result{true};
+  if (minimum_bits > 0 && back_reference_bits < minimum_bits) {
+    std::cout << "ERROR: Back refence bits can not be lower than "
+              << static_cast<uint64_t>(minimum_bits) << " using "
+              << library_name << std::endl;
+    result = false;
+  } else if (maximum_bits > 0 && back_reference_bits > maximum_bits) {
+    std::cout << "ERROR: Back refence bits can not be higher than "
+              << static_cast<uint64_t>(maximum_bits) << " using "
               << library_name << std::endl;
     result = false;
   }

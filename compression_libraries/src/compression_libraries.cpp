@@ -18,6 +18,7 @@
 #include <fari_library.hpp>
 #include <flz_library.hpp>
 #include <gipfeli_library.hpp>
+#include <libbsc_library.hpp>
 #include <libdeflate_library.hpp>
 #include <lzf_library.hpp>
 #include <lzfse_library.hpp>
@@ -74,6 +75,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["fari"] = []() { return new FariLibrary(); };
   map_["flz"] = []() { return new FlzLibrary(); };
   map_["gipfeli"] = []() { return new GipfeliLibrary(); };
+  map_["libbsc"] = []() { return new LibbscLibrary(); };
   map_["libdeflate"] = []() { return new LibdeflateLibrary(); };
   map_["lzf"] = []() { return new LzfLibrary(); };
   map_["lzfse"] = []() { return new LzfseLibrary(); };

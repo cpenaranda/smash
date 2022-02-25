@@ -68,6 +68,10 @@ class Smash {
       std::vector<std::string> *number_threads_information = nullptr,
       uint8_t *minimum_threads = nullptr, uint8_t *maximum_threads = nullptr);
 
+  bool GetBackReferenceBitsInformation(
+      std::vector<std::string> *back_reference_bits_information = nullptr,
+      uint8_t *minimum_bits = nullptr, uint8_t *maximum_bits = nullptr);
+
   std::string GetModeName(const uint8_t &mode);
 
   std::string GetFlagsName(const uint8_t &flags);
