@@ -24,6 +24,7 @@ set(YALZ77_VERSION "master")
 set(ZPAQ_VERSION "7.15")
 set(LZHAM_VERSION "master")
 set(LIBBSC_VERSION "v3.2.4")
+set(HEATSHRINK_VERSION "v0.4.1")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -57,6 +58,7 @@ add_subdirectory(zpaq_)
 add_subdirectory(lzham_)
 add_subdirectory(z3lib_)
 add_subdirectory(libbsc_)
+add_subdirectory(heatshrink_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -88,6 +90,7 @@ set(SMASH_LIBRARIES
   lzhamdll
   z3lib
   libbsc
+  heatshrink
 )
 
 set(SMASH_INCLUDES
@@ -150,6 +153,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/z3lib_/z3lib
   ${CMAKE_CURRENT_SOURCE_DIR}/libbsc_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/libbsc_/libbsc
+  ${CMAKE_CURRENT_SOURCE_DIR}/heatshrink_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/heatshrink_/heatshrink
 )
 
 set(SMASH_SOURCES
@@ -181,4 +186,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzham_/src/lzham_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/z3lib_/src/z3lib_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/libbsc_/src/libbsc_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/heatshrink_/src/heatshrink_library.cpp
 )

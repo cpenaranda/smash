@@ -73,3 +73,6 @@
 [submodule "compression_libraries/libbsc_/libbsc"]
 	path = compression_libraries/libbsc_/libbsc
 	url = https://github.com/IlyaGrebnov/libbsc.git
+[submodule "compression_libraries/heatshrink_/heatshrink"]
+	path = compression_libraries/heatshrink_/heatshrink
+	url = https://github.com/atomicobject/heatshrink.git
