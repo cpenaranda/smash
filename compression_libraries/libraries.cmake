@@ -111,7 +111,7 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzma_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/lzma_/xz/src/liblzma/api
   ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/lzo/include/lzo
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzo_/lzo/include
   ${CMAKE_CURRENT_SOURCE_DIR}/ms_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/ms_/ms-compress/include
   ${CMAKE_CURRENT_SOURCE_DIR}/ms_/ms-compress/include/mscomp
