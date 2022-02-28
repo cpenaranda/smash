@@ -834,61 +834,63 @@ int main(int argc, char *argv[]) {
               }
             }
           }
+          if (result == EXIT_SUCCESS) {
+            sort(compression_results.begin(), compression_results.end(),
+                 [](double &x, double &y) { return x > y; });
+            sort(decompression_results.begin(), decompression_results.end(),
+                 [](double &x, double &y) { return x > y; });
+            sort(total_results.begin(), total_results.end(),
+                 [](double &x, double &y) { return x > y; });
 
-          sort(compression_results.begin(), compression_results.end(),
-               [](double &x, double &y) { return x > y; });
-          sort(decompression_results.begin(), decompression_results.end(),
-               [](double &x, double &y) { return x > y; });
-          sort(total_results.begin(), total_results.end(),
-               [](double &x, double &y) { return x > y; });
+            double mean_compression{0}, mean_decompression{0}, mean_total{0},
+                error_compression{0}, error_decompression{0}, error_total{0};
+            if (repetitions > 1) {
+              uint32_t i = 0;
+              for (; (i < (compression_results.size() / 1.2)) ||
+                     ((compression_results.size() == 1) && (i == 0));
+                   ++i) {
+                mean_compression += compression_results[i];
+                mean_decompression += decompression_results[i];
+                mean_total += total_results[i];
+              }
 
-          double mean_compression{0}, mean_decompression{0}, mean_total{0},
-              error_compression{0}, error_decompression{0}, error_total{0};
-          if (repetitions > 1) {
-            uint32_t i = 0;
-            for (; (i < (compression_results.size() / 1.2)) ||
-                   ((compression_results.size() == 1) && (i == 0));
-                 ++i) {
-              mean_compression += compression_results[i];
-              mean_decompression += decompression_results[i];
-              mean_total += total_results[i];
+              mean_compression /= i;
+              mean_decompression /= i;
+              mean_total /= i;
+
+              for (uint32_t j = 0; j < i; ++j) {
+                error_compression +=
+                    pow((compression_results[j] - mean_compression), 2);
+                error_decompression +=
+                    pow((decompression_results[j] - mean_decompression), 2);
+                error_total += pow((total_results[j] - mean_total), 2);
+              }
+
+              --i;
+              if (i > 0) {
+                error_compression = sqrt(error_compression / i);
+                error_decompression = sqrt(error_decompression / i);
+                error_total = sqrt(error_total / i);
+              }
+            } else {
+              mean_compression += compression_results[0];
+              mean_decompression += decompression_results[0];
+              mean_total += total_results[0];
             }
 
-            mean_compression /= i;
-            mean_decompression /= i;
-            mean_total /= i;
-
-            for (uint32_t j = 0; j < i; ++j) {
-              error_compression +=
-                  pow((compression_results[j] - mean_compression), 2);
-              error_decompression +=
-                  pow((decompression_results[j] - mean_decompression), 2);
-              error_total += pow((total_results[j] - mean_total), 2);
+            if (CopyToFile(output_file_name, compressed_data,
+                           compressed_size)) {
+              std::string message = ShowResult(
+                  lib, library_name, option, uncompressed_size, compressed_size,
+                  mean_compression, error_compression, mean_decompression,
+                  error_decompression, mean_total, error_total);
+              results.push_back(Result(
+                  message, uncompressed_size, compressed_size, mean_compression,
+                  mean_decompression, mean_total, best_options));
+              result = EXIT_SUCCESS;
+            } else {
+              result = EXIT_FAILURE;
             }
-
-            --i;
-            if (i > 0) {
-              error_compression = sqrt(error_compression / i);
-              error_decompression = sqrt(error_decompression / i);
-              error_total = sqrt(error_total / i);
-            }
-          } else {
-            mean_compression += compression_results[0];
-            mean_decompression += decompression_results[0];
-            mean_total += total_results[0];
-          }
-
-          if (CopyToFile(output_file_name, compressed_data, compressed_size)) {
-            std::string message = ShowResult(
-                lib, library_name, option, uncompressed_size, compressed_size,
-                mean_compression, error_compression, mean_decompression,
-                error_decompression, mean_total, error_total);
-            results.push_back(Result(
-                message, uncompressed_size, compressed_size, mean_compression,
-                mean_decompression, mean_total, best_options));
-            result = EXIT_SUCCESS;
-          } else {
-            result = EXIT_FAILURE;
           }
         }
         RemoveMemories(uncompressed_data, compressed_data, decompressed_data);
