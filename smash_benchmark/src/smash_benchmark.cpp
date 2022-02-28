@@ -433,6 +433,7 @@ const uint16_t size_row_mode = 17;
 const uint16_t size_row_factor = 6;
 const uint16_t size_row_flags = 16;
 const uint16_t size_row_threads = 10;
+const uint16_t size_row_back_reference = 6;
 const uint16_t size_rows_original_data = 16;
 const uint16_t size_rows_packed_data = 14;
 const uint16_t size_rows_ratio = 9;
@@ -463,6 +464,8 @@ void ShowTitle(const uint64_t &size, const uint64_t &repetitions) {
             << "| Flags";
   std::cout << std::left << std::setw(size_row_threads) << std::setfill(' ')
             << "| Threads";
+  std::cout << std::left << std::setw(size_row_back_reference)
+            << std::setfill(' ') << "| BR";
   std::cout << std::left << std::setw(size_rows_original_data)
             << std::setfill(' ') << "| Original data";
   std::cout << std::left << std::setw(size_rows_packed_data)
@@ -492,10 +495,10 @@ void ShowTitle(const uint64_t &size, const uint64_t &repetitions) {
   std::cout << std::left
             << std::setw(size_row_library + size_row_level + size_row_window +
                          size_row_mode + size_row_factor + size_row_flags +
-                         size_row_threads + size_rows_original_data +
-                         size_rows_packed_data + size_rows_ratio +
-                         size_rows_compress + size_rows_decompress +
-                         size_rows_total + 1 +
+                         size_row_threads + size_row_back_reference +
+                         size_rows_original_data + size_rows_packed_data +
+                         size_rows_ratio + size_rows_compress +
+                         size_rows_decompress + size_rows_total + 1 +
                          ((repetitions > 1)
                               ? size_rows_compress + size_rows_decompress +
                                     size_rows_total + 3 + 5
@@ -572,6 +575,16 @@ std::string ShowResult(
   } else {
     result << std::left << std::setw(size_row_threads - 1) << std::setfill('-')
            << "| "
+           << " ";
+  }
+
+  if (lib->GetBackReferenceBitsInformation()) {
+    result << std::left << std::setw(size_row_back_reference)
+           << std::setfill(' ')
+           << "| " + std::to_string(opt.GetBackReferenceBits());
+  } else {
+    result << std::left << std::setw(size_row_back_reference - 1)
+           << std::setfill('-') << "| "
            << " ";
   }
 
