@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <lzo1.h>
-#include <lzo1a.h>
-#include <lzo1b.h>
-#include <lzo1c.h>
-#include <lzo1f.h>
-#include <lzo1x.h>
-#include <lzo1y.h>
-#include <lzo1z.h>
-#include <lzoconf.h>
+#include <lzo/lzo1.h>
+#include <lzo/lzo1a.h>
+#include <lzo/lzo1b.h>
+#include <lzo/lzo1c.h>
+#include <lzo/lzo1f.h>
+#include <lzo/lzo1x.h>
+#include <lzo/lzo1y.h>
+#include <lzo/lzo1z.h>
+#include <lzo/lzoconf.h>
 
 #include <iostream>
 #include <string>
