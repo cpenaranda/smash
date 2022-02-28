@@ -25,10 +25,10 @@ void Smash::GetCompressedDataSize(char *uncompressed_data,
                              compressed_size);
 }
 
-void Smash::Compress(char *uncompressed_data, uint64_t uncompressed_size,
+bool Smash::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                      char *compressed_data, uint64_t *compressed_size) {
-  lib->Compress(uncompressed_data, uncompressed_size, compressed_data,
-                compressed_size);
+  return lib->Compress(uncompressed_data, uncompressed_size, compressed_data,
+                       compressed_size);
 }
 
 void Smash::GetDecompressedDataSize(char *compressed_data,
@@ -38,10 +38,10 @@ void Smash::GetDecompressedDataSize(char *compressed_data,
                                decompressed_size);
 }
 
-void Smash::Decompress(char *compressed_data, uint64_t compressed_size,
+bool Smash::Decompress(char *compressed_data, uint64_t compressed_size,
                        char *decompressed_data, uint64_t *decompressed_size) {
-  lib->Decompress(compressed_data, compressed_size, decompressed_data,
-                  decompressed_size);
+  return lib->Decompress(compressed_data, compressed_size, decompressed_data,
+                         decompressed_size);
 }
 
 void Smash::GetTitle() { lib->GetTitle(); }

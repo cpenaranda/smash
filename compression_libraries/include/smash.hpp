@@ -29,13 +29,13 @@ class Smash {
                              uint64_t uncompressed_size,
                              uint64_t *compressed_size);
 
-  void Compress(char *uncompressed_data, uint64_t uncompressed_size,
+  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
                 char *compressed_data, uint64_t *compressed_size);
 
   void GetDecompressedDataSize(char *compressed_data, uint64_t compressed_size,
                                uint64_t *decompressed_size);
 
-  void Decompress(char *compressed_data, uint64_t compressed_size,
+  bool Decompress(char *compressed_data, uint64_t compressed_size,
                   char *decompressed_data, uint64_t *decompressed_size);
 
   void GetTitle();

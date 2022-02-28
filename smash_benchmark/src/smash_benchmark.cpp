@@ -6,6 +6,7 @@
  * Universidad Politécnica de Valencia (Spain)
  */
 
+#include <math.h>
 #include <string.h>
 
 #include <algorithm>
@@ -94,6 +95,9 @@ void ShowMessage(const std::string &exe) {
             "File name where the compress data is stored");
   PrintLine("-e, --best_effort",
             "Run all possible configurations of the selected library");
+  PrintLine("-n, --repetition_number <number>",
+            "Compression and decompression are done <number> times",
+            "(1 by default)");
   PrintLine(
       "-b, --best <option> <number>",
       "Get the <number> configurations of the selected library",
@@ -150,6 +154,9 @@ void ShowLibraryInformation(const std::string &library_name,
     PrintLine("-i, --input_file <file_name>", "File name to compress");
     PrintLine("-o, --output_file <file_name>",
               "File name where the compress data is stored");
+    PrintLine("-n, --repetition_number <number>",
+              "Compression and decompression are done <number> times",
+              "(1 by default)");
     std::vector<std::string> information;
     lib.GetCompressionLevelInformation(&information);
     if (!information.empty()) {
@@ -199,7 +206,8 @@ bool GetParams(const int &number_params, const char *const params[],
                Options *opt, std::string *input_file_name,
                std::string *output_file_name,
                std::string *compression_library_name, bool *all_options,
-               uint8_t *option, uint32_t *result_number) {
+               uint8_t *option, uint32_t *result_number,
+               uint32_t *repetitions) {
   bool show_message{true};
   bool end{false};
   bool error{false};
@@ -212,6 +220,7 @@ bool GetParams(const int &number_params, const char *const params[],
   bool best_effort_set{false};
   bool best_set{false};
   bool back_reference_bits_set{false};
+  bool repetitions_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (Check(params[n], "-h", "--help")) {
@@ -323,7 +332,14 @@ bool GetParams(const int &number_params, const char *const params[],
       } else {
         error = end = true;
       }
-    } else if (!strcmp(params[n], "-b")) {
+    } else if (Check(params[n], "-n", "--repetition_number")) {
+      ++n;
+      if (n < number_params && !repetitions_set && atoi(params[n]) > 0) {
+        repetitions_set = true;
+        *repetitions = atoi(params[n]) * 1.2;
+      } else {
+        error = end = true;
+      }
     } else {
       error = end = true;
     }
@@ -424,7 +440,7 @@ const uint16_t size_rows_compress = 14;
 const uint16_t size_rows_decompress = 14;
 const uint16_t size_rows_total = 14;
 
-void ShowTitle(const uint64_t &size) {
+void ShowTitle(const uint64_t &size, const uint64_t &repetitions) {
   *const_cast<uint16_t *>(&size_rows_original_data) =
       (size_rows_original_data < (std::to_string(size).size() + 9))
           ? std::to_string(size).size() + 9
@@ -455,12 +471,23 @@ void ShowTitle(const uint64_t &size) {
             << "| Ratio";
   std::cout << std::left << std::setw(size_rows_compress) << std::setfill(' ')
             << "| Compress";
+  if (repetitions > 1) {
+    std::cout << std::left << std::setw(size_rows_compress + 3)
+              << std::setfill(' ') << "| Error Compress";
+  }
   std::cout << std::left << std::setw(size_rows_decompress) << std::setfill(' ')
             << "| Decompress";
+  if (repetitions > 1) {
+    std::cout << std::left << std::setw(size_rows_compress + 5)
+              << std::setfill(' ') << "| Error Decompress";
+  }
   std::cout << std::left << std::setw(size_rows_total) << std::setfill(' ')
-            << "| Total"
-            << "|";
-  std::cout << std::endl;
+            << "| Total";
+  if (repetitions > 1) {
+    std::cout << std::left << std::setw(size_rows_compress) << std::setfill(' ')
+              << "| Error Total";
+  }
+  std::cout << "|" << std::endl;
 
   std::cout << std::left
             << std::setw(size_row_library + size_row_level + size_row_window +
@@ -468,7 +495,11 @@ void ShowTitle(const uint64_t &size) {
                          size_row_threads + size_rows_original_data +
                          size_rows_packed_data + size_rows_ratio +
                          size_rows_compress + size_rows_decompress +
-                         size_rows_total + 1)
+                         size_rows_total + 1 +
+                         ((repetitions > 1)
+                              ? size_rows_compress + size_rows_decompress +
+                                    size_rows_total + 3 + 5
+                              : 0))
             << std::setfill('-') << "-" << std::endl;
 }
 
@@ -479,19 +510,14 @@ std::string ToStringDouble(const double &value) {
   return out.str();
 }
 
-std::string ShowResult(Smash *lib, const std::string &library_name, Options opt,
-                       const uint64_t &uncompressed_size,
-                       const uint64_t &compressed_size,
-                       const double &time_compression,
-                       const double &time_decompression) {
+std::string ShowResult(
+    Smash *lib, const std::string &library_name, Options opt,
+    const uint64_t &uncompressed_size, const uint64_t &compressed_size,
+    const double &mean_vel_compression, const double &error_vel_compression,
+    const double &mean_vel_decompression, const double &error_vel_decompression,
+    const double &mean_vel_total, const double &error_vel_total) {
   std::ostringstream result;
-  double vel_compression =
-      ((static_cast<double>(uncompressed_size) / 1000000.0) / time_compression);
-  double vel_decompression =
-      ((static_cast<double>(compressed_size) / 1000000.0) / time_decompression);
-  double vel_total = ((static_cast<double>(uncompressed_size) / 1000000.0) /
-                      (time_compression + time_decompression));
-
+  bool repetitions = error_vel_compression;
   result << std::left << std::setw(size_row_library) << std::setfill(' ')
          << "| " + library_name;
 
@@ -557,14 +583,29 @@ std::string ShowResult(Smash *lib, const std::string &library_name, Options opt,
   result << std::left << std::setw(size_rows_ratio) << std::setfill(' ')
          << "| " + ToStringDouble((static_cast<double>(uncompressed_size) /
                                    static_cast<double>(compressed_size)));
+
   result << std::left << std::setw(size_rows_compress) << std::setfill(' ')
-         << "| " + ToStringDouble(vel_compression) + " MB/s";
+         << "| " + ToStringDouble(mean_vel_compression) + " MB/s";
+  if (repetitions) {
+    result << std::left << std::setw(size_rows_compress + 3)
+           << std::setfill(' ')
+           << "| " + ToStringDouble(error_vel_compression) + " MB/s";
+  }
   result << std::left << std::setw(size_rows_decompress) << std::setfill(' ')
-         << "| " + ToStringDouble(vel_decompression) + " MB/s";
+         << "| " + ToStringDouble(mean_vel_decompression) + " MB/s";
+  if (repetitions) {
+    result << std::left << std::setw(size_rows_decompress + 5)
+           << std::setfill(' ')
+           << "| " + ToStringDouble(error_vel_decompression) + " MB/s";
+  }
   result << std::left << std::setw(size_rows_total) << std::setfill(' ')
-         << "| " + ToStringDouble(vel_total) + " MB/s"
-         << "|";
-  result << std::endl;
+         << "| " + ToStringDouble(mean_vel_total) + " MB/s";
+  if (repetitions) {
+    result << std::left << std::setw(size_rows_total) << std::setfill(' ')
+           << "| " + ToStringDouble(error_vel_total) + " MB/s";
+  }
+
+  result << "|" << std::endl;
   return result.str();
 }
 
@@ -645,19 +686,21 @@ struct Result {
   std::string message_;
   uint64_t uncompressed_size_;
   uint64_t compressed_size_;
-  double compression_time_;
-  double decompression_time_;
+  double compression_vel_;
+  double decompression_vel_;
+  double total_vel_;
   uint8_t option_;
 
   Result(const std::string &message, const uint64_t &uncompressed_size = 0,
-         const uint64_t &compressed_size = 0,
-         const double &compression_time = 0,
-         const double &decompression_time = 0, const uint8_t &option = 0) {
+         const uint64_t &compressed_size = 0, const double &compression_vel = 0,
+         const double &decompression_vel = 0, const double &total_vel = 0,
+         const uint8_t &option = 0) {
     message_ = message;
     uncompressed_size_ = uncompressed_size;
     compressed_size_ = compressed_size;
-    compression_time_ = compression_time;
-    decompression_time_ = decompression_time;
+    compression_vel_ = compression_vel;
+    decompression_vel_ = decompression_vel;
+    total_vel_ = total_vel;
     option_ = option;
   }
 
@@ -669,24 +712,17 @@ struct Result {
     } else if (option_ == 2) {
       if (other.compressed_size_ < other.uncompressed_size_) {
         // Compression Time
-        result = (static_cast<double>(other.uncompressed_size_) /
-                  other.compression_time_) >
-                 (static_cast<double>(uncompressed_size_) / compression_time_);
+        result = other.compression_vel_ > compression_vel_;
       }
     } else if (option_ == 3) {
       if (other.compressed_size_ < other.uncompressed_size_) {
         // Decompression Time
-        result = (static_cast<double>(other.compressed_size_) /
-                  other.decompression_time_) >
-                 (static_cast<double>(compressed_size_) / decompression_time_);
+        result = other.decompression_vel_ > decompression_vel_;
       }
     } else if (option_ == 4) {
       if (other.compressed_size_ < other.uncompressed_size_) {
         // Total Time
-        result = (static_cast<double>(other.uncompressed_size_) /
-                  (other.compression_time_ + other.decompression_time_)) >
-                 (static_cast<double>(uncompressed_size_) /
-                  (compression_time_ + decompression_time_));
+        result = other.total_vel_ > total_vel_;
       }
     }
     return result;
@@ -704,11 +740,12 @@ int main(int argc, char *argv[]) {
   std::vector<Result> results;
   uint8_t best_options{0};
   uint32_t best_result_number{0};
+  uint32_t repetitions{1};
   bool all_options{false};
   int result{EXIT_FAILURE};
   if (GetParams(argc, argv, &opt, &input_file_name, &output_file_name,
                 &compression_library_name, &all_options, &best_options,
-                &best_result_number)) {
+                &best_result_number, &repetitions)) {
     std::vector<std::string> libraries;
     if (!compression_library_name.compare("all")) {
       libraries = CompressionLibraries().GetNameLibraries();
@@ -731,43 +768,114 @@ int main(int argc, char *argv[]) {
                         &compressed_data, &compressed_size, &decompressed_data,
                         &decompressed_size)) {
           result = EXIT_SUCCESS;
-          lib->GetCompressedDataSize(uncompressed_data, uncompressed_size,
-                                     &compressed_size);
-          std::chrono::_V2::system_clock::time_point start, end;
-          std::chrono::duration<double> compression_time, decompression_time;
-          lib->SetOptionsCompressor(option);
-          start = std::chrono::system_clock::now();
-          lib->Compress(uncompressed_data, uncompressed_size, compressed_data,
-                        &compressed_size);
-          end = std::chrono::system_clock::now();
-          compression_time = end - start;
-
-          lib->SetOptionsDecompressor(option);
-          start = std::chrono::system_clock::now();
-          lib->Decompress(compressed_data, compressed_size, decompressed_data,
-                          &decompressed_size);
-          end = std::chrono::system_clock::now();
-          decompression_time = end - start;
-
-          if (!lib->CompareData(uncompressed_data, uncompressed_size,
-                                decompressed_data, decompressed_size)) {
-            std::cout << "ERROR: " << library_name
-                      << " does not obtain the correct data" << std::endl;
-            result = EXIT_FAILURE;
-          } else {
-            if (CopyToFile(output_file_name, compressed_data,
-                           compressed_size)) {
-              std::string message = ShowResult(
-                  lib, library_name, option, uncompressed_size, compressed_size,
-                  compression_time.count(), decompression_time.count());
-              results.push_back(
-                  Result(message, uncompressed_size, compressed_size,
-                         compression_time.count(), decompression_time.count(),
-                         best_options));
-              result = EXIT_SUCCESS;
-            } else {
-              result = EXIT_FAILURE;
+          std::vector<double> compression_results;
+          std::vector<double> decompression_results;
+          std::vector<double> total_results;
+          for (uint32_t r = 0; r < repetitions && result == EXIT_SUCCESS; ++r) {
+            lib->GetCompressedDataSize(uncompressed_data, uncompressed_size,
+                                       &compressed_size);
+            std::chrono::_V2::system_clock::time_point start, end;
+            std::chrono::duration<double> compression_time, decompression_time;
+            result =
+                lib->SetOptionsCompressor(option) ? EXIT_SUCCESS : EXIT_FAILURE;
+            if (result == EXIT_SUCCESS) {
+              start = std::chrono::system_clock::now();
+              result = lib->Compress(uncompressed_data, uncompressed_size,
+                                     compressed_data, &compressed_size)
+                           ? EXIT_SUCCESS
+                           : EXIT_FAILURE;
+              end = std::chrono::system_clock::now();
+              compression_time = end - start;
+              if (result == EXIT_SUCCESS) {
+                result = lib->SetOptionsDecompressor(option) ? EXIT_SUCCESS
+                                                             : EXIT_FAILURE;
+                if (result == EXIT_SUCCESS) {
+                  start = std::chrono::system_clock::now();
+                  result =
+                      lib->Decompress(compressed_data, compressed_size,
+                                      decompressed_data, &decompressed_size)
+                          ? EXIT_SUCCESS
+                          : EXIT_FAILURE;
+                  end = std::chrono::system_clock::now();
+                  decompression_time = end - start;
+                  if (result != EXIT_SUCCESS ||
+                      !lib->CompareData(uncompressed_data, uncompressed_size,
+                                        decompressed_data, decompressed_size)) {
+                    std::cout << "ERROR: " << library_name
+                              << " does not obtain the correct data"
+                              << std::endl;
+                    result = EXIT_FAILURE;
+                  } else {
+                    compression_results.push_back(
+                        (static_cast<double>(uncompressed_size) / 1000000.0) /
+                        compression_time.count());
+                    decompression_results.push_back(
+                        (static_cast<double>(compressed_size) / 1000000.0) /
+                        decompression_time.count());
+                    total_results.push_back(
+                        (static_cast<double>(uncompressed_size) / 1000000.0) /
+                        (compression_time.count() +
+                         decompression_time.count()));
+                  }
+                }
+              }
             }
+          }
+
+          sort(compression_results.begin(), compression_results.end(),
+               [](double &x, double &y) { return x > y; });
+          sort(decompression_results.begin(), decompression_results.end(),
+               [](double &x, double &y) { return x > y; });
+          sort(total_results.begin(), total_results.end(),
+               [](double &x, double &y) { return x > y; });
+
+          double mean_compression{0}, mean_decompression{0}, mean_total{0},
+              error_compression{0}, error_decompression{0}, error_total{0};
+          if (repetitions > 1) {
+            uint32_t i = 0;
+            for (; (i < (compression_results.size() / 1.2)) ||
+                   ((compression_results.size() == 1) && (i == 0));
+                 ++i) {
+              mean_compression += compression_results[i];
+              mean_decompression += decompression_results[i];
+              mean_total += total_results[i];
+            }
+
+            mean_compression /= i;
+            mean_decompression /= i;
+            mean_total /= i;
+
+            for (uint32_t j = 0; j < i; ++j) {
+              error_compression +=
+                  pow((compression_results[j] - mean_compression), 2);
+              error_decompression +=
+                  pow((decompression_results[j] - mean_decompression), 2);
+              error_total += pow((total_results[j] - mean_total), 2);
+            }
+
+            --i;
+            if (i > 0) {
+              error_compression = sqrt(error_compression / i);
+              error_decompression = sqrt(error_decompression / i);
+              error_total = sqrt(error_total / i);
+            }
+          } else {
+            mean_compression += compression_results[0];
+            mean_decompression += decompression_results[0];
+            mean_total += total_results[0];
+          }
+
+          if (CopyToFile(output_file_name, compressed_data, compressed_size)) {
+            std::string message = ShowResult(
+                lib, library_name, option, uncompressed_size, compressed_size,
+                mean_compression, error_compression, mean_decompression,
+                error_decompression, mean_total, error_total);
+            results.push_back(Result(
+                message, uncompressed_size, compressed_size, mean_compression,
+                mean_decompression, mean_total, best_options));
+            result = EXIT_SUCCESS;
+          } else {
+            result = EXIT_FAILURE;
           }
         }
         RemoveMemories(uncompressed_data, compressed_data, decompressed_data);
@@ -775,7 +883,7 @@ int main(int argc, char *argv[]) {
       delete lib;
     }
     if (!results.empty()) {
-      ShowTitle(uncompressed_size);
+      ShowTitle(uncompressed_size, repetitions);
       if (!best_options) {
         best_result_number = results.size();
       } else {
