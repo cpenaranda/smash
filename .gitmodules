@@ -76,3 +76,6 @@
 [submodule "compression_libraries/heatshrink_/heatshrink"]
 	path = compression_libraries/heatshrink_/heatshrink
 	url = https://github.com/atomicobject/heatshrink.git
+[submodule "compression_libraries/zling_/libzling"]
+	path = compression_libraries/zling_/libzling
+	url = https://github.com/richox/libzling.git

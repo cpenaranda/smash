@@ -37,6 +37,7 @@
 #include <z3lib_library.hpp>
 #include <zlib-ng_library.hpp>
 #include <zlib_library.hpp>
+#include <zling_library.hpp>
 #include <zpaq_library.hpp>
 #include <zstd_library.hpp>
 
@@ -95,6 +96,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["z3lib"] = []() { return new Z3libLibrary(); };
   map_["zlib"] = []() { return new ZlibLibrary(); };
   map_["zlib-ng"] = []() { return new ZlibNgLibrary(); };
+  map_["zling"] = []() { return new ZlingLibrary(); };
   map_["zpaq"] = []() { return new ZpaqLibrary(); };
   map_["zstd"] = []() { return new ZstdLibrary(); };
 }
