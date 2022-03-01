@@ -79,3 +79,6 @@
 [submodule "compression_libraries/zling_/libzling"]
 	path = compression_libraries/zling_/libzling
 	url = https://github.com/richox/libzling.git
+[submodule "compression_libraries/csc_/CSC"]
+	path = compression_libraries/csc_/CSC
+	url = https://github.com/fusiyuan2010/CSC.git

@@ -14,6 +14,7 @@
 #include <bzip2_library.hpp>
 #include <c-blosc2_library.hpp>
 #include <compression_libraries.hpp>
+#include <csc_library.hpp>
 #include <density_library.hpp>
 #include <fari_library.hpp>
 #include <flz_library.hpp>
@@ -73,6 +74,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["brotli"] = []() { return new BrotliLibrary(); };
   map_["bzip2"] = []() { return new Bzip2Library(); };
   map_["c-blosc2"] = []() { return new CBlosc2Library(); };
+  map_["csc"] = []() { return new CscLibrary(); };
   map_["density"] = []() { return new DensityLibrary(); };
   map_["fari"] = []() { return new FariLibrary(); };
   map_["flz"] = []() { return new FlzLibrary(); };

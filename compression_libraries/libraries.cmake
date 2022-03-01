@@ -26,6 +26,7 @@ set(LZHAM_VERSION "master")
 set(LIBBSC_VERSION "v3.2.4")
 set(HEATSHRINK_VERSION "v0.4.1")
 set(ZLING_VERSION "20160108")
+set(CSC_VERSION "master")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -61,6 +62,7 @@ add_subdirectory(z3lib_)
 add_subdirectory(libbsc_)
 add_subdirectory(heatshrink_)
 add_subdirectory(zling_)
+add_subdirectory(csc_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -94,6 +96,7 @@ set(SMASH_LIBRARIES
   libbsc
   heatshrink
   zling
+  csc
 )
 
 set(SMASH_INCLUDES
@@ -160,6 +163,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/heatshrink_/heatshrink
   ${CMAKE_CURRENT_SOURCE_DIR}/zling_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/zling_/libzling/src
+  ${CMAKE_CURRENT_SOURCE_DIR}/csc_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/csc_/CSC/src/libcsc
 )
 
 set(SMASH_SOURCES
@@ -193,4 +198,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/libbsc_/src/libbsc_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/heatshrink_/src/heatshrink_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/zling_/src/zling_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/csc_/src/csc_library.cpp
 )
