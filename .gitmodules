@@ -85,3 +85,6 @@
 [submodule "compression_libraries/lz4_/lz4"]
 	path = compression_libraries/lz4_/lz4
 	url = https://github.com/lz4/lz4.git
+[submodule "compression_libraries/miniz_/miniz"]
+	path = compression_libraries/miniz_/miniz
+	url = https://github.com/richgel999/miniz.git
