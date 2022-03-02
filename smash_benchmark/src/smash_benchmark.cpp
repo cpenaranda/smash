@@ -65,9 +65,11 @@ bool SetMemories(std::string input_file_name, char **uncompressed_data,
 
   *compressed_size = *uncompressed_size + 5000;
   *compressed_data = new char[*compressed_size];
+  memset(*compressed_data, '\0', sizeof(char)*(*compressed_size));
 
   *decompressed_size = *uncompressed_size;
   *decompressed_data = new char[*decompressed_size];
+  memset(*decompressed_data, '\0', sizeof(char)*(*decompressed_size));
 
   return result;
 }

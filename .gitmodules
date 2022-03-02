@@ -82,3 +82,6 @@
 [submodule "compression_libraries/csc_/CSC"]
 	path = compression_libraries/csc_/CSC
 	url = https://github.com/fusiyuan2010/CSC.git
+[submodule "compression_libraries/lz4_/lz4"]
+	path = compression_libraries/lz4_/lz4
+	url = https://github.com/lz4/lz4.git

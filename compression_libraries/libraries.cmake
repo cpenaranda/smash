@@ -27,6 +27,7 @@ set(LIBBSC_VERSION "v3.2.4")
 set(HEATSHRINK_VERSION "v0.4.1")
 set(ZLING_VERSION "20160108")
 set(CSC_VERSION "master")
+set(LZ4_VERSION "v1.9.3")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -35,6 +36,7 @@ set(Z3LIB_URL "https://scara.com/~schirmer/o/z3lib/z3lib-1.3.tar.gz")
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
 add_subdirectory(bzip2_)
+add_subdirectory(lz4_)
 add_subdirectory(c-blosc2_)
 add_subdirectory(density_)
 add_subdirectory(libdeflate_)
@@ -69,6 +71,7 @@ set(SMASH_LIBRARIES
   brotlidec-static
   brotlienc-static
   bzip2
+  lz4_static
   blosc2_static
   density
   libdeflate
@@ -106,6 +109,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/brotli_/brotli/c/include
   ${CMAKE_CURRENT_SOURCE_DIR}/bzip2_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/bzip2_/bzip2
+  ${CMAKE_CURRENT_SOURCE_DIR}/lz4_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/lz4_
   ${CMAKE_CURRENT_SOURCE_DIR}/c-blosc2_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/c-blosc2_/c-blosc2/include
   ${CMAKE_CURRENT_SOURCE_DIR}/density_/include
@@ -199,4 +204,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/heatshrink_/src/heatshrink_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/zling_/src/zling_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/csc_/src/csc_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lz4_/src/lz4_library.cpp
 )
