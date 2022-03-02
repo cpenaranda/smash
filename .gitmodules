@@ -91,3 +91,6 @@
 [submodule "compression_libraries/liblzg_/liblzg"]
 	path = compression_libraries/liblzg_/liblzg
 	url = https://github.com/mbitsnbites/liblzg.git
+[submodule "compression_libraries/fse_/FiniteStateEntropy"]
+	path = compression_libraries/fse_/FiniteStateEntropy
+	url = https://github.com/Cyan4973/FiniteStateEntropy.git

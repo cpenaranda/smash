@@ -18,6 +18,7 @@
 #include <density_library.hpp>
 #include <fari_library.hpp>
 #include <flz_library.hpp>
+#include <fse_library.hpp>
 #include <gipfeli_library.hpp>
 #include <heatshrink_library.hpp>
 #include <libbsc_library.hpp>
@@ -81,6 +82,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["density"] = []() { return new DensityLibrary(); };
   map_["fari"] = []() { return new FariLibrary(); };
   map_["flz"] = []() { return new FlzLibrary(); };
+  map_["fse"] = []() { return new FseLibrary(); };
   map_["gipfeli"] = []() { return new GipfeliLibrary(); };
   map_["heatshrink"] = []() { return new HeatshrinkLibrary(); };
   map_["libbsc"] = []() { return new LibbscLibrary(); };

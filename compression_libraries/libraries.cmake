@@ -30,6 +30,7 @@ set(CSC_VERSION "master")
 set(LZ4_VERSION "v1.9.3")
 set(MINIZ_VERSION "2.2.0")
 set(LIBLZG_VERSION "master")
+set(FSE_VERSION "master")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -69,6 +70,7 @@ add_subdirectory(zling_)
 add_subdirectory(csc_)
 add_subdirectory(miniz_)
 add_subdirectory(liblzg_)
+add_subdirectory(fse_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -106,6 +108,7 @@ set(SMASH_LIBRARIES
   csc
   miniz
   liblzg
+  fse
 )
 
 set(SMASH_INCLUDES
@@ -180,6 +183,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/miniz_/miniz
   ${CMAKE_CURRENT_SOURCE_DIR}/liblzg_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/liblzg_/liblzg/src/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/fse_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/fse_/FiniteStateEntropy/lib
 )
 
 set(SMASH_SOURCES
@@ -217,4 +222,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/lz4_/src/lz4_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/miniz_/src/miniz_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/liblzg_/src/liblzg_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/fse_/src/fse_library.cpp
 )
