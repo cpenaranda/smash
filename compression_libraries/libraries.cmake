@@ -29,6 +29,7 @@ set(ZLING_VERSION "20160108")
 set(CSC_VERSION "master")
 set(LZ4_VERSION "v1.9.3")
 set(MINIZ_VERSION "2.2.0")
+set(LIBLZG_VERSION "master")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -67,6 +68,7 @@ add_subdirectory(heatshrink_)
 add_subdirectory(zling_)
 add_subdirectory(csc_)
 add_subdirectory(miniz_)
+add_subdirectory(liblzg_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -103,6 +105,7 @@ set(SMASH_LIBRARIES
   zling
   csc
   miniz
+  liblzg
 )
 
 set(SMASH_INCLUDES
@@ -175,6 +178,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/csc_/CSC/src/libcsc
   ${CMAKE_CURRENT_SOURCE_DIR}/miniz_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/miniz_/miniz
+  ${CMAKE_CURRENT_SOURCE_DIR}/liblzg_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/liblzg_/liblzg/src/include
 )
 
 set(SMASH_SOURCES
@@ -211,4 +216,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/csc_/src/csc_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lz4_/src/lz4_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/miniz_/src/miniz_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/liblzg_/src/liblzg_library.cpp
 )
