@@ -35,6 +35,7 @@ set(FSE_VERSION "master")
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
 set(Z3LIB_URL "https://scara.com/~schirmer/o/z3lib/z3lib-1.3.tar.gz")
+set(UCL_URL "http://www.oberhumer.com/opensource/ucl/download/ucl-1.03.tar.gz")
 
 add_subdirectory(brieflz_)
 add_subdirectory(brotli_)
@@ -71,6 +72,7 @@ add_subdirectory(csc_)
 add_subdirectory(miniz_)
 add_subdirectory(liblzg_)
 add_subdirectory(fse_)
+add_subdirectory(ucl_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -109,6 +111,7 @@ set(SMASH_LIBRARIES
   miniz
   liblzg
   fse
+  ucl
 )
 
 set(SMASH_INCLUDES
@@ -185,6 +188,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/liblzg_/liblzg/src/include
   ${CMAKE_CURRENT_SOURCE_DIR}/fse_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/fse_/FiniteStateEntropy/lib
+  ${CMAKE_CURRENT_SOURCE_DIR}/ucl_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/ucl_/ucl/include
 )
 
 set(SMASH_SOURCES
@@ -223,4 +228,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/miniz_/src/miniz_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/liblzg_/src/liblzg_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/fse_/src/fse_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/ucl_/src/ucl_library.cpp
 )

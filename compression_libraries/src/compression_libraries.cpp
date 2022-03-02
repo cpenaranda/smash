@@ -36,6 +36,7 @@
 #include <ms_library.hpp>
 #include <quicklz_library.hpp>
 #include <snappy_library.hpp>
+#include <ucl_library.hpp>
 #include <wflz_library.hpp>
 #include <xpack_library.hpp>
 #include <yalz77_library.hpp>
@@ -100,6 +101,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["ms"] = []() { return new MsLibrary(); };
   map_["quicklz"] = []() { return new QuicklzLibrary(); };
   map_["snappy"] = []() { return new SnappyLibrary(); };
+  map_["ucl"] = []() { return new UclLibrary(); };
   map_["wflz"] = []() { return new WflzLibrary(); };
   map_["xpack"] = []() { return new XpackLibrary(); };
   map_["yalz77"] = []() { return new Yalz77Library(); };
