@@ -25,6 +25,7 @@
 #include <libbsc_library.hpp>
 #include <libdeflate_library.hpp>
 #include <liblzg_library.hpp>
+#include <lizard_library.hpp>
 #include <lodepng_library.hpp>
 #include <lz4_library.hpp>
 #include <lzf_library.hpp>
@@ -92,6 +93,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["libbsc"] = []() { return new LibbscLibrary(); };
   map_["libdeflate"] = []() { return new LibdeflateLibrary(); };
   map_["liblzg"] = []() { return new LiblzgLibrary(); };
+  map_["lizard"] = []() { return new LizardLibrary(); };
   map_["lodepng"] = []() { return new LodepngLibrary(); };
   map_["lz4"] = []() { return new Lz4Library(); };
   map_["lzf"] = []() { return new LzfLibrary(); };

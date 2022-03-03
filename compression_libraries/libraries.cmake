@@ -33,6 +33,7 @@ set(LIBLZG_VERSION "master")
 set(FSE_VERSION "master")
 set(LODEPNG_VERSION "master")
 set(FLZMA2_VERSION "v1.0.1")
+set(LIZARD_VERSION "v1.0")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -77,6 +78,7 @@ add_subdirectory(fse_)
 add_subdirectory(ucl_)
 add_subdirectory(lodepng_)
 add_subdirectory(flzma2_)
+add_subdirectory(lizard_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -118,6 +120,7 @@ set(SMASH_LIBRARIES
   ucl
   lodepng
   flzma2
+  lizard
 )
 
 set(SMASH_INCLUDES
@@ -200,6 +203,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/lodepng_/lodepng
   ${CMAKE_CURRENT_SOURCE_DIR}/flzma2_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/flzma2_/fast-lzma2
+  ${CMAKE_CURRENT_SOURCE_DIR}/lizard_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/lizard_/lizard/lib
 )
 
 set(SMASH_SOURCES
@@ -241,4 +246,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/ucl_/src/ucl_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lodepng_/src/lodepng_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/flzma2_/src/flzma2_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lizard_/src/lizard_library.cpp
 )

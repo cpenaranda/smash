@@ -100,3 +100,6 @@
 [submodule "compression_libraries/flzma2_/fast-lzma2"]
 	path = compression_libraries/flzma2_/fast-lzma2
 	url = https://github.com/conor42/fast-lzma2.git
+[submodule "compression_libraries/lizard_/lizard"]
+	path = compression_libraries/lizard_/lizard
+	url = https://github.com/inikep/lizard.git
