@@ -35,6 +35,7 @@
 #include <lzjb_library.hpp>
 #include <lzma_library.hpp>
 #include <lzo_library.hpp>
+#include <lzsse_library.hpp>
 #include <miniz_library.hpp>
 #include <ms_library.hpp>
 #include <quicklz_library.hpp>
@@ -103,6 +104,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["lzjb"] = []() { return new LzjbLibrary(); };
   map_["lzma"] = []() { return new LzmaLibrary(); };
   map_["lzo"] = []() { return new LzoLibrary(); };
+  map_["lzsse"] = []() { return new LzsseLibrary(); };
   map_["miniz"] = []() { return new MinizLibrary(); };
   map_["ms"] = []() { return new MsLibrary(); };
   map_["quicklz"] = []() { return new QuicklzLibrary(); };

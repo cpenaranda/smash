@@ -103,3 +103,6 @@
 [submodule "compression_libraries/lizard_/lizard"]
 	path = compression_libraries/lizard_/lizard
 	url = https://github.com/inikep/lizard.git
+[submodule "compression_libraries/lzsse_/LZSSE"]
+	path = compression_libraries/lzsse_/LZSSE
+	url = https://github.com/ConorStokes/LZSSE.git
