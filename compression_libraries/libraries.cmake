@@ -31,6 +31,7 @@ set(LZ4_VERSION "v1.9.3")
 set(MINIZ_VERSION "2.2.0")
 set(LIBLZG_VERSION "master")
 set(FSE_VERSION "master")
+set(LODEPNG_VERSION "master")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -73,6 +74,7 @@ add_subdirectory(miniz_)
 add_subdirectory(liblzg_)
 add_subdirectory(fse_)
 add_subdirectory(ucl_)
+add_subdirectory(lodepng_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -112,6 +114,7 @@ set(SMASH_LIBRARIES
   liblzg
   fse
   ucl
+  lodepng
 )
 
 set(SMASH_INCLUDES
@@ -190,6 +193,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/fse_/FiniteStateEntropy/lib
   ${CMAKE_CURRENT_SOURCE_DIR}/ucl_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/ucl_/ucl/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/lodepng_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/lodepng_/lodepng
 )
 
 set(SMASH_SOURCES
@@ -229,4 +234,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/liblzg_/src/liblzg_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/fse_/src/fse_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ucl_/src/ucl_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lodepng_/src/lodepng_library.cpp
 )

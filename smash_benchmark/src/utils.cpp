@@ -93,9 +93,10 @@ std::string Utils::ToStringDouble(const double &value) {
 
 void Utils::SetBackReferenceBits(Smash *lib, std::vector<Options> *options,
                                  Options *option) {
-  uint8_t min_bits{0}, max_bits{0};
-  bool set_value =
-      lib->GetBackReferenceBitsInformation(nullptr, &min_bits, &max_bits);
+  uint16_t min_bits{0}, max_bits{0};
+  bool set_value = lib->GetBackReferenceBitsInformation(
+      nullptr, reinterpret_cast<uint8_t *>(&min_bits),
+      reinterpret_cast<uint8_t *>(&max_bits));
   do {
     if (set_value) option->SetBackReferenceBits(min_bits);
     options->push_back(*option);
@@ -105,9 +106,10 @@ void Utils::SetBackReferenceBits(Smash *lib, std::vector<Options> *options,
 
 void Utils::SetNumberThreads(Smash *lib, std::vector<Options> *options,
                              Options *option) {
-  uint8_t min_threads{0}, max_threads{0};
-  bool set_value =
-      lib->GetNumberThreadsInformation(nullptr, &min_threads, &max_threads);
+  uint16_t min_threads{0}, max_threads{0};
+  bool set_value = lib->GetNumberThreadsInformation(
+      nullptr, reinterpret_cast<uint8_t *>(&min_threads),
+      reinterpret_cast<uint8_t *>(&max_threads));
   do {
     if (set_value) option->SetNumberThreads(min_threads);
     SetBackReferenceBits(lib, options, option);
@@ -117,8 +119,10 @@ void Utils::SetNumberThreads(Smash *lib, std::vector<Options> *options,
 
 void Utils::SetFlags(Smash *lib, std::vector<Options> *options,
                      Options *option) {
-  uint8_t min_flag{0}, max_flag{0};
-  bool set_value = lib->GetFlagsInformation(nullptr, &min_flag, &max_flag);
+  uint16_t min_flag{0}, max_flag{0};
+  bool set_value =
+      lib->GetFlagsInformation(nullptr, reinterpret_cast<uint8_t *>(&min_flag),
+                               reinterpret_cast<uint8_t *>(&max_flag));
   do {
     if (set_value) option->SetFlags(min_flag);
     SetNumberThreads(lib, options, option);
@@ -128,33 +132,36 @@ void Utils::SetFlags(Smash *lib, std::vector<Options> *options,
 
 void Utils::SetWorkFactor(Smash *lib, std::vector<Options> *options,
                           Options *option) {
-  uint8_t min_factor{0}, max_factor{0};
-  bool set_value =
-      lib->GetWorkFactorInformation(nullptr, &min_factor, &max_factor);
+  uint16_t min_factor{0}, max_factor{0};
+  bool set_value = lib->GetWorkFactorInformation(
+      nullptr, reinterpret_cast<uint8_t *>(&min_factor),
+      reinterpret_cast<uint8_t *>(&max_factor));
   do {
     if (set_value) option->SetWorkFactor(min_factor);
     SetFlags(lib, options, option);
-    min_factor += 51;
+    min_factor += 5;
   } while (min_factor <= max_factor);
 }
 
 void Utils::SetWindowSize(Smash *lib, std::vector<Options> *options,
                           Options *option) {
-  uint32_t min_window{0}, max_window{0};
-  bool set_value =
-      lib->GetWindowSizeInformation(nullptr, &min_window, &max_window);
+  uint64_t min_window{0}, max_window{0};
+  bool set_value = lib->GetWindowSizeInformation(
+      nullptr, reinterpret_cast<uint32_t *>(&min_window),
+      reinterpret_cast<uint32_t *>(&max_window));
   do {
     if (set_value) option->SetWindowSize(min_window);
     SetWorkFactor(lib, options, option);
-    min_window += 2;
+    min_window += 5;
   } while (min_window <= max_window);
 }
 
 void Utils::SetMode(Smash *lib, std::vector<Options> *options, Options *option,
                     const uint8_t &level) {
-  uint8_t min_mode{0}, max_mode{0};
+  uint16_t min_mode{0}, max_mode{0};
   bool set_value =
-      lib->GetModeInformation(nullptr, &min_mode, &max_mode, level);
+      lib->GetModeInformation(nullptr, reinterpret_cast<uint8_t *>(&min_mode),
+                              reinterpret_cast<uint8_t *>(&max_mode), level);
   do {
     if (set_value) option->SetMode(min_mode);
     SetWindowSize(lib, options, option);
@@ -164,9 +171,10 @@ void Utils::SetMode(Smash *lib, std::vector<Options> *options, Options *option,
 
 void Utils::SetCopressionLevel(Smash *lib, std::vector<Options> *options) {
   Options option;
-  uint8_t min_level{0}, max_level{0};
-  bool set_value =
-      lib->GetCompressionLevelInformation(nullptr, &min_level, &max_level);
+  uint16_t min_level{0}, max_level{0};
+  bool set_value = lib->GetCompressionLevelInformation(
+      nullptr, reinterpret_cast<uint8_t *>(&min_level),
+      reinterpret_cast<uint8_t *>(&max_level));
   do {
     if (set_value) option.SetCompressionLevel(min_level);
     SetMode(lib, options, &option, min_level);

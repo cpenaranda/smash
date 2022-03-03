@@ -94,3 +94,6 @@
 [submodule "compression_libraries/fse_/FiniteStateEntropy"]
 	path = compression_libraries/fse_/FiniteStateEntropy
 	url = https://github.com/Cyan4973/FiniteStateEntropy.git
+[submodule "compression_libraries/lodepng_/lodepng"]
+	path = compression_libraries/lodepng_/lodepng
+	url = https://github.com/lvandeve/lodepng.git
