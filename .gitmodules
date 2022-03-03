@@ -97,3 +97,6 @@
 [submodule "compression_libraries/lodepng_/lodepng"]
 	path = compression_libraries/lodepng_/lodepng
 	url = https://github.com/lvandeve/lodepng.git
+[submodule "compression_libraries/flzma2_/fast-lzma2"]
+	path = compression_libraries/flzma2_/fast-lzma2
+	url = https://github.com/conor42/fast-lzma2.git
