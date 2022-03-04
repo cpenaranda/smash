@@ -106,3 +106,6 @@
 [submodule "compression_libraries/lzsse_/LZSSE"]
 	path = compression_libraries/lzsse_/LZSSE
 	url = https://github.com/ConorStokes/LZSSE.git
+[submodule "compression_libraries/pithy_/pithy"]
+	path = compression_libraries/pithy_/pithy
+	url = https://github.com/johnezang/pithy.git

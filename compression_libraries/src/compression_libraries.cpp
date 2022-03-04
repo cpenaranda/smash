@@ -38,6 +38,7 @@
 #include <lzsse_library.hpp>
 #include <miniz_library.hpp>
 #include <ms_library.hpp>
+#include <pithy_library.hpp>
 #include <quicklz_library.hpp>
 #include <snappy_library.hpp>
 #include <ucl_library.hpp>
@@ -107,6 +108,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["lzsse"] = []() { return new LzsseLibrary(); };
   map_["miniz"] = []() { return new MinizLibrary(); };
   map_["ms"] = []() { return new MsLibrary(); };
+  map_["pithy"] = []() { return new PithyLibrary(); };
   map_["quicklz"] = []() { return new QuicklzLibrary(); };
   map_["snappy"] = []() { return new SnappyLibrary(); };
   map_["ucl"] = []() { return new UclLibrary(); };
