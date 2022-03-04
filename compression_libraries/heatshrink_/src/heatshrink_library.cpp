@@ -47,18 +47,25 @@ bool HeatshrinkLibrary::Compress(char *uncompressed_data,
         sres = heatshrink_encoder_sink(
             compression, reinterpret_cast<uint8_t *>(uncompressed_data),
             uncompressed_size, &size);
-        result = (sres >= 0);
-        uncompressed_data += size;
-        uncompressed_size -= size;
-        if (!uncompressed_size) heatshrink_encoder_finish(compression);
-        do {
+        result = (sres >= 0) && (size <= uncompressed_size);
+        if (result && size) {
+          uncompressed_data += size;
+          uncompressed_size -= size;
+        }
+        if (!uncompressed_size && result) {
+          fres = heatshrink_encoder_finish(compression);
+          result = (fres == HSER_FINISH_MORE);
+        }
+        for (pres = HSER_POLL_MORE; pres == HSER_POLL_MORE && result;) {
           pres = heatshrink_encoder_poll(
               compression, reinterpret_cast<uint8_t *>(compressed_data),
               *compressed_size, &size);
-          result = (pres >= 0) && (bytes + size < *compressed_size);
-          bytes += size;
-          compressed_data += size;
-        } while (pres == HSER_POLL_MORE && result);
+          result = (pres >= 0) && (bytes + size <= *compressed_size);
+          if (result && size) {
+            bytes += size;
+            compressed_data += size;
+          }
+        }
       }
       if (result) {
         fres = heatshrink_encoder_finish(compression);
@@ -95,18 +102,25 @@ bool HeatshrinkLibrary::Decompress(char *compressed_data,
         sres = heatshrink_decoder_sink(
             decompression, reinterpret_cast<uint8_t *>(compressed_data),
             compressed_size, &size);
-        result = (sres >= 0);
-        compressed_data += size;
-        compressed_size -= size;
-        if (!compressed_size) heatshrink_decoder_finish(decompression);
-        do {
+        result = (sres >= 0) && (size <= compressed_size);
+        if (result && size) {
+          compressed_data += size;
+          compressed_size -= size;
+        }
+        if (!compressed_size && result) {
+          fres = heatshrink_decoder_finish(decompression);
+          result = (fres == HSDR_FINISH_MORE);
+        }
+        for (pres = HSDR_POLL_MORE; pres == HSDR_POLL_MORE && result;) {
           pres = heatshrink_decoder_poll(
               decompression, reinterpret_cast<uint8_t *>(decompressed_data),
               *decompressed_size, &size);
-          result = (pres >= 0) && (bytes + size < *decompressed_size);
-          bytes += size;
-          decompressed_data += size;
-        } while (pres == HSDR_POLL_MORE && result);
+          result = (pres >= 0) && (bytes + size <= *decompressed_size);
+          if (result && size) {
+            bytes += size;
+            decompressed_data += size;
+          }
+        }
       }
       if (result) {
         fres = heatshrink_decoder_finish(decompression);
