@@ -109,3 +109,6 @@
 [submodule "compression_libraries/pithy_/pithy"]
 	path = compression_libraries/pithy_/pithy
 	url = https://github.com/johnezang/pithy.git
+[submodule "compression_libraries/lzmat_/lzmat"]
+	path = compression_libraries/lzmat_/lzmat
+	url = https://github.com/nemequ/lzmat.git

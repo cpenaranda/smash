@@ -36,6 +36,7 @@ set(FLZMA2_VERSION "v1.0.1")
 set(LIZARD_VERSION "v1.0")
 set(LZSSE_VERSION "master")
 set(PITHY_VERSION "master")
+set(LZMAT_VERSION "master")
 
 set(LZFX_URL "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/lzfx-0.1.tar.gz")
 set(QUICKLZ_URL "https://quicklz.com/")
@@ -83,6 +84,7 @@ add_subdirectory(flzma2_)
 add_subdirectory(lizard_)
 add_subdirectory(lzsse_)
 add_subdirectory(pithy_)
+add_subdirectory(lzmat_)
 
 set(SMASH_LIBRARIES
   brieflz
@@ -127,6 +129,7 @@ set(SMASH_LIBRARIES
   lizard
   lzsse
   pithy
+  lzmat
 )
 
 set(SMASH_INCLUDES
@@ -217,6 +220,8 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/LZSSE/lzsse8
   ${CMAKE_CURRENT_SOURCE_DIR}/pithy_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/pithy_/pithy
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzmat_/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzmat_/lzmat
 )
 
 set(SMASH_SOURCES
@@ -261,4 +266,5 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/lizard_/src/lizard_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/src/lzsse_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/pithy_/src/pithy_library.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lzmat_/src/lzmat_library.cpp
 )

@@ -34,6 +34,7 @@
 #include <lzham_library.hpp>
 #include <lzjb_library.hpp>
 #include <lzma_library.hpp>
+#include <lzmat_library.hpp>
 #include <lzo_library.hpp>
 #include <lzsse_library.hpp>
 #include <miniz_library.hpp>
@@ -104,6 +105,7 @@ CompressionLibraries::CompressionLibraries() {
   map_["lzham"] = []() { return new LzhamLibrary(); };
   map_["lzjb"] = []() { return new LzjbLibrary(); };
   map_["lzma"] = []() { return new LzmaLibrary(); };
+  map_["lzmat"] = []() { return new LzmatLibrary(); };
   map_["lzo"] = []() { return new LzoLibrary(); };
   map_["lzsse"] = []() { return new LzsseLibrary(); };
   map_["miniz"] = []() { return new MinizLibrary(); };
