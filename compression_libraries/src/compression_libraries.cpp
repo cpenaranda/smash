@@ -6,6 +6,7 @@
  * Universidad Politécnica de Valencia (Spain)
  */
 
+#include <iomanip>
 #include <iostream>
 
 // SMASH LIBRARIES
@@ -65,8 +66,10 @@ CompressionLibrary *CompressionLibraries::GetCompressionLibrary(
 
 void CompressionLibraries::GetListInformation() {
   CompressionLibrary *library;
+  int i = 0;
   for (auto &lib : map_) {
     library = lib.second();
+    std::cout << std::right << std::setw(3) << std::setfill(' ') << ++i << ": ";
     library->GetTitle();
     delete library;
   }

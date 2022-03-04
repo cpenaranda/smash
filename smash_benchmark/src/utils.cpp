@@ -77,6 +77,7 @@ bool Utils::Check(const char *const param, const std::string &first_value,
 
 void Utils::ListCompressionLibraries() {
   std::cout << "Available compression libraries:" << std::endl << std::endl;
+  std::cout << std::right << std::setw(3) << std::setfill(' ') << 0 << ": ";
   std::cout << std::left << std::setw(15) << std::setfill(' ') << "all"
             << "- "
             << "Run all the compression libraries with specific options"
