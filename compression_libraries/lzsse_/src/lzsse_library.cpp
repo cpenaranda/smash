@@ -16,14 +16,12 @@
 #include <lzsse_library.hpp>
 #include <options.hpp>
 
-bool LzsseLibrary::CheckOptions(const Options &options,
-                                const bool &compressor) {
+bool LzsseLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "lzsse", options.GetCompressionLevel(), 1, 17);
+    result = CompressionLibrary::CheckCompressionLevel("lzsse", options, 1, 17);
     if (result) {
-      result = CompressionLibrary::CheckMode("lzsse", options.GetMode(), 0, 2);
+      result = CompressionLibrary::CheckMode("lzsse", options, 0, 2);
     }
   }
   return result;

@@ -22,7 +22,7 @@ class CompressionLibraries {
   std::map<std::string, std::function<CompressionLibrary *()>> map_;
 
  public:
-  CompressionLibrary *GetCompressionLibrary(std::string library_name);
+  CompressionLibrary *GetCompressionLibrary(const std::string &library_name);
 
   std::vector<std::string> GetNameLibraries();
 

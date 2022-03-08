@@ -13,14 +13,12 @@
 #include <lizard_library.hpp>
 #include <options.hpp>
 
-bool LizardLibrary::CheckOptions(const Options &options,
-                                 const bool &compressor) {
+bool LizardLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "lizard", options.GetCompressionLevel(), 0, 9);
+    result = CompressionLibrary::CheckCompressionLevel("lizard", options, 0, 9);
     if (result) {
-      result = CompressionLibrary::CheckMode("lizard", options.GetMode(), 0, 3);
+      result = CompressionLibrary::CheckMode("lizard", options, 0, 3);
     }
   }
   return result;

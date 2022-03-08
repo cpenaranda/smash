@@ -276,21 +276,13 @@ bool Utils::GetParams(const int &number_params, const char *const params[],
   bool show_message{true};
   bool end{false};
   bool error{false};
-  bool compression_level_set{false};
-  bool window_size_set{false};
-  bool mode_set{false};
-  bool work_factor_set{false};
-  bool flags_set{false};
-  bool threads_set{false};
   bool best_effort_set{false};
   bool best_set{false};
-  bool back_reference_bits_set{false};
   bool repetitions_set{false};
 
   for (int n = 1; n < number_params && !end; ++n) {
     if (Check(params[n], help_p1_, help_p2_)) {
-      if (n + 1 < number_params &&
-          std::string(params[n + 1]).find("-") == std::string::npos) {
+      if (n + 1 < number_params && std::string(params[n + 1]).find("-") != 0) {
         ShowLibraryInformation(params[n + 1], params[0]);
       } else {
         ShowMessage(params[0]);
@@ -322,58 +314,37 @@ bool Utils::GetParams(const int &number_params, const char *const params[],
       }
     } else if (Check(params[n], level_p1_, level_p2_)) {
       ++n;
-      if (n < number_params && !compression_level_set) {
-        opt->SetCompressionLevel(atoi(params[n]));
-        compression_level_set = true;
-      } else {
+      if (n >= number_params || opt->SetCompressionLevel(atoi(params[n]))) {
         error = end = true;
       }
     } else if (Check(params[n], window_p1_, window_p2_)) {
       ++n;
-      if (n < number_params && !window_size_set) {
-        opt->SetWindowSize(atoi(params[n]));
-        window_size_set = true;
-      } else {
+      if (n >= number_params || opt->SetWindowSize(atoi(params[n]))) {
         error = end = true;
       }
     } else if (Check(params[n], mode_p1_, mode_p2_)) {
       ++n;
-      if (n < number_params && !mode_set) {
-        opt->SetMode(atoi(params[n]));
-        mode_set = true;
-      } else {
+      if (n >= number_params || opt->SetMode(atoi(params[n]))) {
         error = end = true;
       }
     } else if (Check(params[n], work_p1_, work_p2_)) {
       ++n;
-      if (n < number_params && !work_factor_set) {
-        opt->SetWorkFactor(atoi(params[n]));
-        work_factor_set = true;
-      } else {
+      if (n >= number_params || opt->SetWorkFactor(atoi(params[n]))) {
         error = end = true;
       }
     } else if (Check(params[n], flags_p1_, flags_p2_)) {
       ++n;
-      if (n < number_params && !flags_set) {
-        opt->SetFlags(atoi(params[n]));
-        flags_set = true;
-      } else {
+      if (n >= number_params || opt->SetFlags(atoi(params[n]))) {
         error = end = true;
       }
     } else if (Check(params[n], reference_p1_, reference_p2_)) {
       ++n;
-      if (n < number_params && !back_reference_bits_set) {
-        opt->SetBackReferenceBits(atoi(params[n]));
-        back_reference_bits_set = true;
-      } else {
+      if (n >= number_params || opt->SetBackReferenceBits(atoi(params[n]))) {
         error = end = true;
       }
     } else if (Check(params[n], threads_p1_, threads_p2_)) {
       ++n;
-      if (n < number_params && !threads_set) {
-        opt->SetNumberThreads(atoi(params[n]));
-        threads_set = true;
-      } else {
+      if (n >= number_params || opt->SetNumberThreads(atoi(params[n]))) {
         error = end = true;
       }
     } else if (Check(params[n], effort_p1_, effort_p2_)) {
@@ -495,11 +466,12 @@ void Utils::ShowTitle(const uint64_t &size, const uint64_t &repetitions) {
 }
 
 std::string Utils::ShowResult(
-    Smash *lib, const std::string &library_name, Options opt,
+    Smash *lib, const std::string &library_name,
     const uint64_t &uncompressed_size, const uint64_t &compressed_size,
     const double &mean_vel_compression, const double &error_vel_compression,
     const double &mean_vel_decompression, const double &error_vel_decompression,
     const double &mean_vel_total, const double &error_vel_total) {
+  Options opt = lib->GetOptions();
   const uint16_t size_rows_original_data =
       (size_rows_original_data_ <
        (std::to_string(uncompressed_size).size() + 9))

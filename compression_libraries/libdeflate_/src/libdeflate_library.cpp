@@ -12,13 +12,12 @@
 #include <libdeflate_library.hpp>
 #include <options.hpp>
 
-bool LibdeflateLibrary::CheckOptions(const Options &options,
-                                     const bool &compressor) {
+bool LibdeflateLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("libdeflate", options.GetMode(), 0, 2);
+  result = CompressionLibrary::CheckMode("libdeflate", options, 0, 2);
   if (compressor && result) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "libdeflate", options.GetCompressionLevel(), 0, 12);
+    result =
+        CompressionLibrary::CheckCompressionLevel("libdeflate", options, 0, 12);
   }
   return result;
 }

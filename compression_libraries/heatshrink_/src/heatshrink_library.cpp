@@ -14,16 +14,13 @@ extern "C" {
 #include <heatshrink_library.hpp>
 #include <options.hpp>
 
-bool HeatshrinkLibrary::CheckOptions(const Options &options,
-                                     const bool &compressor) {
+bool HeatshrinkLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
 
-  result = CompressionLibrary::CheckWindowSize("heatshrink",
-                                               options.GetWindowSize(), 4, 14);
+  result = CompressionLibrary::CheckWindowSize("heatshrink", options, 4, 14);
   if (result) {
     result = CompressionLibrary::CheckBackReferenceBits(
-        "heatshrink", options.GetBackReferenceBits(), 3,
-        options.GetWindowSize() - 1);
+        "heatshrink", options, 3, options->GetWindowSize() - 1);
   }
   return result;
 }

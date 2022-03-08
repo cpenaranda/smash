@@ -11,17 +11,13 @@
 #include <lzham_library.hpp>
 #include <options.hpp>
 
-bool LzhamLibrary::CheckOptions(const Options &options,
-                                const bool &compressor) {
+bool LzhamLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckWindowSize("lzham", options.GetWindowSize(),
-                                               15, 29);
+  result = CompressionLibrary::CheckWindowSize("lzham", options, 15, 29);
   if (compressor && result) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "lzham", options.GetCompressionLevel(), 0, 4);
+    result = CompressionLibrary::CheckCompressionLevel("lzham", options, 0, 4);
     if (result) {
-      result =
-          CompressionLibrary::CheckFlags("lzham", options.GetFlags(), 0, 7);
+      result = CompressionLibrary::CheckFlags("lzham", options, 0, 7);
     }
   }
   return result;

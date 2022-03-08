@@ -12,12 +12,11 @@
 #include <options.hpp>
 #include <ucl_library.hpp>
 
-bool UclLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool UclLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("ucl", options.GetMode(), 0, 2);
+  result = CompressionLibrary::CheckMode("ucl", options, 0, 2);
   if (compressor && result) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "ucl", options.GetCompressionLevel(), 1, 10);
+    result = CompressionLibrary::CheckCompressionLevel("ucl", options, 1, 10);
   }
   return result;
 }

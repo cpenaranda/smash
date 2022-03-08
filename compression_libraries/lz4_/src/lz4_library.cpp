@@ -13,13 +13,12 @@
 #include <lz4_library.hpp>
 #include <options.hpp>
 
-bool Lz4Library::CheckOptions(const Options &options, const bool &compressor) {
+bool Lz4Library::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "lz4", options.GetCompressionLevel(), 0, 12);
+    result = CompressionLibrary::CheckCompressionLevel("lz4", options, 0, 12);
     if (result) {
-      result = CompressionLibrary::CheckMode("lz4", options.GetMode(), 0, 1);
+      result = CompressionLibrary::CheckMode("lz4", options, 0, 1);
     }
   }
   return result;

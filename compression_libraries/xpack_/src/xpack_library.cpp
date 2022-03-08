@@ -12,12 +12,10 @@
 #include <options.hpp>
 #include <xpack_library.hpp>
 
-bool XpackLibrary::CheckOptions(const Options &options,
-                                const bool &compressor) {
+bool XpackLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "xpack", options.GetCompressionLevel(), 1, 9);
+    result = CompressionLibrary::CheckCompressionLevel("xpack", options, 1, 9);
   }
   return result;
 }

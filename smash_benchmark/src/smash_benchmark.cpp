@@ -65,11 +65,11 @@ bool SetMemories(std::string input_file_name, char **uncompressed_data,
 
   *compressed_size = *uncompressed_size + 5000;
   *compressed_data = new char[*compressed_size];
-  memset(*compressed_data, '\0', sizeof(char)*(*compressed_size));
+  memset(*compressed_data, '\0', sizeof(char) * (*compressed_size));
 
   *decompressed_size = *uncompressed_size;
   *decompressed_data = new char[*decompressed_size];
-  memset(*decompressed_data, '\0', sizeof(char)*(*decompressed_size));
+  memset(*decompressed_data, '\0', sizeof(char) * (*decompressed_size));
 
   return result;
 }
@@ -118,6 +118,9 @@ int main(int argc, char *argv[]) {
       lib = new Smash(library_name);
       if (all_options) {
         Utils::GetAllOptions(lib, &options);
+      } else {
+        options.clear();
+        options.push_back(opt);
       }
       for (auto &option : options) {
         char *uncompressed_data{nullptr};
@@ -137,8 +140,8 @@ int main(int argc, char *argv[]) {
                                        &compressed_size);
             std::chrono::_V2::system_clock::time_point start, end;
             std::chrono::duration<double> compression_time, decompression_time;
-            result =
-                lib->SetOptionsCompressor(option) ? EXIT_SUCCESS : EXIT_FAILURE;
+            result = lib->SetOptionsCompressor(&option) ? EXIT_SUCCESS
+                                                        : EXIT_FAILURE;
             if (result == EXIT_SUCCESS) {
               start = std::chrono::system_clock::now();
               result = lib->Compress(uncompressed_data, uncompressed_size,
@@ -148,8 +151,8 @@ int main(int argc, char *argv[]) {
               end = std::chrono::system_clock::now();
               compression_time = end - start;
               if (result == EXIT_SUCCESS) {
-                result = lib->SetOptionsDecompressor(option) ? EXIT_SUCCESS
-                                                             : EXIT_FAILURE;
+                result = lib->SetOptionsDecompressor(&option) ? EXIT_SUCCESS
+                                                              : EXIT_FAILURE;
                 if (result == EXIT_SUCCESS) {
                   start = std::chrono::system_clock::now();
                   result =
@@ -229,7 +232,7 @@ int main(int argc, char *argv[]) {
             if (CopyToFile(output_file_name, compressed_data,
                            compressed_size)) {
               std::string message = Utils::ShowResult(
-                  lib, library_name, option, uncompressed_size, compressed_size,
+                  lib, library_name, uncompressed_size, compressed_size,
                   mean_compression, error_compression, mean_decompression,
                   error_decompression, mean_total, error_total);
               results.push_back(Result(

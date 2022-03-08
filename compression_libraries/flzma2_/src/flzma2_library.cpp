@@ -12,15 +12,13 @@
 #include <flzma2_library.hpp>
 #include <options.hpp>
 
-bool Flzma2Library::CheckOptions(const Options &options,
-                                 const bool &compressor) {
+bool Flzma2Library::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "flzma2", options.GetCompressionLevel(), 1, 10);
+    result =
+        CompressionLibrary::CheckCompressionLevel("flzma2", options, 1, 10);
     if (result) {
-      result = CompressionLibrary::CheckNumberThreads(
-          "flzma2", options.GetNumberThreads(), 1, 8);
+      result = CompressionLibrary::CheckNumberThreads("flzma2", options, 1, 8);
     }
   }
   return result;

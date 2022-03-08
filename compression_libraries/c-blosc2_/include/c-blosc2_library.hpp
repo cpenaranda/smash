@@ -22,11 +22,11 @@ class CBlosc2Library : public CompressionLibrary {
   std::string *flags_;
 
  public:
-  bool CheckOptions(const Options &options, const bool &compressor);
+  bool CheckOptions(Options *options, const bool &compressor);
 
-  bool SetOptionsCompressor(const Options &options);
+  bool SetOptionsCompressor(Options *options);
 
-  bool SetOptionsDecompressor(const Options &options);
+  bool SetOptionsDecompressor(Options *options);
 
   void GetCompressedDataSize(char *uncompressed_data,
                              uint64_t uncompressed_size,

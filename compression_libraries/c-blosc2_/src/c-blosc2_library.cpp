@@ -12,30 +12,27 @@
 #include <c-blosc2_library.hpp>
 #include <options.hpp>
 
-bool CBlosc2Library::CheckOptions(const Options &options,
-                                  const bool &compressor) {
+bool CBlosc2Library::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckNumberThreads(
-      "c-blosc2", options.GetNumberThreads(), 1, 8);
+  result = CompressionLibrary::CheckNumberThreads("c-blosc2", options, 1, 8);
   if (compressor && result) {
-    result =
-        CompressionLibrary::CheckFlags("c-blosc2", options.GetFlags(), 0, 2);
+    result = CompressionLibrary::CheckFlags("c-blosc2", options, 0, 2);
     if (result) {
-      result = CompressionLibrary::CheckCompressionLevel(
-          "c-blosc2", options.GetCompressionLevel(), 0, 9);
+      result =
+          CompressionLibrary::CheckCompressionLevel("c-blosc2", options, 0, 9);
     }
   }
   return result;
 }
 
-bool CBlosc2Library::SetOptionsCompressor(const Options &options) {
+bool CBlosc2Library::SetOptionsCompressor(Options *options) {
   if (initialized_compressor_ || initialized_decompressor_) {
     blosc_destroy();
     initialized_decompressor_ = false;
   }
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) {
-    options_ = options;
+    options_ = *options;
     blosc_init();
     blosc_set_compressor("blosclz");
     blosc_set_nthreads(options_.GetNumberThreads());
@@ -43,14 +40,14 @@ bool CBlosc2Library::SetOptionsCompressor(const Options &options) {
   return initialized_compressor_;
 }
 
-bool CBlosc2Library::SetOptionsDecompressor(const Options &options) {
+bool CBlosc2Library::SetOptionsDecompressor(Options *options) {
   if (initialized_compressor_ || initialized_decompressor_) {
     blosc_destroy();
     initialized_compressor_ = false;
   }
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) {
-    options_ = options;
+    options_ = *options;
     blosc_init();
     blosc_set_nthreads(options_.GetNumberThreads());
   }

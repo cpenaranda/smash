@@ -12,24 +12,20 @@
 #include <lodepng_library.hpp>
 #include <options.hpp>
 
-bool LodepngLibrary::CheckOptions(const Options &options,
-                                  const bool &compressor) {
+bool LodepngLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "lodepng", options.GetCompressionLevel(), 1, 2);
+    result =
+        CompressionLibrary::CheckCompressionLevel("lodepng", options, 1, 2);
     if (result) {
-      result = CompressionLibrary::CheckWindowSize(
-          "lodepng", options.GetWindowSize(), 10, 15);
+      result = CompressionLibrary::CheckWindowSize("lodepng", options, 10, 15);
       if (result) {
-        result = CompressionLibrary::CheckWorkFactor(
-            "lodepng", options.GetWorkFactor(), 1, 20);
+        result = CompressionLibrary::CheckWorkFactor("lodepng", options, 1, 20);
         if (result) {
-          result = CompressionLibrary::CheckFlags("lodepng", options.GetFlags(),
-                                                  0, 1);
+          result = CompressionLibrary::CheckFlags("lodepng", options, 0, 1);
           if (result) {
             result = CompressionLibrary::CheckBackReferenceBits(
-                "lodepng", options.GetBackReferenceBits(), 1, 255);
+                "lodepng", options, 1, 255);
           }
         }
       }

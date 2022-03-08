@@ -12,12 +12,11 @@
 #include <options.hpp>
 #include <zlib-ng_library.hpp>
 
-bool ZlibNgLibrary::CheckOptions(const Options &options,
-                                 const bool &compressor) {
+bool ZlibNgLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "zlib-ng", options.GetCompressionLevel(), 0, 9);
+    result =
+        CompressionLibrary::CheckCompressionLevel("zlib-ng", options, 0, 9);
   }
   return result;
 }

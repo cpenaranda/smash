@@ -20,7 +20,9 @@ class Utils {
   inline static const std::string how_to_run_ = "To run the smash benchmark:";
   inline static const std::string how_to_execute_ =
       " -c <library_name> -i <name_file>";
-  inline static const std::string available_arguments_ = "Available arguments:";
+  inline static const std::string available_arguments_ =
+      "Available arguments where minimum values are used by default.\n"
+      "The minimum values depend on compression libraries:";
 
   inline static const std::string help_p1_ = "-h";
   inline static const std::string help_p2_ = "--help";
@@ -110,19 +112,18 @@ class Utils {
       "2: Decompression time                                                  "
       "3: Total time";
   inline static const std::string level_right_message_ =
-      "Compression level to use (1 by default)";
+      "Compression level to use";
   inline static const std::string window_size_right_message_ =
-      "Set window size (15 by default)";
+      "Set window size";
   inline static const std::string mode_right_message_ =
-      "Specifies the mode used (0 by default)";
+      "Specifies the mode used";
   inline static const std::string work_factor_right_message_ =
-      "Controls how the compression works with repetitive data (30 by default)";
-  inline static const std::string flags_right_message_ =
-      "Flags to use (0 by default)";
+      "Controls how the compression works with repetitive data";
+  inline static const std::string flags_right_message_ = "Flags to use";
   inline static const std::string back_reference_bits_right_message_ =
-      "Number of bits used for back-reference (4 by default)";
+      "Number of bits used for back-reference";
   inline static const std::string threads_right_message_ =
-      "Threads used in algorithms (1 by default)";
+      "Threads used in algorithms";
   inline static const std::string values_depend_libraries_message_ =
       "Values depend of different libraries";
 
@@ -194,7 +195,7 @@ class Utils {
   static void ShowTitle(const uint64_t &size, const uint64_t &repetitions);
 
   static std::string ShowResult(Smash *lib, const std::string &library_name,
-                                Options opt, const uint64_t &uncompressed_size,
+                                const uint64_t &uncompressed_size,
                                 const uint64_t &compressed_size,
                                 const double &mean_vel_compression,
                                 const double &error_vel_compression,

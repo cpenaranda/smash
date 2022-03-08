@@ -16,11 +16,10 @@ extern "C" {
 #include <options.hpp>
 #include <z3lib_library.hpp>
 
-bool Z3libLibrary::CheckOptions(const Options &options,
-                                const bool &compressor) {
+bool Z3libLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckFlags("z3lib", options.GetFlags(), 0, 3);
+    result = CompressionLibrary::CheckFlags("z3lib", options, 0, 3);
   }
   return result;
 }

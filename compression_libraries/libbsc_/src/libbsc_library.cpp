@@ -11,22 +11,18 @@
 #include <libbsc_library.hpp>
 #include <options.hpp>
 
-bool LibbscLibrary::CheckOptions(const Options &options,
-                                 const bool &compressor) {
+bool LibbscLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckFlags("libbsc", options.GetFlags(), 0, 7);
+  result = CompressionLibrary::CheckFlags("libbsc", options, 0, 7);
   if (compressor && result) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "libbsc", options.GetCompressionLevel(), 1, 3);
+    result = CompressionLibrary::CheckCompressionLevel("libbsc", options, 1, 3);
     if (result) {
-      result = CompressionLibrary::CheckWindowSize(
-          "libbsc", options.GetWindowSize(), 10, 28);
+      result = CompressionLibrary::CheckWindowSize("libbsc", options, 10, 28);
       if (result) {
-        result = CompressionLibrary::CheckBackReferenceBits(
-            "libbsc", options.GetBackReferenceBits(), 4, 255);
+        result = CompressionLibrary::CheckBackReferenceBits("libbsc", options,
+                                                            4, 255);
         if (result) {
-          result =
-              CompressionLibrary::CheckMode("libbsc", options.GetMode(), 1, 5);
+          result = CompressionLibrary::CheckMode("libbsc", options, 1, 5);
         }
       }
     }

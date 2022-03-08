@@ -57,7 +57,7 @@
 #endif  // __x86_64__
 
 CompressionLibrary *CompressionLibraries::GetCompressionLibrary(
-    std::string library_name) {
+    const std::string &library_name) {
   auto lib = map_.find(library_name);
   if (lib == map_.end()) {
     std::cout << "ERROR: The compression library does not exist" << std::endl;

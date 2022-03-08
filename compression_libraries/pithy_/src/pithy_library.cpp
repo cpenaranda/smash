@@ -12,12 +12,10 @@
 #include <options.hpp>
 #include <pithy_library.hpp>
 
-bool PithyLibrary::CheckOptions(const Options &options,
-                                const bool &compressor) {
+bool PithyLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "pithy", options.GetCompressionLevel(), 0, 9);
+    result = CompressionLibrary::CheckCompressionLevel("pithy", options, 0, 9);
   }
   return result;
 }

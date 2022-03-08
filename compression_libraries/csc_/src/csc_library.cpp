@@ -64,17 +64,14 @@ CscWriter::CscWriter(char *buffer, const uint64_t &buffer_size)
   Write = CscWriter::RealWrite;
 }
 
-bool CscLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool CscLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "csc", options.GetCompressionLevel(), 1, 5);
+    result = CompressionLibrary::CheckCompressionLevel("csc", options, 1, 5);
     if (result) {
-      result = CompressionLibrary::CheckWindowSize(
-          "csc", options.GetWindowSize(), 15, 29);
+      result = CompressionLibrary::CheckWindowSize("csc", options, 15, 29);
       if (result) {
-        result =
-            CompressionLibrary::CheckFlags("csc", options.GetFlags(), 0, 7);
+        result = CompressionLibrary::CheckFlags("csc", options, 0, 7);
       }
     }
   }

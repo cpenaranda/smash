@@ -12,15 +12,13 @@
 #include <options.hpp>
 #include <yalz77_library.hpp>
 
-bool Yalz77Library::CheckOptions(const Options &options,
-                                 const bool &compressor) {
+bool Yalz77Library::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "yalz77", options.GetCompressionLevel(), 1, 12);
+    result =
+        CompressionLibrary::CheckCompressionLevel("yalz77", options, 1, 12);
     if (result) {
-      result = CompressionLibrary::CheckWindowSize(
-          "yalz77", options.GetWindowSize(), 10, 16);
+      result = CompressionLibrary::CheckWindowSize("yalz77", options, 10, 16);
     }
   }
   return result;

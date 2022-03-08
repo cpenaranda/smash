@@ -21,11 +21,11 @@ class CompressionLibrary {
   bool initialized_compressor_;
   bool initialized_decompressor_;
 
-  virtual bool CheckOptions(const Options &options, const bool &compressor);
+  virtual bool CheckOptions(Options *options, const bool &compressor);
 
-  virtual bool SetOptionsCompressor(const Options &options);
+  virtual bool SetOptionsCompressor(Options *options);
 
-  virtual bool SetOptionsDecompressor(const Options &options);
+  virtual bool SetOptionsDecompressor(Options *options);
 
   virtual void GetCompressedDataSize(char *uncompressed_data,
                                      uint64_t uncompressed_size,
@@ -80,30 +80,36 @@ class CompressionLibrary {
   void GetTitle(const std::string &library_name,
                 const std::string &description);
 
-  bool CheckCompressionLevel(std::string library_name, uint8_t level,
-                             uint8_t minimum_level, uint8_t maximum_level);
+  bool CheckCompressionLevel(const std::string &library_name, Options *options,
+                             const uint8_t &minimum_level,
+                             const uint8_t &maximum_level);
 
-  bool CheckWindowSize(std::string library_name, uint32_t window_size,
-                       uint32_t minimum_size, uint32_t maximum_size);
+  bool CheckWindowSize(const std::string &library_name, Options *options,
+                       const uint32_t &minimum_size,
+                       const uint32_t &maximum_size);
 
-  bool CheckMode(std::string library_name, uint8_t mode, uint8_t minimum_mode,
-                 uint8_t maximum_mode);
+  bool CheckMode(const std::string &library_name, Options *options,
+                 const uint8_t &minimum_mode, const uint8_t &maximum_mode);
 
-  bool CheckWorkFactor(std::string library_name, uint8_t work_factor,
-                       uint8_t minimum_factor, uint8_t maximum_factor);
+  bool CheckWorkFactor(const std::string &library_name, Options *options,
+                       const uint8_t &minimum_factor,
+                       const uint8_t &maximum_factor);
 
-  bool CheckFlags(std::string library_name, uint8_t flags,
-                  uint8_t minimum_flags, uint8_t maximum_flags);
+  bool CheckFlags(const std::string &library_name, Options *options,
+                  const uint8_t &minimum_flags, const uint8_t &maximum_flags);
 
-  bool CheckNumberThreads(std::string library_name, uint8_t number_threads,
-                          uint8_t minimum_threads, uint8_t maximum_threads);
+  bool CheckNumberThreads(const std::string &library_name, Options *options,
+                          const uint8_t &minimum_threads,
+                          const uint8_t &maximum_threads);
 
-  bool CheckBackReferenceBits(std::string library_name,
-                              uint8_t back_reference_bits, uint8_t minimum_bits,
-                              uint8_t maximum_bits);
+  bool CheckBackReferenceBits(const std::string &library_name, Options *options,
+                              const uint8_t &minimum_bits,
+                              const uint8_t &maximum_bits);
 
   bool CompareData(char *uncompressed_data, const uint64_t &uncompressed_size,
                    char *decompressed_data, const uint64_t &decompressed_size);
+
+  virtual Options GetOptions();
 
   CompressionLibrary();
   virtual ~CompressionLibrary();

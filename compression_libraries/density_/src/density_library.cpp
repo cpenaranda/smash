@@ -12,11 +12,10 @@
 #include <density_library.hpp>
 #include <options.hpp>
 
-bool DensityLibrary::CheckOptions(const Options &options,
-                                  const bool &compressor) {
+bool DensityLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckMode("density", options.GetMode(), 1, 3);
+    result = CompressionLibrary::CheckMode("density", options, 1, 3);
   }
   return result;
 }

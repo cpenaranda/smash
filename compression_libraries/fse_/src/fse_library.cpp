@@ -13,9 +13,9 @@
 #include <fse_library.hpp>
 #include <options.hpp>
 
-bool FseLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool FseLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("fse", options.GetMode(), 0, 1);
+  result = CompressionLibrary::CheckMode("fse", options, 0, 1);
   return result;
 }
 

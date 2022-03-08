@@ -12,11 +12,10 @@
 #include <flz_library.hpp>
 #include <options.hpp>
 
-bool FlzLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool FlzLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "flz", options.GetCompressionLevel(), 1, 2);
+    result = CompressionLibrary::CheckCompressionLevel("flz", options, 1, 2);
   }
   return result;
 }

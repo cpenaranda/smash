@@ -21,9 +21,9 @@ class Smash {
   CompressionLibrary *lib;
 
  public:
-  bool SetOptionsCompressor(const Options &options);
+  bool SetOptionsCompressor(Options *options);
 
-  bool SetOptionsDecompressor(const Options &options);
+  bool SetOptionsDecompressor(Options *options);
 
   void GetCompressedDataSize(char *uncompressed_data,
                              uint64_t uncompressed_size,
@@ -75,6 +75,8 @@ class Smash {
   std::string GetModeName(const uint8_t &mode);
 
   std::string GetFlagsName(const uint8_t &flags);
+
+  Options GetOptions();
 
   explicit Smash(const std::string &compression_library_name);
 

@@ -22,7 +22,7 @@ class Z3libLibrary : public CompressionLibrary {
   std::string *flags_;
 
  public:
-  bool CheckOptions(const Options &options, const bool &compressor);
+  bool CheckOptions(Options *options, const bool &compressor);
 
   bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
                 char *compressed_data, uint64_t *compressed_size);

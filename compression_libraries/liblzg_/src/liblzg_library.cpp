@@ -13,12 +13,10 @@
 #include <liblzg_library.hpp>
 #include <options.hpp>
 
-bool LiblzgLibrary::CheckOptions(const Options &options,
-                                 const bool &compressor) {
+bool LiblzgLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "liblzg", options.GetCompressionLevel(), 1, 9);
+    result = CompressionLibrary::CheckCompressionLevel("liblzg", options, 1, 9);
   }
   return result;
 }

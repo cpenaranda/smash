@@ -16,11 +16,10 @@ extern "C" {
 #include <lzf_library.hpp>
 #include <options.hpp>
 
-bool LzfLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool LzfLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "lzf", options.GetCompressionLevel(), 0, 1);
+    result = CompressionLibrary::CheckCompressionLevel("lzf", options, 0, 1);
   }
   return result;
 }

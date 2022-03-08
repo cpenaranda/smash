@@ -10,11 +10,11 @@
 #include <compression_libraries.hpp>
 #include <smash.hpp>
 
-bool Smash::SetOptionsCompressor(const Options &options) {
+bool Smash::SetOptionsCompressor(Options *options) {
   return lib->SetOptionsCompressor(options);
 }
 
-bool Smash::SetOptionsDecompressor(const Options &options) {
+bool Smash::SetOptionsDecompressor(Options *options) {
   return lib->SetOptionsDecompressor(options);
 }
 
@@ -110,6 +110,8 @@ std::string Smash::GetModeName(const uint8_t &mode) {
 std::string Smash::GetFlagsName(const uint8_t &flags) {
   return lib->GetFlagsName(flags);
 }
+
+Options Smash::GetOptions() { return lib->GetOptions(); }
 
 Smash::Smash(const std::string &compression_library_name) {
   lib = CompressionLibraries().GetCompressionLibrary(compression_library_name);

@@ -62,12 +62,10 @@ ZlingWriter::ZlingWriter(char *buffer, const uint64_t &buffer_size)
       total_write_(0),
       error_(false) {}
 
-bool ZlingLibrary::CheckOptions(const Options &options,
-                                const bool &compressor) {
+bool ZlingLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "zling", options.GetCompressionLevel(), 0, 4);
+    result = CompressionLibrary::CheckCompressionLevel("zling", options, 0, 4);
   }
   return result;
 }

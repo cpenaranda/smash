@@ -14,17 +14,15 @@
 #include <brotli_library.hpp>
 #include <options.hpp>
 
-bool BrotliLibrary::CheckOptions(const Options &options,
-                                 const bool &compressor) {
+bool BrotliLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "brotli", options.GetCompressionLevel(), 0, 11);
+    result =
+        CompressionLibrary::CheckCompressionLevel("brotli", options, 0, 11);
     if (result) {
-      result = CompressionLibrary::CheckMode("brotli", options.GetMode(), 0, 2);
+      result = CompressionLibrary::CheckMode("brotli", options, 0, 2);
       if (result) {
-        result = CompressionLibrary::CheckWindowSize(
-            "brotli", options.GetWindowSize(), 10, 24);
+        result = CompressionLibrary::CheckWindowSize("brotli", options, 10, 24);
       }
     }
   }

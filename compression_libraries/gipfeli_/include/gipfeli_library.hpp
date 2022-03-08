@@ -23,9 +23,9 @@ class GipfeliLibrary : public CompressionLibrary {
   util::compression::gipfeli::Gipfeli *compressor_;
 
  public:
-  bool SetOptionsCompressor(const Options &options);
+  bool SetOptionsCompressor(Options *options);
 
-  bool SetOptionsDecompressor(const Options &options);
+  bool SetOptionsDecompressor(Options *options);
 
   void GetCompressedDataSize(char *uncompressed_data,
                              uint64_t uncompressed_size,

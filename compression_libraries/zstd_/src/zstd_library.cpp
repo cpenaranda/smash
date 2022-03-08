@@ -12,11 +12,10 @@
 #include <options.hpp>
 #include <zstd_library.hpp>
 
-bool ZstdLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool ZstdLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "zstd", options.GetCompressionLevel(), 1, 22);
+    result = CompressionLibrary::CheckCompressionLevel("zstd", options, 1, 22);
   }
   return result;
 }

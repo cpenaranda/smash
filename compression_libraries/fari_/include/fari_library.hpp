@@ -22,9 +22,9 @@ class FariLibrary : public CompressionLibrary {
   char *work_mem_decompression_;
 
  public:
-  bool SetOptionsCompressor(const Options &options);
+  bool SetOptionsCompressor(Options *options);
 
-  bool SetOptionsDecompressor(const Options &options);
+  bool SetOptionsDecompressor(Options *options);
 
   bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
                 char *compressed_data, uint64_t *compressed_size);

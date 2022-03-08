@@ -57,11 +57,10 @@ bool ZpaqWriter::GetRealSize(uint64_t *buffer_size) {
 ZpaqWriter::ZpaqWriter(char *buffer, const uint64_t &buffer_size)
     : buffer_(buffer), buffer_size_(buffer_size), error_(false) {}
 
-bool ZpaqLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool ZpaqLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "zpaq", options.GetCompressionLevel(), 0, 11);
+    result = CompressionLibrary::CheckCompressionLevel("zpaq", options, 0, 11);
   }
   return result;
 }

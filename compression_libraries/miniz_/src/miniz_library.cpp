@@ -12,16 +12,13 @@
 #include <miniz_library.hpp>
 #include <options.hpp>
 
-bool MinizLibrary::CheckOptions(const Options &options,
-                                const bool &compressor) {
+bool MinizLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckWindowSize("miniz", options.GetWindowSize(),
-                                               10, 11);
+  result = CompressionLibrary::CheckWindowSize("miniz", options, 10, 11);
   if (compressor && result) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "miniz", options.GetCompressionLevel(), 1, 9);
+    result = CompressionLibrary::CheckCompressionLevel("miniz", options, 1, 9);
     if (result) {
-      result = CompressionLibrary::CheckMode("miniz", options.GetMode(), 0, 4);
+      result = CompressionLibrary::CheckMode("miniz", options, 0, 4);
     }
   }
   return result;

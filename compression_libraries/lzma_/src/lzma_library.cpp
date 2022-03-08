@@ -12,13 +12,12 @@
 #include <lzma_library.hpp>
 #include <options.hpp>
 
-bool LzmaLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool LzmaLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckMode("lzma", options.GetMode(), 0, 2);
+    result = CompressionLibrary::CheckMode("lzma", options, 0, 2);
     if (result) {
-      result = CompressionLibrary::CheckNumberThreads(
-          "lzma", options.GetNumberThreads(), 1, 8);
+      result = CompressionLibrary::CheckNumberThreads("lzma", options, 1, 8);
     }
   }
   return result;

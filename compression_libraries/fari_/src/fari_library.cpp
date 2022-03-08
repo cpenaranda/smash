@@ -14,11 +14,11 @@
 #include <fari_library.hpp>
 #include <options.hpp>
 
-bool FariLibrary::SetOptionsCompressor(const Options &options) {
+bool FariLibrary::SetOptionsCompressor(Options *options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) {
-    options_ = options;
+    options_ = *options;
     if (work_mem_decompression_) {
       delete[] work_mem_decompression_;
       work_mem_decompression_ = nullptr;
@@ -30,11 +30,11 @@ bool FariLibrary::SetOptionsCompressor(const Options &options) {
   return initialized_compressor_;
 }
 
-bool FariLibrary::SetOptionsDecompressor(const Options &options) {
+bool FariLibrary::SetOptionsDecompressor(Options *options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) {
-    options_ = options;
+    options_ = *options;
     if (work_mem_compression_) {
       delete[] work_mem_compression_;
       work_mem_compression_ = nullptr;

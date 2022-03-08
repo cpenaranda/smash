@@ -12,18 +12,15 @@
 #include <bzip2_library.hpp>
 #include <options.hpp>
 
-bool Bzip2Library::CheckOptions(const Options &options,
-                                const bool &compressor) {
+bool Bzip2Library::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "bzip2", options.GetCompressionLevel(), 1, 9);
+    result = CompressionLibrary::CheckCompressionLevel("bzip2", options, 1, 9);
     if (result) {
-      result = CompressionLibrary::CheckWorkFactor(
-          "bzip2", options.GetWorkFactor(), 0, 250);
+      result = CompressionLibrary::CheckWorkFactor("bzip2", options, 0, 250);
     }
   } else {
-    result = CompressionLibrary::CheckMode("bzip2", options.GetMode(), 0, 1);
+    result = CompressionLibrary::CheckMode("bzip2", options, 0, 1);
   }
   return result;
 }

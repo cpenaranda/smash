@@ -23,7 +23,7 @@ class LzhamLibrary : public CompressionLibrary {
   uint8_t *flags_values_;
 
  public:
-  bool CheckOptions(const Options &options, const bool &compressor);
+  bool CheckOptions(Options *options, const bool &compressor);
 
   bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
                 char *compressed_data, uint64_t *compressed_size);

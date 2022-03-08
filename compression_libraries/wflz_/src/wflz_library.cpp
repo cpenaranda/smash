@@ -12,11 +12,10 @@
 #include <options.hpp>
 #include <wflz_library.hpp>
 
-bool WflzLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool WflzLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel(
-        "wflz", options.GetCompressionLevel(), 0, 1);
+    result = CompressionLibrary::CheckCompressionLevel("wflz", options, 0, 1);
   }
   return result;
 }

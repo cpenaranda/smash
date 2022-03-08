@@ -12,9 +12,9 @@
 #include <ms_library.hpp>
 #include <options.hpp>
 
-bool MsLibrary::CheckOptions(const Options &options, const bool &compressor) {
+bool MsLibrary::CheckOptions(Options *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("ms", options.GetMode(), 0, 2);
+  result = CompressionLibrary::CheckMode("ms", options, 0, 2);
   return result;
 }
 

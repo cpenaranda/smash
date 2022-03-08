@@ -12,11 +12,11 @@
 #include <gipfeli_library.hpp>
 #include <options.hpp>
 
-bool GipfeliLibrary::SetOptionsCompressor(const Options &options) {
+bool GipfeliLibrary::SetOptionsCompressor(Options *options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) {
-    options_ = options;
+    options_ = *options;
     if (compressor_) {
       delete compressor_;
     }
@@ -25,11 +25,11 @@ bool GipfeliLibrary::SetOptionsCompressor(const Options &options) {
   return initialized_compressor_;
 }
 
-bool GipfeliLibrary::SetOptionsDecompressor(const Options &options) {
+bool GipfeliLibrary::SetOptionsDecompressor(Options *options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) {
-    options_ = options;
+    options_ = *options;
     if (compressor_) {
       delete compressor_;
     }
