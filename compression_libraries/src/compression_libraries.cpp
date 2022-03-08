@@ -37,7 +37,6 @@
 #include <lzma_library.hpp>
 #include <lzmat_library.hpp>
 #include <lzo_library.hpp>
-#include <lzsse_library.hpp>
 #include <miniz_library.hpp>
 #include <ms_library.hpp>
 #include <pithy_library.hpp>
@@ -53,6 +52,9 @@
 #include <zling_library.hpp>
 #include <zpaq_library.hpp>
 #include <zstd_library.hpp>
+#ifdef __x86_64__
+#include <lzsse_library.hpp>
+#endif  // __x86_64__
 
 CompressionLibrary *CompressionLibraries::GetCompressionLibrary(
     std::string library_name) {
@@ -110,7 +112,6 @@ CompressionLibraries::CompressionLibraries() {
   map_["lzma"] = []() { return new LzmaLibrary(); };
   map_["lzmat"] = []() { return new LzmatLibrary(); };
   map_["lzo"] = []() { return new LzoLibrary(); };
-  map_["lzsse"] = []() { return new LzsseLibrary(); };
   map_["miniz"] = []() { return new MinizLibrary(); };
   map_["ms"] = []() { return new MsLibrary(); };
   map_["pithy"] = []() { return new PithyLibrary(); };
@@ -126,6 +127,9 @@ CompressionLibraries::CompressionLibraries() {
   map_["zling"] = []() { return new ZlingLibrary(); };
   map_["zpaq"] = []() { return new ZpaqLibrary(); };
   map_["zstd"] = []() { return new ZstdLibrary(); };
+#ifdef __x86_64__
+  map_["lzsse"] = []() { return new LzsseLibrary(); };
+#endif  // __x86_64__
 }
 
 CompressionLibraries::~CompressionLibraries() {}

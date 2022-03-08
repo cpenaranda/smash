@@ -19,13 +19,18 @@ SET(FLZMA2_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/fast-lzma2/fl2_common.c
   ${CMAKE_CURRENT_SOURCE_DIR}/fast-lzma2/dict_buffer.c
   ${CMAKE_CURRENT_SOURCE_DIR}/fast-lzma2/radix_mf.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/fast-lzma2/lzma_dec_x86_64.S
 )
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/fast-lzma2
 )
 
-add_definitions(-DLZMA2_DEC_OPT "-DMS_x64_CALL=0")
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64)
+  SET(FLZMA2_SOURCES
+    ${FLZMA2_SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/fast-lzma2/lzma_dec_x86_64.S
+  )
+  add_definitions(-DLZMA2_DEC_OPT "-DMS_x64_CALL=0")
+endif()
 
 add_library(flzma2 STATIC ${FLZMA2_SOURCES})

@@ -82,9 +82,12 @@ add_subdirectory(ucl_)
 add_subdirectory(lodepng_)
 add_subdirectory(flzma2_)
 add_subdirectory(lizard_)
-add_subdirectory(lzsse_)
 add_subdirectory(pithy_)
 add_subdirectory(lzmat_)
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64)
+  add_subdirectory(lzsse_)
+endif()
 
 set(SMASH_LIBRARIES
   brieflz
@@ -127,10 +130,16 @@ set(SMASH_LIBRARIES
   lodepng
   flzma2
   lizard
-  lzsse
   pithy
   lzmat
 )
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64)
+  set(SMASH_LIBRARIES
+    ${SMASH_LIBRARIES}
+    lzsse
+  )
+endif()
 
 set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/brieflz_/include
@@ -214,15 +223,21 @@ set(SMASH_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/flzma2_/fast-lzma2
   ${CMAKE_CURRENT_SOURCE_DIR}/lizard_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/lizard_/lizard/lib
-  ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/LZSSE/lzsse2
-  ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/LZSSE/lzsse4
-  ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/LZSSE/lzsse8
   ${CMAKE_CURRENT_SOURCE_DIR}/pithy_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/pithy_/pithy
   ${CMAKE_CURRENT_SOURCE_DIR}/lzmat_/include
   ${CMAKE_CURRENT_SOURCE_DIR}/lzmat_/lzmat
 )
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64)
+  set(SMASH_INCLUDES
+    ${SMASH_INCLUDES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/LZSSE/lzsse2
+    ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/LZSSE/lzsse4
+    ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/LZSSE/lzsse8
+  )
+endif()
 
 set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/brieflz_/src/brieflz_library.cpp
@@ -264,7 +279,13 @@ set(SMASH_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/lodepng_/src/lodepng_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/flzma2_/src/flzma2_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lizard_/src/lizard_library.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/src/lzsse_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/pithy_/src/pithy_library.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lzmat_/src/lzmat_library.cpp
 )
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64)
+  set(SMASH_SOURCES
+    ${SMASH_SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/lzsse_/src/lzsse_library.cpp
+  )
+endif()
