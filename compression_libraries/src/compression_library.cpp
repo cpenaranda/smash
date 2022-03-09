@@ -36,7 +36,7 @@ void CompressionLibrary::GetCompressedDataSize(char *uncompressed_data,
                                                uint64_t uncompressed_size,
                                                uint64_t *compressed_size) {
   // There is no way to obtain with the library
-  *compressed_size = ((uncompressed_size / 5000) + 1) * 5000;
+  *compressed_size = uncompressed_size * 2;
 }
 
 void CompressionLibrary::GetDecompressedDataSize(char *compressed_data,
