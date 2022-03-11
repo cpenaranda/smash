@@ -20,10 +20,6 @@ class LzfLibrary : public CompressionLibrary {
  public:
   bool CheckOptions(Options *options, const bool &compressor);
 
-  void GetCompressedDataSize(char *uncompressed_data,
-                             uint64_t uncompressed_size,
-                             uint64_t *compressed_size);
-
   bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
                 char *compressed_data, uint64_t *compressed_size);
 

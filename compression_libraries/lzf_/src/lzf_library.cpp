@@ -24,16 +24,6 @@ bool LzfLibrary::CheckOptions(Options *options, const bool &compressor) {
   return result;
 }
 
-void LzfLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                       uint64_t uncompressed_size,
-                                       uint64_t *compressed_size) {
-#if LZF_VERSION >= 0x0106
-  *compressed_size = LZF_MAX_COMPRESSED_SIZE(uncompressed_size);
-#else
-  *compressed_size = ((uncompressed_size / 5000) + 1) * 5000;
-#endif
-}
-
 bool LzfLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                           char *compressed_data, uint64_t *compressed_size) {
   bool result{initialized_compressor_};
