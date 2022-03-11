@@ -49,6 +49,13 @@ find_package(Git REQUIRED)
 #   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 # )
 
+function(replace_all_occurrences DIR FILE_TO_UPDATE WORD NEW_WORD)
+  execute_process(
+    WORKING_DIRECTORY ${DIR}
+    COMMAND sed -i "/${NEW_WORD}/! s/${WORD}/${NEW_WORD}/g" ${FILE_TO_UPDATE}
+  )
+endfunction()
+
 function(update_repository VERSION_LIBRARY LIBRARY_NAME)
   execute_process(
     COMMAND ${GIT_EXECUTABLE} status

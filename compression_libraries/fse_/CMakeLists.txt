@@ -10,6 +10,23 @@ SET(FSE_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/huf_decompress.c
 )
 
+file(GLOB FSE_SOURCES_TO_REPLACE
+  ${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/*.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/*.c
+)
+
+foreach(FILE_TO_UPDATE IN LISTS FSE_SOURCES_TO_REPLACE)
+  replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ ${FILE_TO_UPDATE} "FSE_" "FSE_original_")
+  replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ ${FILE_TO_UPDATE} "HUF_" "HUF_original_")
+endforeach()
+
+replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ mem.h "MEM_H_MODULE"  "MEM_H_MODULE_FSE")
+replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ error_private.h "ERROR_H_MODULE"  "ERROR_H_MODULE_FSE")
+replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ bitstream.h "BITSTREAM_H_MODULE"  "BITSTREAM_H_MODULE_FSE")
+replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ fse.h "FSE_H"  "FSE_H_FSE")
+replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ huf.h "HUF_H_298734234"  "HUF_H_298734234_FSE")
+replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ error_public.h "ERROR_PUBLIC_H_MODULE"  "ERROR_PUBLIC_H_MODULE_FSE")
+
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib
 )

@@ -25,10 +25,10 @@ void FseLibrary::GetCompressedDataSize(char *uncompressed_data,
   if (initialized_compressor_ || initialized_decompressor_) {
     switch (options_.GetMode()) {
       case 0:
-        *compressed_size = FSE_compressBound(uncompressed_size);
+        *compressed_size = FSE_original_compressBound(uncompressed_size);
         break;
       case 1:
-        *compressed_size = HUF_compressBound(uncompressed_size);
+        *compressed_size = HUF_original_compressBound(uncompressed_size);
         break;
       default:
         break;
@@ -43,11 +43,11 @@ bool FseLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
     uint64_t compressed_bytes{0};
     switch (options_.GetMode()) {
       case 0:
-        compressed_bytes = FSE_compress(compressed_data, *compressed_size,
+        compressed_bytes = FSE_original_compress(compressed_data, *compressed_size,
                                         uncompressed_data, uncompressed_size);
         break;
       case 1:
-        compressed_bytes = HUF_compress(compressed_data, *compressed_size,
+        compressed_bytes = HUF_original_compress(compressed_data, *compressed_size,
                                         uncompressed_data, uncompressed_size);
         break;
       default:
@@ -72,12 +72,12 @@ bool FseLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
     switch (options_.GetMode()) {
       case 0:
         decompressed_bytes =
-            FSE_decompress(decompressed_data, *decompressed_size,
+            FSE_original_decompress(decompressed_data, *decompressed_size,
                            compressed_data, compressed_size);
         break;
       case 1:
         decompressed_bytes =
-            HUF_decompress(decompressed_data, *decompressed_size,
+            HUF_original_decompress(decompressed_data, *decompressed_size,
                            compressed_data, compressed_size);
         break;
       default:
