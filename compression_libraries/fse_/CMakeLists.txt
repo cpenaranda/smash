@@ -34,7 +34,12 @@ execute_process(
 
 execute_process(
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/
-  COMMAND sed -i "s+ return op-ostart;+$*/return op-ostart;+g" fse_compress.c
+  COMMAND sed -i "s+ return op-ostart;+*/return op-ostart;+g" fse_compress.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/
+  COMMAND sed -i "s+ if (errorCode == 1) return 0;+//if (errorCode == 1) return 0;+g" fse_compress.c
 )
 
 include_directories(
