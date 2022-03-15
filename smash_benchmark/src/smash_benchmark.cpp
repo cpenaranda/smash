@@ -63,7 +63,11 @@ bool SetMemories(std::string input_file_name, char **uncompressed_data,
   bool result =
       SetUnpackedMemory(input_file_name, uncompressed_data, uncompressed_size);
 
-  *compressed_size = *uncompressed_size * 2;
+  if (*uncompressed_size < 2500) {
+    *compressed_size = 5000;
+  } else {
+    *compressed_size = *uncompressed_size * 2;
+  }
   *compressed_data = new char[*compressed_size];
   memset(*compressed_data, '\0', sizeof(char) * (*compressed_size));
 
