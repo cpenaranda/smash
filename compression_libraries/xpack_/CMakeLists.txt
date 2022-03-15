@@ -9,4 +9,10 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack/lib
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack/common
 )
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/xpack/lib/
+  COMMAND sed -i "s+[^\*]if (in_nbytes < 100)+/*if (in_nbytes < 100)+g" xpack_compress.c
+)
+
 add_library(xpack STATIC ${XPACK_SOURCES})
