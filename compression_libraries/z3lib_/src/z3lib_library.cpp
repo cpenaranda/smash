@@ -61,6 +61,8 @@ bool Z3libLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
       if (z3be_finish(handle,
                       reinterpret_cast<unsigned char *>(compressed_data))) {
         *compressed_size = final_compressed_size + 1;
+      } else {
+        *compressed_size = final_compressed_size;
       }
     } else {
       std::cout << "ERROR: z3lib error when compress data" << std::endl;
@@ -78,39 +80,31 @@ bool Z3libLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
     char work_memory[Z3BD_MEMSIZE];
     unsigned char *auxiliar_decompressed_data{nullptr};
     uint64_t bytes{0};
+    int error{0};
     uint64_t final_decompressed_size{0};
     z3bd_handle *handle = z3bd_start(0, 0, work_memory, Z3BD_MEMSIZE);
     if (result = handle) {
-      do {
-        bytes =
-            z3bd_put(handle, reinterpret_cast<unsigned char *>(compressed_data),
-                     compressed_size);
-        if (result = bytes) {
+      while (compressed_size && result) {
+        do {
+          bytes = z3bd_put(handle,
+                           reinterpret_cast<unsigned char *>(compressed_data),
+                           compressed_size);
           compressed_data += bytes;
           compressed_size -= bytes;
-          while ((bytes = z3bd_get(handle, &auxiliar_decompressed_data)) > 0 &&
-                 result) {
-            if (final_decompressed_size == *decompressed_size) {
-              result = false;
-            } else {
-              memcpy(decompressed_data, auxiliar_decompressed_data, bytes);
-              decompressed_data += bytes;
-              final_decompressed_size += bytes;
-            }
+        } while (compressed_size && bytes);
+        do {
+          bytes = z3bd_get(handle, &auxiliar_decompressed_data);
+          if (bytes) {
+            memcpy(decompressed_data, auxiliar_decompressed_data, bytes);
+            decompressed_data += bytes;
+            final_decompressed_size += bytes;
           }
-          if (!auxiliar_decompressed_data) {
-            if (z3bd_finish(handle, reinterpret_cast<unsigned int *>(&bytes),
-                            reinterpret_cast<int *>(&bytes)) ==
-                    z3err_bd_notbfinal &&
-                !compressed_size) {
-              result = false;
-            }
-          }
+        } while (bytes);
+        if (!auxiliar_decompressed_data) {
+          error = z3bd_finish(handle, reinterpret_cast<unsigned int *>(&bytes),
+                              reinterpret_cast<int *>(&bytes));
+          result = (error == z3err_bd_notbfinal) || (error == z3err_none);
         }
-      } while (compressed_size && result);
-      if (result) {
-        result = (z3bd_finish(handle, reinterpret_cast<unsigned int *>(&bytes),
-                              reinterpret_cast<int *>(&bytes)) == z3err_none);
       }
     }
     if (!result) {
