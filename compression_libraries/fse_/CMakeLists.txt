@@ -27,6 +27,16 @@ replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ fse.
 replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ huf.h "HUF_H_298734234"  "HUF_H_298734234_FSE")
 replace_all_occurrences(${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/ error_public.h "ERROR_PUBLIC_H_MODULE"  "ERROR_PUBLIC_H_MODULE_FSE")
 
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/
+  COMMAND sed -i "s+ if ( (size_t)(op-ostart) >= srcSize-1 )+/*if ( (size_t)(op-ostart) >= srcSize-1 )+g" fse_compress.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib/
+  COMMAND sed -i "s+ return op-ostart;+$*/return op-ostart;+g" fse_compress.c
+)
+
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/FiniteStateEntropy/lib
 )
