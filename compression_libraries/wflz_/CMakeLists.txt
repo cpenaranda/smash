@@ -10,4 +10,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/wflz
 )
 
+add_definitions(-DWF_LZ_NO_UNALIGNED_ACCESS)
+
 add_library(wflz STATIC ${WFLZ_SOURCES})
