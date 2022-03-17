@@ -56,9 +56,7 @@ bool LzjbLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LzjbLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
-      "lzjb",
-      "A compression codec originally created to compress data in ZFS.");
+  CompressionLibrary::GetTitle("lzjb", "Created to compress data in ZFS");
 }
 
 LzjbLibrary::LzjbLibrary() {}

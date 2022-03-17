@@ -69,8 +69,7 @@ bool PithyLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 void PithyLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
       "pithy",
-      "Can be traced back to Googles snappy compression library, but has "
-      "diverged quite a bit.");
+      "Fast compression/decompression library originally based on Snappy");
 }
 
 bool PithyLibrary::GetCompressionLevelInformation(

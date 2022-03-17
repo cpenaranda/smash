@@ -97,8 +97,7 @@ bool FseLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void FseLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
-      "fse",
-      "This library proposes two high speed entropy coders: Huff0 & FSE");
+      "fse", "Proposes two high speed entropy coders: Huff0 & FSE");
 }
 
 bool FseLibrary::GetModeInformation(std::vector<std::string> *mode_information,

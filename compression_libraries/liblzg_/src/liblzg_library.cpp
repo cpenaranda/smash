@@ -77,8 +77,9 @@ bool LiblzgLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LiblzgLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
-      "liblzg", "Minimal implementation of an LZ77 class compression library");
+  CompressionLibrary::GetTitle("liblzg",
+                               "Minimal implementation of an LZ77 class "
+                               "compression library (requires no memory)");
 }
 
 bool LiblzgLibrary::GetCompressionLevelInformation(

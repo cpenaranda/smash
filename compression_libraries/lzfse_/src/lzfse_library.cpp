@@ -51,7 +51,7 @@ bool LzfseLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void LzfseLibrary::GetTitle() {
   CompressionLibrary::GetTitle("lzfse",
-                               "A Lempel-Ziv style data compression algorithm "
+                               "LZ77 style data compression algorithm "
                                "using Finite State Entropy coding");
 }
 

@@ -73,8 +73,8 @@ bool Lz4Library::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void Lz4Library::GetTitle() {
-  CompressionLibrary::GetTitle("lz4",
-                               "Extremely fast lossless compression algorithm");
+  CompressionLibrary::GetTitle(
+      "lz4", "Extremely fast lossless compression library based on LZ77");
 }
 
 bool Lz4Library::GetCompressionLevelInformation(

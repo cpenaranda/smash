@@ -75,7 +75,7 @@ bool Flzma2Library::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void Flzma2Library::GetTitle() {
   CompressionLibrary::GetTitle("flzma2",
-                               "A lossless high-ratio data compression library "
+                               "Lossless high-ratio data compression library "
                                "based on Igor Pavlov's LZMA2 codec from 7-zip");
 }
 

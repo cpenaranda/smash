@@ -84,7 +84,8 @@ bool LzhamLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LzhamLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("lzham", "A lossless data compression codec");
+  CompressionLibrary::GetTitle(
+      "lzham", "Lossless data compression codec written in C/C++");
 }
 
 bool LzhamLibrary::GetCompressionLevelInformation(

@@ -50,10 +50,10 @@ bool FariLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                            char *compressed_data, uint64_t *compressed_size) {
   bool result{initialized_compressor_};
   if (result) {
-    int fari_result = fa_compress(
-        reinterpret_cast<unsigned char *>(uncompressed_data),
-        reinterpret_cast<unsigned char *>(compressed_data),
-        uncompressed_size, compressed_size, work_mem_compression_);
+    int fari_result =
+        fa_compress(reinterpret_cast<unsigned char *>(uncompressed_data),
+                    reinterpret_cast<unsigned char *>(compressed_data),
+                    uncompressed_size, compressed_size, work_mem_compression_);
     if (fari_result) {
       std::cout << "ERROR: fari error when compress data" << std::endl;
       result = false;
@@ -81,7 +81,7 @@ bool FariLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void FariLibrary::GetTitle() {
   CompressionLibrary::GetTitle("fari",
-                               "An arithmetic compressor with extremely high "
+                               "Arithmetic compressor with extremely high "
                                "compression/decompression speeds");
 }
 

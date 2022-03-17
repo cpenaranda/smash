@@ -55,7 +55,9 @@ bool LzmatLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void LzmatLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
-      "lzmat", "An extremely fast real-time lossless data compression library");
+      "lzmat",
+      "Extremely fast real-time lossless data compression library (requires no "
+      "memory for decompression)");
 }
 
 LzmatLibrary::LzmatLibrary() {}

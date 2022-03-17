@@ -61,8 +61,9 @@ bool ZlibNgLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void ZlibNgLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("zlib-ng",
-                               "zlib for the next generation systems");
+  CompressionLibrary::GetTitle(
+      "zlib-ng",
+      "Zlib data compression library for the next generation systems");
 }
 
 bool ZlibNgLibrary::GetCompressionLevelInformation(

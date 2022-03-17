@@ -67,8 +67,7 @@ bool BrieflzLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void BrieflzLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("brieflz",
-                               "Fast Lempel-Ziv compression library");
+  CompressionLibrary::GetTitle("brieflz", "Fast LZ77 compression library");
 }
 
 bool BrieflzLibrary::GetCompressionLevelInformation(

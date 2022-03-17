@@ -139,8 +139,8 @@ bool LzmaLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LzmaLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("lzma",
-                               "A general-purpose data-compression library");
+  CompressionLibrary::GetTitle(
+      "lzma", "Data compression library with a high compression ratio");
 }
 
 bool LzmaLibrary::GetModeInformation(std::vector<std::string> *mode_information,

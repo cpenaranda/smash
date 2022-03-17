@@ -60,7 +60,7 @@ bool ZlibLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void ZlibLibrary::GetTitle() {
   CompressionLibrary::GetTitle("zlib",
-                               "A general purpose data compression library");
+                               "General purpose data compression library");
 }
 
 bool ZlibLibrary::GetCompressionLevelInformation(

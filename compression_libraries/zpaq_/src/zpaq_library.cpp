@@ -109,7 +109,7 @@ bool ZpaqLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 void ZpaqLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
       "zpaq",
-      "A journaling archiver optimized for user-level incremental backup of "
+      "Journaling archiver optimized for user-level incremental backup of "
       "directory trees in Windows and *nix");
 }
 

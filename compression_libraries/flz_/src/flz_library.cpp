@@ -56,7 +56,7 @@ bool FlzLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void FlzLibrary::GetTitle() {
   CompressionLibrary::GetTitle("flz",
-                               "Lightning-fast lossless compression library");
+                               "Lossless compression library based on LZ77");
 }
 
 bool FlzLibrary::GetCompressionLevelInformation(

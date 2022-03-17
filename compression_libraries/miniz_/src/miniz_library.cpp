@@ -105,7 +105,7 @@ bool MinizLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void MinizLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
-      "miniz", "A lossless, high performance data compression library");
+      "miniz", "Lossless, high performance data compression library");
 }
 
 bool MinizLibrary::GetCompressionLevelInformation(

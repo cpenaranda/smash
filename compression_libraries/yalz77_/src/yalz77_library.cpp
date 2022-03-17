@@ -73,7 +73,7 @@ bool Yalz77Library::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void Yalz77Library::GetTitle() {
   CompressionLibrary::GetTitle("yalz77",
-                               "A variation on the LZ77 compression algorithm");
+                               "Variation on the LZ77 compression algorithm");
 }
 
 bool Yalz77Library::GetCompressionLevelInformation(

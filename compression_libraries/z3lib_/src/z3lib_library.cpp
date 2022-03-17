@@ -115,7 +115,10 @@ bool Z3libLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
   return result;
 }
 
-void Z3libLibrary::GetTitle() { CompressionLibrary::GetTitle("z3lib", ""); }
+void Z3libLibrary::GetTitle() {
+  CompressionLibrary::GetTitle(
+      "z3lib", "Substitute for the well known zlib compression library");
+}
 
 bool Z3libLibrary::GetFlagsInformation(
     std::vector<std::string> *flags_information, uint8_t *minimum_flags,

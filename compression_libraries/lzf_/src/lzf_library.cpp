@@ -65,7 +65,7 @@ bool LzfLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void LzfLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
-      "lzf", "A free, fast, easy to embed compression library");
+      "lzf", "Fast and easy to embed compression library");
 }
 
 bool LzfLibrary::GetCompressionLevelInformation(

@@ -47,8 +47,8 @@ bool LzfxLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void LzfxLibrary::GetTitle() {
   CompressionLibrary::GetTitle("lzfx",
-                               "A small BSD-licensed library designed for "
-                               "very-high-speed compression of redundant data");
+                               "Small library designed for very-high-speed "
+                               "compression of redundant data");
 }
 
 LzfxLibrary::LzfxLibrary() {}

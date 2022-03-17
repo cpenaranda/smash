@@ -105,8 +105,9 @@ bool ZlingLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void ZlingLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
-      "zling", "An improved lightweight compression utility and library");
+  CompressionLibrary::GetTitle("zling",
+                               "Lightweight compression library using fast "
+                               "order-1 ROLZ followed with Huffman encoding");
 }
 
 bool ZlingLibrary::GetCompressionLevelInformation(

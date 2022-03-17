@@ -61,7 +61,7 @@ bool ZstdLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 void ZstdLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
       "zstd",
-      "A fast lossless compression algorithm, targeting real-time compression "
+      "Fast lossless compression algorithm, targeting real-time compression "
       "scenarios at zlib-level and better compression ratios");
 }
 

@@ -107,7 +107,9 @@ bool UclLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void UclLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
-      "ucl", "A portable lossless data compression library written in ANSI C");
+      "ucl",
+      "Focused on compression for generating competitive compression ratio "
+      "(requires no memory for decompression)");
 }
 
 bool UclLibrary::GetCompressionLevelInformation(

@@ -70,8 +70,10 @@ bool BrotliLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void BrotliLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("brotli",
-                               "General-puprose compression algorithm");
+  CompressionLibrary::GetTitle(
+      "brotli",
+      "Lossless compression using a combination of a variant of the LZ77 "
+      "algorithm, Huffman coding and 2nd order context modeling");
 }
 
 bool BrotliLibrary::GetCompressionLevelInformation(

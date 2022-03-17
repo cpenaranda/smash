@@ -144,7 +144,7 @@ bool CscLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void CscLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
-      "csc", "A Loss-less data compression algorithm inspired by LZMA");
+      "csc", "Lossless data compression algorithm inspired by LZMA");
 }
 
 bool CscLibrary::GetCompressionLevelInformation(

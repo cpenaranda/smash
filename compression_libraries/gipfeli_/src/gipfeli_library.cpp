@@ -93,7 +93,10 @@ void GipfeliLibrary::GetDecompressedDataSize(char *compressed_data,
 }
 
 void GipfeliLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("gipfeli", "A high-speed compression library");
+  CompressionLibrary::GetTitle(
+      "gipfeli",
+      "High-speed compression/decompression library aiming at slightly higher "
+      "compression ratios than other high-speed compression libraries");
 }
 
 GipfeliLibrary::GipfeliLibrary() { compressor_ = nullptr; }

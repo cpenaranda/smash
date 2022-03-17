@@ -61,7 +61,7 @@ void QuicklzLibrary::GetDecompressedDataSize(char *compressed_data,
 }
 
 void QuicklzLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("quicklz", "A fast GPL'd compression library.");
+  CompressionLibrary::GetTitle("quicklz", "Fast GPL'd compression library.");
 }
 
 QuicklzLibrary::QuicklzLibrary() {}

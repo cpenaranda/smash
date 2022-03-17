@@ -137,9 +137,9 @@ bool HeatshrinkLibrary::Decompress(char *compressed_data,
 }
 
 void HeatshrinkLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
-      "heatshrink",
-      "Compression library targeted at embedded and real-time systems");
+  CompressionLibrary::GetTitle("heatshrink",
+                               "LZ77-based compression library targeted at "
+                               "embedded and real-time systems");
 }
 
 bool HeatshrinkLibrary::GetWindowSizeInformation(

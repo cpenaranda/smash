@@ -69,7 +69,7 @@ bool LizardLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 void LizardLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
       "lizard",
-      "A lossless compression algorithm which contains 4 compression methods");
+      "Lossless compression algorithm which contains 4 compression modes");
 }
 
 bool LizardLibrary::GetCompressionLevelInformation(

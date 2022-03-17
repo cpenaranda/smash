@@ -62,7 +62,9 @@ bool DensityLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void DensityLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("density", "Superfast compression library");
+  CompressionLibrary::GetTitle(
+      "density",
+      "Focused on high-speed compression, at the best ratio possible");
 }
 
 bool DensityLibrary::GetModeInformation(

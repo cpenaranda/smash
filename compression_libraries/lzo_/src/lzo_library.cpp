@@ -387,7 +387,8 @@ bool LzoLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LzoLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("lzo", "A real-time data compression library");
+  CompressionLibrary::GetTitle("lzo",
+                               "Portable lossless data compression library");
 }
 
 bool LzoLibrary::GetCompressionLevelInformation(

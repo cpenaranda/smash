@@ -117,8 +117,8 @@ bool LzsseLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void LzsseLibrary::GetTitle() {
   CompressionLibrary::GetTitle("lzsse",
-                               "Compression library designed for a branchless "
-                               "SSE decompression implementation");
+                               "LZ77-based compression library designed for a "
+                               "branchless SSE decompression implementation");
 }
 
 bool LzsseLibrary::GetCompressionLevelInformation(

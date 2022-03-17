@@ -57,7 +57,7 @@ bool SnappyLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void SnappyLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
-      "snappy", "A fast compressor/decompressor created by Google");
+      "snappy", "Fast compressor/decompressor created by Google");
 }
 
 SnappyLibrary::SnappyLibrary() {}

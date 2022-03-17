@@ -80,7 +80,7 @@ bool WflzLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
 void WflzLibrary::GetTitle() {
   CompressionLibrary::GetTitle(
-      "wflz", "A compression library designed for use in game engines");
+      "wflz", "Compression library designed for use in game engines");
 }
 
 bool WflzLibrary::GetCompressionLevelInformation(
