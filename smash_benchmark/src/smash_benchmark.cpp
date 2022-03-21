@@ -140,12 +140,12 @@ int main(int argc, char *argv[]) {
           std::vector<double> decompression_results;
           std::vector<double> total_results;
           for (uint32_t r = 0; r < repetitions && result == EXIT_SUCCESS; ++r) {
+            result = lib->SetOptionsCompressor(&option) ? EXIT_SUCCESS
+                                                        : EXIT_FAILURE;
             lib->GetCompressedDataSize(uncompressed_data, uncompressed_size,
                                        &compressed_size);
             std::chrono::_V2::system_clock::time_point start, end;
             std::chrono::duration<double> compression_time, decompression_time;
-            result = lib->SetOptionsCompressor(&option) ? EXIT_SUCCESS
-                                                        : EXIT_FAILURE;
             if (result == EXIT_SUCCESS) {
               start = std::chrono::system_clock::now();
               result = lib->Compress(uncompressed_data, uncompressed_size,
