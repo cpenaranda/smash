@@ -28,7 +28,14 @@ void FseLibrary::GetCompressedDataSize(char *uncompressed_data,
         *compressed_size = FSE_original_compressBound(uncompressed_size);
         break;
       case 1:
-        *compressed_size = HUF_original_compressBound(uncompressed_size);
+        *compressed_size = 0;
+        for (uint32_t bytes = 0; uncompressed_size;) {
+          bytes = (uncompressed_size < HUF_original_BLOCKSIZE_MAX)
+                      ? uncompressed_size
+                      : HUF_original_BLOCKSIZE_MAX;
+          *compressed_size += HUF_original_compressBound(bytes) + sizeof(bytes);
+          uncompressed_size -= bytes;
+        }
         break;
       default:
         break;
@@ -48,9 +55,26 @@ bool FseLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
                                   uncompressed_data, uncompressed_size);
         break;
       case 1:
-        compressed_bytes =
-            HUF_original_compress(compressed_data, *compressed_size,
-                                  uncompressed_data, uncompressed_size);
+        for (uint32_t current_bytes_to_compress = 0,
+                      current_compressed_bytes = 0;
+             uncompressed_size;) {
+          current_bytes_to_compress =
+              (uncompressed_size < HUF_original_BLOCKSIZE_MAX)
+                  ? uncompressed_size
+                  : HUF_original_BLOCKSIZE_MAX;
+          current_compressed_bytes = HUF_original_compress(
+              compressed_data + compressed_bytes +
+                  sizeof(current_compressed_bytes),
+              *compressed_size -
+                  (compressed_bytes + sizeof(current_compressed_bytes)),
+              uncompressed_data, current_bytes_to_compress);
+          *reinterpret_cast<uint32_t *>(compressed_data + compressed_bytes) =
+              current_compressed_bytes;
+          compressed_bytes +=
+              current_compressed_bytes + sizeof(current_compressed_bytes);
+          uncompressed_data += current_bytes_to_compress;
+          uncompressed_size -= current_bytes_to_compress;
+        }
         break;
       default:
         break;
@@ -78,9 +102,24 @@ bool FseLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
                                     compressed_data, compressed_size);
         break;
       case 1:
-        decompressed_bytes =
-            HUF_original_decompress(decompressed_data, *decompressed_size,
-                                    compressed_data, compressed_size);
+        for (uint32_t current_bytes_to_decompress = 0,
+                      current_decompressed_bytes = 0;
+             compressed_size;) {
+          current_bytes_to_decompress =
+              *reinterpret_cast<uint32_t *>(compressed_data);
+          compressed_data += sizeof(current_bytes_to_decompress);
+          compressed_size -= sizeof(current_bytes_to_decompress);
+          current_decompressed_bytes =
+              (current_bytes_to_decompress == compressed_size)
+                  ? (*decompressed_size) - decompressed_bytes
+                  : HUF_original_BLOCKSIZE_MAX;
+          decompressed_bytes += HUF_original_decompress(
+              decompressed_data + decompressed_bytes,
+              current_decompressed_bytes, compressed_data,
+              current_bytes_to_decompress);
+          compressed_data += current_bytes_to_decompress;
+          compressed_size -= current_bytes_to_decompress;
+        }
         break;
       default:
         break;
