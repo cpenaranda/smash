@@ -32,4 +32,49 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/density/src/structure/
 )
 
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/density/src/algorithms/lion/core/
+  COMMAND sed -i "s+in_size - DENSITY_LION_MAXIMUM_COMPRESSED_UNIT_SIZE+in_size+g" lion_decode.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/density/src/algorithms/cheetah/core/
+  COMMAND sed -i "s+in_size - DENSITY_CHEETAH_MAXIMUM_COMPRESSED_UNIT_SIZE+in_size+g" cheetah_decode.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/density/src/algorithms/chameleon/core/
+  COMMAND sed -i "s+in_size - DENSITY_CHAMELEON_MAXIMUM_COMPRESSED_UNIT_SIZE+in_size+g" chameleon_decode.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/density/src/algorithms/lion/core/
+  COMMAND sed -i "s+ if (.*out > out_limit)+/*if (*out > out_limit)+g" lion_decode.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/density/src/algorithms/cheetah/core/
+  COMMAND sed -i "s+ if (.*out > out_limit)+/*if (*out > out_limit)+g" cheetah_decode.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/density/src/algorithms/chameleon/core/
+  COMMAND sed -i "s+ if (.*out > out_limit)+/*if (*out > out_limit)+g" chameleon_decode.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/density/src/algorithms/lion/core/
+  COMMAND sed -i "s+ read_and_decode_4:+*/read_and_decode_4:+g" lion_decode.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/density/src/algorithms/cheetah/core/
+  COMMAND sed -i "s+ read_signature:+*/read_signature:+g" cheetah_decode.c
+)
+
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/density/src/algorithms/chameleon/core/
+  COMMAND sed -i "s+ read_signature:+*/read_signature:+g" chameleon_decode.c
+)
+
 add_library(density STATIC ${DENSITY_SOURCES})

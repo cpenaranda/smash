@@ -52,7 +52,7 @@ bool DensityLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
     density_processing_result res = density_decompress(
         reinterpret_cast<uint8_t *>(compressed_data), compressed_size,
         reinterpret_cast<uint8_t *>(decompressed_data),
-        density_decompress_safe_size(*decompressed_size));
+        *decompressed_size);
     if (res.state || res.bytesWritten != *decompressed_size) {
       std::cout << "ERROR: density error when decompress data" << std::endl;
       result = false;
