@@ -8,6 +8,7 @@
 
 #include <fse.h>
 #include <huf.h>
+#include <string.h>
 
 // SMASH LIBRARIES
 #include <fse_library.hpp>
@@ -68,6 +69,13 @@ bool FseLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
               *compressed_size -
                   (compressed_bytes + sizeof(current_compressed_bytes)),
               uncompressed_data, current_bytes_to_compress);
+          if (!current_compressed_bytes) {
+            // Raw data
+            memcpy(compressed_data + compressed_bytes +
+                       sizeof(current_compressed_bytes),
+                   uncompressed_data, current_bytes_to_compress);
+            current_compressed_bytes = current_bytes_to_compress;
+          }
           *reinterpret_cast<uint32_t *>(compressed_data + compressed_bytes) =
               current_compressed_bytes;
           compressed_bytes +=
