@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-update_repository(${CSC_VERSION} CSC)
-
 SET(CSC_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/CSC/src/libcsc/csc_analyzer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CSC/src/libcsc/csc_encoder_main.cpp

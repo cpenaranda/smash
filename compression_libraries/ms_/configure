@@ -1,0 +1,44 @@
+#! /bin/bash
+
+VERSION="master"
+DIRECTORY="ms-compress"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+NO_COLOR='\033[0m'
+
+WARNING=0
+
+MESSAGE(){
+  echo -ne "${CYAN}\t${1}[${VERSION}]... ${NO_COLOR}"
+  if [[ $2 != "" ]]; then
+    echo
+  fi
+}
+
+CHECK(){
+  if [[ $? -eq 0 ]]; then
+    if [[ $1 == "" ]]; then
+      echo -ne "${GREEN}[SUCCESS]${NO_COLOR}"
+      exit ${WARNING}
+    fi
+  else
+    echo -ne "${RED}[FAIL]${NO_COLOR}"
+    exit 2
+  fi
+}
+
+UPDATE_REPOSITORY() {
+  CORRECT_VERSION=$(git status | grep ${VERSION} | wc -l)
+  if [[ ${CORRECT_VERSION} -eq 0 ]]; then
+    git checkout --force ${VERSION} >> ../../../smash.log 2>&1
+  fi
+}
+
+MESSAGE "MS"
+cd ${DIRECTORY} >> ../../smash.log 2>&1
+CHECK 0
+UPDATE_REPOSITORY
+CHECK
+cd ..

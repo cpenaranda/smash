@@ -1,0 +1,48 @@
+#! /bin/bash
+
+URL="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lzfx/"
+TARNAME="lzfx-0.1.tar.gz"
+DIRECTORY="lzfx"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+NO_COLOR='\033[0m'
+
+WARNING=0
+
+MESSAGE(){
+  echo -ne "${CYAN}\t${1}[${VERSION}]... ${NO_COLOR}"
+  if [[ $2 != "" ]]; then
+    echo
+  fi
+}
+
+CHECK(){
+  if [[ $? -eq 0 ]]; then
+    if [[ $1 == "" ]]; then
+      echo -ne "${GREEN}[SUCCESS]${NO_COLOR}"
+      exit ${WARNING}
+    fi
+  else
+    echo -ne "${RED}[FAIL]${NO_COLOR}"
+    exit 2
+  fi
+}
+
+GET_REPOSITORY() {
+  if [[ ! -f ${TARNAME} ]]; then
+    wget ${URL}${TARNAME} >> ../../smash.log 2>&1
+    if [[ -d ${DIRECTORY} ]]; then
+      rm -rf ${DIRECTORY}
+    fi
+  fi
+  if [[ ! -d ${DIRECTORY} ]]; then
+    mkdir ${DIRECTORY}
+    tar xzvf ${TARNAME} -C ${DIRECTORY} --strip-components 1 >> ../../smash.log 2>&1
+  fi
+}
+
+MESSAGE "Lzfx"
+GET_REPOSITORY
+CHECK

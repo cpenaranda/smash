@@ -1,0 +1,113 @@
+#! /bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+YELLOW='\033[0;33m'
+NO_COLOR='\033[0m'
+
+MESSAGE(){
+  echo -ne "${CYAN}${1}... ${NO_COLOR}"
+  echo -ne "${1}..." >> smash.log 2>&1
+  if [[ $2 != "" ]]; then
+    echo
+  fi
+}
+
+LOG(){
+  echo -e ${RED}
+  echo -e "      ___          ___          ___          ___          ___      "
+  echo -e "     /\  \        /\__\        /\  \        /\  \        /\__\     "
+  echo -e "    /::\  \      /::|  |      /::\  \      /::\  \      /:/  /     "
+  echo -e "   /:/\:\  \    /:|:|  |     /:/\:\  \    /:/\:\  \    /:/__/      "
+  echo -e "  _\:\~\:\  \  /:/|:|__|__  /::\~\:\  \  _\:\~\:\  \  /::\  \ ___  "
+  echo -e " /\ \:\ \:\__\/:/ |::::\__\/:/\:\ \:\__\/\ \:\ \:\__\/:/\:\  /\__\ "
+  echo -e " \:\ \:\ \/__/\/__/~~/:/  /\/__\:\/:/  /\:\ \:\ \/__/\/__\:\/:/  / "
+  echo -e "  \:\ \:\__\        /:/  /      \::/  /  \:\ \:\__\       \::/  /  "
+  echo -e "   \:\/:/  /       /:/  /       /:/  /    \:\/:/  /       /:/  /   "
+  echo -e "    \::/  /       /:/  /       /:/  /      \::/  /       /:/  /    "
+  echo -e "     \/__/        \/__/        \/__/        \/__/        \/__/     "
+  echo -e ${NO_COLOR}
+  echo -e "${RED}                      Compression benchmark${NO_COLOR}"
+  echo
+  echo -e "${CYAN}More information in the file ${YELLOW}smash.log${NO_COLOR}"
+}
+
+END(){
+  echo -e "${CYAN}Libraries are allocated in ${YELLOW}${PWD}/lib${NO_COLOR}"
+  echo -e "${CYAN}Binaries are allocated in ${YELLOW}${PWD}/bin${NO_COLOR}"
+}
+
+COUNTER(){
+  echo -ne "${YELLOW}["
+  if [[ ${1} -lt 10 ]]; then
+    echo -ne "0"
+  fi
+  echo -ne "${1}/${2}] ${NO_COLOR}"
+  echo -ne "[${1}/${2}] " >> smash.log 2>&1
+}
+
+CHECK(){
+  if [[ $? -eq 0 ]]; then
+    echo -ne "${GREEN}[SUCCESS]${NO_COLOR}"
+    echo
+    echo "[SUCCESS]" >> smash.log 2>&1
+  else
+    echo -ne "${RED}[FAIL]${NO_COLOR}"
+    echo
+    echo "[FAIL]" >> smash.log 2>&1
+    exit 1
+  fi
+}
+
+REMOVE() {
+  echo -ne "\r\033[K"
+}
+
+CHECK_LIBRARY() {
+  COUNTER ${2} ${3}
+  echo "$1" >> smash.log 2>&1
+  cd compression_libraries/${1}_
+  ./configure
+  error=$?
+  if [[ ! ${error} -eq 0 ]]; then
+    if [[ ${error} -eq 2 ]]; then
+      echo
+      exit 1
+    else
+      echo
+    fi
+  else
+    REMOVE
+  fi
+  cd ../..
+}
+
+LOG
+echo > smash.log
+MESSAGE "Updating all submodules"
+git submodule update --init --force >> smash.log 2>&1
+CHECK
+
+MESSAGE "Checking compression libraries" 0
+LIBRARIES=("brieflz" "brotli" "bzip2" "c-blosc2" "csc" "density" "fari" "flz" "flzma2" "fse" "gipfeli" "heatshrink" "libbsc" "libdeflate" "liblzg" "lizard" "lodepng" "lz4" "lzf" "lzfse" "lzfx" "lzham" "lzjb" "lzma" "lzmat" "lzo" "lzsse" "miniz" "ms" "pithy" "quicklz" "snappy" "ucl" "wflz" "xpack" "yalz77" "z3lib" "zlib" "zlib-ng" "zling" "zpaq" "zstd" )
+N=1
+for library in ${LIBRARIES[*]}; do
+  CHECK_LIBRARY $library ${N} ${#LIBRARIES[@]}
+  N=$(($N+1))
+done
+CHECK
+
+MESSAGE "Configuring building"
+if [[ -d build ]]; then
+  cd build
+else
+  mkdir build; cd build
+fi
+cmake -DCMAKE_BUILD_TYPE=Release .. >> ../smash.log 2>&1
+CHECK
+
+MESSAGE "Compiling source"
+make -j >> ../smash.log 2>&1
+CHECK
+END

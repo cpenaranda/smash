@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-update_repository(${FLZ_VERSION} fastlz)
-
 set(FLZ_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/fastlz/fastlz.c
 )

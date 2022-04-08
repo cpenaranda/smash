@@ -1,28 +1,5 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-update_repository(${LIBBSC_VERSION} libbsc)
-
-execute_process(
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/libbsc/libbsc
-  COMMAND sed -i "s/bsc_init_full(int features, void.* (.* malloc)(size_t size), void.* (.* zero_malloc)(size_t size), void (.* free)(void.* address))/bsc_init_full(int features)/" libbsc.h
-)
-
-execute_process(
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/libbsc/libbsc/libbsc
-  COMMAND sed -i "s/bsc_init_full(int features, void.* (.* malloc)(size_t size), void.* (.* zero_malloc)(size_t size), void (.* free)(void.* address))/bsc_init_full(int features)/" libbsc.cpp
-)
-
-execute_process(
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/libbsc/libbsc/libbsc
-  COMMAND sed -i "s/bsc_platform_init(features, malloc, zero_malloc, free);/bsc_platform_init(features, NULL, NULL, NULL);/" libbsc.cpp
-)
-
-execute_process(
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/libbsc/libbsc/libbsc
-  COMMAND sed -i "s/bsc_init_full(features, NULL, NULL, NULL);/bsc_init_full(features);/" libbsc.cpp
-)
-
-
 SET(LIBBSC_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/libbsc/libbsc/adler32/adler32.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/libbsc/libbsc/bwt/libsais/libsais.c

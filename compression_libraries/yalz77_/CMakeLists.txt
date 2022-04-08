@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-update_repository(${YALZ77_VERSION} yalz77)
-
 SET(YALZ77_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/yalz77/yalz.cc
 )

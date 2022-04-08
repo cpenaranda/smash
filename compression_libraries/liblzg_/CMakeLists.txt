@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-update_repository(${LIBLZG_VERSION} liblzg)
-
 SET(LIBLZG_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/liblzg/src/lib/encode.c
   ${CMAKE_CURRENT_SOURCE_DIR}/liblzg/src/lib/decode.c

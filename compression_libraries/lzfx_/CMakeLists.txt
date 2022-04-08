@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-update_repository_from_tar(${LZFX_URL} lzfx)
-
 file(GLOB LZFX_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/lzfx/lzfx.c")
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/lzfx
 )
+
 add_library(lzfx STATIC ${LZFX_SOURCES})

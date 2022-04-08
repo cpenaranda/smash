@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
 enable_language( C CXX ASM )
 
-update_repository(${FLZMA2_VERSION} fast-lzma2)
-
 SET(FLZMA2_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/fast-lzma2/range_enc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/fast-lzma2/fl2_pool.c

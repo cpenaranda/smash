@@ -1,18 +1,11 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-update_repository(${XPACK_VERSION} xpack)
-
 file(GLOB XPACK_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/xpack/lib/*.c")
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack/lib
   ${CMAKE_CURRENT_SOURCE_DIR}/xpack/common
-)
-
-execute_process(
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/xpack/lib/
-  COMMAND sed -i "s+[^\*]if (in_nbytes < 100)+/*if (in_nbytes < 100)+g" xpack_compress.c
 )
 
 add_library(xpack STATIC ${XPACK_SOURCES})

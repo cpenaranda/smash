@@ -54,3 +54,5 @@ compression_libraries/z3lib_/z3lib-1.3.tar.gz
 compression_libraries/z3lib_/z3lib
 compression_libraries/ucl_/ucl
 compression_libraries/ucl_/ucl-1.03.tar.gz
+smash.log
+compression_libraries/quicklz_/quicklz
