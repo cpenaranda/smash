@@ -1,4 +1,4 @@
-#Smash: Bechmark of compression libraries
+# Smash: Bechmark of compression libraries
 
 Smash is a library which present a single c++ API to use many compression libraries.
 
