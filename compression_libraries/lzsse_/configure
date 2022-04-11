@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="1847c3e82794400deb56edd30d8aa3f445fd000b"
 DIRECTORY="LZSSE"
 
 RED='\033[0;31m'

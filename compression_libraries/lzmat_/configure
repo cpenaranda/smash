@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="25d9b958fff9514050a28642c99b3fff10761aac"
 DIRECTORY="lzmat"
 
 RED='\033[0;31m'

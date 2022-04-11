@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="a0fcab84a7918fa205d5f29bf03b71bd4abb19b4"
 DIRECTORY="ms-compress"
 
 RED='\033[0;31m'

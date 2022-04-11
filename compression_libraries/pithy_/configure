@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="d7d5bd3a20f97d46454f9e651ec6b3dd5801885e"
 DIRECTORY="pithy"
 
 RED='\033[0;31m'

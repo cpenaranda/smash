@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="182b56cb36843720f38eff2ec30db1deac4e85bd"
 DIRECTORY="liblzg"
 
 RED='\033[0;31m'

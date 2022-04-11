@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="6810061c57dd169230808760540acb9078f53ae5"
 DIRECTORY="yalz77"
 
 RED='\033[0;31m'

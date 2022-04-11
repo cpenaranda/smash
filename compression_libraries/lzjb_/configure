@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="4544a180ed2ecfed8228d580253fbeaaae1fd2b4"
 DIRECTORY="lzjb"
 
 RED='\033[0;31m'

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="5601b8272a6850b7c5d693dd0c0e16da50be8d8d"
 DIRECTORY="lodepng"
 
 RED='\033[0;31m'

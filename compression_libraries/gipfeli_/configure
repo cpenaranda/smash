@@ -1,7 +1,7 @@
 #! /bin/bash
 
-VERSION="master"
-VERSION_FIXED="master"
+VERSION="04fe241e27f6dcfef239afc6c5e3cee0b4d7c333"
+VERSION_FIXED="04fe241e27f6dcfef239afc6c5e3cee0b4d7c333"
 DIRECTORY="gipfeli"
 
 RED='\033[0;31m'

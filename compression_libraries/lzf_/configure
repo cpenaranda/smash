@@ -1,7 +1,7 @@
 #! /bin/bash
 
-VERSION="master"
-VERSION_FIXED="master"
+VERSION="fb25820c3c0aeafd127956ae6c115063b47e459a"
+VERSION_FIXED="fb25820c3c0aeafd127956ae6c115063b47e459a"
 DIRECTORY="liblzf"
 
 RED='\033[0;31m'

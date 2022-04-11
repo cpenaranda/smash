@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="9ed1867d81a18cbda42805e7238e2dd5997dedfc"
 DIRECTORY="fastlz"
 
 RED='\033[0;31m'

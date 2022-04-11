@@ -83,6 +83,44 @@ CHECK_LIBRARY() {
   cd ../..
 }
 
+FAIL_MESSAGE(){
+  echo -e "${CYAN}Must be run:${NO_COLOR}"
+  echo -e "${RED}\t$PWD/configure${NO_COLOR}"
+  echo -e "${CYAN}Also, you can use the -n parameter followed by the name of libraries you don't want to compile separated by a space ${NO_COLOR}"
+  exit 1
+}
+
+LIBRARIES=("brieflz" "brotli" "bzip2" "c-blosc2" "csc" "density" "fari" "flz" "flzma2" "fse" "gipfeli" "heatshrink" "libbsc" "libdeflate" "liblzg" "lizard" "lodepng" "lz4" "lzf" "lzfse" "lzfx" "lzham" "lzjb" "lzma" "lzmat" "lzo" "lzsse" "miniz" "ms" "pithy" "quicklz" "snappy" "ucl" "wflz" "xpack" "yalz77" "z3lib" "zlib" "zlib-ng" "zling" "zpaq" "zstd")
+LIST_NO_LIBRARIES=("-DBRIEFLZ=OFF" "-DBROTLI=OFF" "-DBZIP2=OFF" "-DCBLOSC2=OFF" "-DCSC=OFF" "-DDENSITY=OFF" "-DFARI=OFF" "-DFLZ=OFF" "-DFLZMA2=OFF" "-DFSE=OFF" "-DGIPFELI=OFF" "-DHEATSHRINK=OFF" "-DLIBBSC=OFF" "-DLIBDEFLATE=OFF" "-DLIBLZG=OFF" "-DLIZARD=OFF" "-DLODEPNG=OFF" "-DLZ4=OFF" "-DLZF=OFF" "-DLZFSE=OFF" "-DLZFX=OFF" "-DLZHAM=OFF" "-DLZJB=OFF" "-DLZMA=OFF" "-DLZMAT=OFF" "-DLZO=OFF" "-DLZSSE=OFF" "-DMINIZ=OFF" "-DMS=OFF" "-DPITHY=OFF" "-DQUICKLZ=OFF" "-DSNAPPY=OFF" "-DUCL=OFF" "-DWFLZ=OFF" "-DXPACK=OFF" "-DYALZ77=OFF" "-DZ3LIB=OFF" "-DZLIB=OFF" "-DZLIB_NG=OFF" "-DZLING=OFF" "-DZPAQ=OFF" "-DZSTD=OFF")
+LIST_LIBRARIES=("-DBRIEFLZ=ON" "-DBROTLI=ON" "-DBZIP2=ON" "-DCBLOSC2=ON" "-DCSC=ON" "-DDENSITY=ON" "-DFARI=ON" "-DFLZ=ON" "-DFLZMA2=ON" "-DFSE=ON" "-DGIPFELI=ON" "-DHEATSHRINK=ON" "-DLIBBSC=ON" "-DLIBDEFLATE=ON" "-DLIBLZG=ON" "-DLIZARD=ON" "-DLODEPNG=ON" "-DLZ4=ON" "-DLZF=ON" "-DLZFSE=ON" "-DLZFX=ON" "-DLZHAM=ON" "-DLZJB=ON" "-DLZMA=ON" "-DLZMAT=ON" "-DLZO=ON" "-DLZSSE=ON" "-DMINIZ=ON" "-DMS=ON" "-DPITHY=ON" "-DQUICKLZ=ON" "-DSNAPPY=ON" "-DUCL=ON" "-DWFLZ=ON" "-DXPACK=ON" "-DYALZ77=ON" "-DZ3LIB=ON" "-DZLIB=ON" "-DZLIB_NG=ON" "-DZLING=ON" "-DZPAQ=ON" "-DZSTD=ON")
+NO_LIBRARIES=()
+if [ $# -gt 1 ]; then
+  if [ $1 == "-n" ]; then
+    for param in "$@"; do
+      if [ ! $param == "-n" ]; then
+        SET=0
+        for (( i=0; i<${#LIBRARIES[@]}; i++ )); do
+          if [ ${LIBRARIES[$i]} == $param ]; then
+            SET=1
+            NO_LIBRARIES=(${LIST_NO_LIBRARIES[$i]} "${NO_LIBRARIES[@]}")
+            LIBRARIES=(${LIBRARIES[@]:0:$i} ${LIBRARIES[@]:$(($i+1))})
+            LIST_NO_LIBRARIES=(${LIST_NO_LIBRARIES[@]:0:$i} ${LIST_NO_LIBRARIES[@]:$(($i+1))})
+            LIST_LIBRARIES=(${LIST_LIBRARIES[@]:0:$i} ${LIST_LIBRARIES[@]:$(($i+1))})
+            break
+          fi
+        done
+        if [ $SET -eq 0 ]; then
+          FAIL_MESSAGE
+        fi
+      fi
+    done
+  else
+    FAIL_MESSAGE
+  fi
+elif [ $# -eq 1 ]; then
+  FAIL_MESSAGE
+fi
+
 LOG
 echo > smash.log
 MESSAGE "Updating all submodules"
@@ -90,7 +128,8 @@ git submodule update --init --force >> smash.log 2>&1
 CHECK
 
 MESSAGE "Checking compression libraries" 0
-LIBRARIES=("brieflz" "brotli" "bzip2" "c-blosc2" "csc" "density" "fari" "flz" "flzma2" "fse" "gipfeli" "heatshrink" "libbsc" "libdeflate" "liblzg" "lizard" "lodepng" "lz4" "lzf" "lzfse" "lzfx" "lzham" "lzjb" "lzma" "lzmat" "lzo" "lzsse" "miniz" "ms" "pithy" "quicklz" "snappy" "ucl" "wflz" "xpack" "yalz77" "z3lib" "zlib" "zlib-ng" "zling" "zpaq" "zstd" )
+
+
 N=1
 for library in ${LIBRARIES[*]}; do
   CHECK_LIBRARY $library ${N} ${#LIBRARIES[@]}
@@ -104,7 +143,8 @@ if [[ -d build ]]; then
 else
   mkdir build; cd build
 fi
-cmake -DCMAKE_BUILD_TYPE=Release .. >> ../smash.log 2>&1
+
+cmake -DCMAKE_BUILD_TYPE=Release .. ${NO_LIBRARIES[@]} ${LIST_LIBRARIES[@]} >> ../smash.log 2>&1
 CHECK
 
 MESSAGE "Compiling source"

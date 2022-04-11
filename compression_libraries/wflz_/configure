@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="e742c4bad7b3427fb3eeb1fc5af361af9d517a66"
 DIRECTORY="wflz"
 
 RED='\033[0;31m'

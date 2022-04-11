@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION="master"
+VERSION="248325e21fc104ecaaeaafad8f13f9ad8afbf7aa"
 DIRECTORY="lzham_codec_devel"
 
 RED='\033[0;31m'
