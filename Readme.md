@@ -290,47 +290,47 @@ Using **configure** script, you can specify the name of the compression librarie
 
 ## Libraries used in Smash
 
-| Name              | Version    | Repository   |
-| :---:             | :---:      | :---:        |
-| brieflz | v1.3.0 | https://github.com/jibsen/brieflz |
-| brotli | v1.0.9 | https://github.com/google/brotli |
-| bzip2 | bzip2-1.0.8 | https://gitlab.com/bzip2/bzip2 |
-| c-blosc2 | v2.0.4 | https://github.com/Blosc/c-blosc2 |
-| csc | commit c5dbe0944d07acbc97d2c04ec9f99a139c6f3931 | https://github.com/fusiyuan2010/CSC |
-| density | density-0.14.2 | https://github.com/k0dai/density |
-| fari | main | https://github.com/davidcatt/FastARI |
-| flz | commit 9ed1867d81a18cbda42805e7238e2dd5997dedfc | https://github.com/svn2github/fastlz |
-| flzma2 | v1.0.1 | https://github.com/conor42/fast-lzma2 |
-| fse | commit 9ba32518ad023cd4c3726fb44bba5b768ef291c8 | https://github.com/Cyan4973/FiniteStateEntropy |
-| gipfeli | commit 04fe241e27f6dcfef239afc6c5e3cee0b4d7c333 | https://github.com/google/gipfeli |
-| heatshrink | v0.4.1 | https://github.com/atomicobject/heatshrink |
-| libbsc | v3.2.4 | https://github.com/IlyaGrebnov/libbsc |
-| libdeflate | v1.9 | https://github.com/ebiggers/libdeflate |
-| liblzg | commit 182b56cb36843720f38eff2ec30db1deac4e85bd | https://github.com/mbitsnbites/liblzg |
-| lizard | v1.0 | https://github.com/inikep/lizard |
-| lodepng | commit 5601b8272a6850b7c5d693dd0c0e16da50be8d8d | https://github.com/lvandeve/lodepng |
-| lz4 | v1.9.3 | https://github.com/lz4/lz4 |
-| lzf | commit fb25820c3c0aeafd127956ae6c115063b47e459a | https://github.com/nemequ/liblzf |
-| lzfse | lzfse-1.0 | https://github.com/lzfse/lzfse |
-| lzfx | 0.1 | https://code.google.com/archive/p/lzfx/ |
-| lzham | commit 248325e21fc104ecaaeaafad8f13f9ad8afbf7aa | https://github.com/richgel999/lzham_codec_devel |
-| lzjb | commit 4544a180ed2ecfed8228d580253fbeaaae1fd2b4 | https://github.com/nemequ/lzjb |
-| lzma | v5.3.2alpha | https://git.tukaani.org/xz |
-| lzmat | commit 25d9b958fff9514050a28642c99b3fff10761aac | https://github.com/nemequ/lzmat |
-| lzo | commit 0083878c235a89ef96a009d1ff0b500f3a364e4b | https://github.com/nemequ/lzo |
-| lzsse | commit 1847c3e82794400deb56edd30d8aa3f445fd000b | https://github.com/ConorStokes/LZSSE |
-| miniz | 2.2.0 | https://github.com/richgel999/miniz |
-| ms | commit a0fcab84a7918fa205d5f29bf03b71bd4abb19b4 | https://github.com/coderforlife/ms-compress |
-| pithy | commit d7d5bd3a20f97d46454f9e651ec6b3dd5801885e | https://github.com/johnezang/pithy |
-| quicklz | 1.5.0 | https://quicklz.com/ |
-| snappy | 1.1.9 | https://github.com/google/snappy |
-| ucl | 1.03 | http://www.oberhumer.com/opensource/ucl/download/ |
-| wflz | commit e742c4bad7b3427fb3eeb1fc5af361af9d517a66 | https://github.com/ShaneYCG/wflz |
-| xpack | v0.1 | https://github.com/ebiggers/xpack |
-| yalz77 | commit 6810061c57dd169230808760540acb9078f53ae5 | https://bitbucket.org/tkatchev/yalz77 |
-| z3lib | 1.3 | https://scara.com/~schirmer/o/z3lib/ |
-| zlib | v1.2.11 | https://github.com/madler/zlib |
-| zlib-ng | 2.0.2 | https://github.com/Dead2/zlib-ng |
-| zling | 20160108 | https://github.com/richox/libzling |
-| zpaq | 7.15 | https://github.com/zpaq/zpaq |
-| zstd | v1.5.2| https://github.com/facebook/zstd |
+| Name              | Version    |
+| :---:             | :---:      |
+| [brieflz](https://github.com/jibsen/brieflz) | v1.3.0 |
+| [brotli](https://github.com/google/brotli) | v1.0.9 |
+| [bzip2](https://gitlab.com/bzip2/bzip2) | bzip2-1.0.8 |
+| [c-blosc2](https://github.com/Blosc/c-blosc2) | v2.0.4 |
+| [csc](https://github.com/fusiyuan2010/CSC) | commit c5dbe0944d07acbc97d2c04ec9f99a139c6f3931 |
+| [density](https://github.com/k0dai/density) | density-0.14.2 |
+| [fari](https://github.com/davidcatt/FastARI) | main |
+| [flz](https://github.com/svn2github/fastlz) | commit 9ed1867d81a18cbda42805e7238e2dd5997dedfc |
+| [flzma2](https://github.com/conor42/fast-lzma2) | v1.0.1 |
+| [fse](https://github.com/Cyan4973/FiniteStateEntropy) | commit 9ba32518ad023cd4c3726fb44bba5b768ef291c8 |
+| [gipfeli](https://github.com/google/gipfeli) | commit 04fe241e27f6dcfef239afc6c5e3cee0b4d7c333 |
+| [heatshrink](https://github.com/atomicobject/heatshrink) | v0.4.1 |
+| [libbsc](https://github.com/IlyaGrebnov/libbsc) | v3.2.4 |
+| [libdeflate](https://github.com/ebiggers/libdeflate) | v1.9 |
+| [liblzg](https://github.com/mbitsnbites/liblzg) | commit 182b56cb36843720f38eff2ec30db1deac4e85bd |
+| [lizard](https://github.com/inikep/lizard) | v1.0 |
+| [lodepng](https://github.com/lvandeve/lodepng) | commit 5601b8272a6850b7c5d693dd0c0e16da50be8d8d |
+| [lz4](https://github.com/lz4/lz4) | v1.9.3 |
+| [lzf](https://github.com/nemequ/liblzf) | commit fb25820c3c0aeafd127956ae6c115063b47e459a |
+| [lzfse](https://github.com/lzfse/lzfse) | lzfse-1.0 |
+| [lzfx](https://code.google.com/archive/p/lzfx/) | 0.1 |
+| [lzham](https://github.com/richgel999/lzham_codec_devel) | commit 248325e21fc104ecaaeaafad8f13f9ad8afbf7aa |
+| [lzjb](https://github.com/nemequ/lzjb) | commit 4544a180ed2ecfed8228d580253fbeaaae1fd2b4 |
+| [lzma](https://git.tukaani.org/xz) | v5.3.2alpha |
+| [lzmat](https://github.com/nemequ/lzmat) | commit 25d9b958fff9514050a28642c99b3fff10761aac |
+| [lzo](https://github.com/nemequ/lzo) | commit 0083878c235a89ef96a009d1ff0b500f3a364e4b |
+| [lzsse](https://github.com/ConorStokes/LZSSE) | commit 1847c3e82794400deb56edd30d8aa3f445fd000b |
+| [miniz](https://github.com/richgel999/miniz) | 2.2.0 |
+| [ms](https://github.com/coderforlife/ms-compress) | commit a0fcab84a7918fa205d5f29bf03b71bd4abb19b4 |
+| [pithy](https://github.com/johnezang/pithy) | commit d7d5bd3a20f97d46454f9e651ec6b3dd5801885e |
+| [quicklz](https://quicklz.com/) | 1.5.0 |
+| [snappy](https://github.com/google/snappy) | 1.1.9 |
+| [ucl](http://www.oberhumer.com/opensource/ucl/) | 1.03 |
+| [wflz](https://github.com/ShaneYCG/wflz) | commit e742c4bad7b3427fb3eeb1fc5af361af9d517a66 |
+| [xpack](https://github.com/ebiggers/xpack) | v0.1 |
+| [yalz77](https://bitbucket.org/tkatchev/yalz77) | commit 6810061c57dd169230808760540acb9078f53ae5 |
+| [z3lib](https://scara.com/~schirmer/o/z3lib/) | 1.3 |
+| [zlib](https://github.com/madler/zlib) | v1.2.11 |
+| [zlib-ng](https://github.com/Dead2/zlib-ng) | 2.0.2 |
+| [zling](https://github.com/richox/libzling) | 20160108 |
+| [zpaq](https://github.com/zpaq/zpaq) | 7.15 |
+| [zstd](https://github.com/facebook/zstd) | v1.5.2|
