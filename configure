@@ -8,9 +8,15 @@ NO_COLOR='\033[0m'
 
 MESSAGE(){
   echo -ne "${CYAN}${1}... ${NO_COLOR}"
-  echo -ne "${1}..." >> smash.log 2>&1
   if [[ $2 != "" ]]; then
+    if [[ $2 != 0 ]]; then
+      echo -ne "${1}..." >> $2 2>&1
+    else
+      echo -ne "${1}..." >> smash.log 2>&1
+    fi
     echo
+  else
+    echo -ne "${1}..." >> smash.log 2>&1
   fi
 }
 
@@ -51,11 +57,19 @@ CHECK(){
   if [[ $? -eq 0 ]]; then
     echo -ne "${GREEN}[SUCCESS]${NO_COLOR}"
     echo
-    echo "[SUCCESS]" >> smash.log 2>&1
+    if [[ $1 != "" ]]; then
+      echo "[SUCCESS]" >> $1 2>&1
+    else
+      echo "[SUCCESS]" >> smash.log 2>&1
+    fi
   else
     echo -ne "${RED}[FAIL]${NO_COLOR}"
     echo
-    echo "[FAIL]" >> smash.log 2>&1
+    if [[ $1 != "" ]]; then
+      echo "[FAIL]" >> $1 2>&1
+    else
+      echo "[FAIL]" >> smash.log 2>&1
+    fi
     exit 1
   fi
 }
@@ -145,9 +159,9 @@ else
 fi
 
 cmake -DCMAKE_BUILD_TYPE=Release .. ${NO_LIBRARIES[@]} ${LIST_LIBRARIES[@]} >> ../smash.log 2>&1
-CHECK
+CHECK ../smash.log
 
-MESSAGE "Compiling source"
+MESSAGE "Compiling source" ../smash.log
 make -j >> ../smash.log 2>&1
-CHECK
+CHECK ../smash.log
 END
