@@ -24,8 +24,8 @@ bool LodepngLibrary::CheckOptions(Options *options, const bool &compressor) {
         if (result) {
           result = CompressionLibrary::CheckFlags("lodepng", options, 0, 1);
           if (result) {
-            result = CompressionLibrary::CheckBackReferenceBits(
-                "lodepng", options, 1, 255);
+            result = CompressionLibrary::CheckBackReferenceBits("lodepng",
+                                                                options, 1, 8);
           }
         }
       }
@@ -44,7 +44,7 @@ bool LodepngLibrary::Compress(char *uncompressed_data,
         1,
         static_cast<unsigned>(1 << options_.GetWindowSize()),
         options_.GetWorkFactor(),
-        options_.GetBackReferenceBits(),
+        static_cast<unsigned int>((1 << options_.GetBackReferenceBits()) - 1),
         options_.GetFlags(),
         0,
         0,
@@ -153,10 +153,10 @@ bool LodepngLibrary::GetBackReferenceBitsInformation(
     std::vector<std::string> *back_reference_bits_information,
     uint8_t *minimum_bits, uint8_t *maximum_bits) {
   if (minimum_bits) *minimum_bits = 1;
-  if (maximum_bits) *maximum_bits = 255;
+  if (maximum_bits) *maximum_bits = 8;
   if (back_reference_bits_information) {
     back_reference_bits_information->clear();
-    back_reference_bits_information->push_back("Available values [1-255]");
+    back_reference_bits_information->push_back("Available values [1-8]");
     back_reference_bits_information->push_back("[compression]");
   }
   return true;

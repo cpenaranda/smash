@@ -156,7 +156,7 @@ LzhamLibrary::LzhamLibrary() {
   flags_values_[2] = LZHAM_COMP_FLAG_DETERMINISTIC_PARSING;
   flags_[3] = "1 & 2";
   flags_values_[3] = flags_values_[1] + flags_values_[2];
-  flags_[4] = "Trade offf";
+  flags_[4] = "Trade off";
   flags_values_[4] = LZHAM_COMP_FLAG_TRADEOFF_DECOMPRESSION_RATE_FOR_COMP_RATIO;
   flags_[5] = "1 & 4";
   flags_values_[5] = flags_values_[1] + flags_values_[4];
