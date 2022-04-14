@@ -315,7 +315,7 @@ Using **configure** script, you can specify the name of the compression librarie
 | [lzfx](https://code.google.com/archive/p/lzfx/) | 0.1 |
 | [lzham](https://github.com/richgel999/lzham_codec_devel) | commit 248325e21fc104ecaaeaafad8f13f9ad8afbf7aa |
 | [lzjb](https://github.com/nemequ/lzjb) | commit 4544a180ed2ecfed8228d580253fbeaaae1fd2b4 |
-| [lzma](https://git.tukaani.org/xz) | v5.3.2alpha |
+| [lzma](https://tukaani.org/xz/) | v5.3.2alpha |
 | [lzmat](https://github.com/nemequ/lzmat) | commit 25d9b958fff9514050a28642c99b3fff10761aac |
 | [lzo](https://github.com/nemequ/lzo) | commit 0083878c235a89ef96a009d1ff0b500f3a364e4b |
 | [lzsse](https://github.com/ConorStokes/LZSSE) | commit 1847c3e82794400deb56edd30d8aa3f445fd000b |
