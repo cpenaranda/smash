@@ -5,7 +5,10 @@
  * Departamento de Informática de Sistemas y Computadores
  * Universidad Politécnica de Valencia (Spain)
  */
-#include <libbsc/libbsc.h>
+
+#include <functional>
+// Necesary to compile with libbsc
+#include <libbsc/libbsc.h>  // NOLINT
 
 // SMASH LIBRARIES
 #include <libbsc_library.hpp>
@@ -19,8 +22,8 @@ bool LibbscLibrary::CheckOptions(Options *options, const bool &compressor) {
     if (result) {
       result = CompressionLibrary::CheckWindowSize("libbsc", options, 10, 28);
       if (result) {
-        result = CompressionLibrary::CheckBackReferenceBits("libbsc", options,
-                                                            4, 255);
+        result =
+            CompressionLibrary::CheckBackReferenceBits("libbsc", options, 3, 8);
         if (result) {
           result = CompressionLibrary::CheckMode("libbsc", options, 1, 5);
         }
@@ -41,17 +44,22 @@ bool LibbscLibrary::Compress(char *uncompressed_data,
                              uint64_t *compressed_size) {
   bool result{initialized_compressor_};
   if (result) {
-    int res = bsc_compress(
-        reinterpret_cast<unsigned char *>(uncompressed_data),
-        reinterpret_cast<unsigned char *>(compressed_data), uncompressed_size,
-        options_.GetWindowSize(), options_.GetBackReferenceBits(),
-        (options_.GetMode() == 1) ? options_.GetMode() : options_.GetMode() + 1,
-        options_.GetCompressionLevel(), options_.GetFlags());
-    if (res == LIBBSC_NOT_COMPRESSIBLE || res < LIBBSC_NO_ERROR) {
-      std::cout << "ERROR: libbsc error when compress data" << std::endl;
-      result = false;
+    if (result = (bsc_init(options_.GetFlags()) == LIBBSC_NO_ERROR)) {
+      int res = bsc_compress(
+          reinterpret_cast<unsigned char *>(uncompressed_data),
+          reinterpret_cast<unsigned char *>(compressed_data), uncompressed_size,
+          options_.GetWindowSize(), (1 << options_.GetBackReferenceBits()) - 1,
+          (options_.GetMode() == 1) ? options_.GetMode()
+                                    : options_.GetMode() + 1,
+          options_.GetCompressionLevel(), options_.GetFlags());
+      if (res == LIBBSC_NOT_COMPRESSIBLE || res < LIBBSC_NO_ERROR) {
+        result = false;
+      }
+      *compressed_size = res;
     }
-    *compressed_size = res;
+  }
+  if (!result) {
+    std::cout << "ERROR: libbsc error when compress data" << std::endl;
   }
   return result;
 }
@@ -164,11 +172,11 @@ bool LibbscLibrary::GetFlagsInformation(
 bool LibbscLibrary::GetBackReferenceBitsInformation(
     std::vector<std::string> *back_reference_bits_information,
     uint8_t *minimum_bits, uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 4;
-  if (maximum_bits) *maximum_bits = 255;
+  if (minimum_bits) *minimum_bits = 3;
+  if (maximum_bits) *maximum_bits = 8;
   if (back_reference_bits_information) {
     back_reference_bits_information->clear();
-    back_reference_bits_information->push_back("Available values [4-255]");
+    back_reference_bits_information->push_back("Available values [3-8]");
     back_reference_bits_information->push_back("[compression]");
   }
   return true;
