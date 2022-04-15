@@ -1,7 +1,6 @@
 #! /bin/bash
 
 VERSION="v3.2.4"
-VERSION_FIXED="v3.2.4"
 DIRECTORY="libbsc"
 
 RED='\033[0;31m'
@@ -40,29 +39,9 @@ UPDATE_REPOSITORY() {
   fi
 }
 
-WARNING() {
-  if [[ ${VERSION} != ${VERSION_FIXED} ]]; then
-    WARNING=1
-    echo -ne "${YELLOW}[WARNING] Code has been fixed using ${VERSION_FIXED} version${NO_COLOR}"
-  fi
-}
-
-FIXING_CODE() {
-  WARNING
-  sed -i "s/bsc_init_full(int features, void.* (.* malloc)(size_t size), void.* (.* zero_malloc)(size_t size), void (.* free)(void.* address))/bsc_init_full(int features)/" libbsc/libbsc.h >> ../../../smash.log 2>&1
-  CHECK 0
-  sed -i "s/bsc_init_full(int features, void.* (.* malloc)(size_t size), void.* (.* zero_malloc)(size_t size), void (.* free)(void.* address))/bsc_init_full(int features)/" libbsc/libbsc/libbsc.cpp >> ../../../smash.log 2>&1
-  CHECK 0
-  sed -i "s/bsc_platform_init(features, malloc, zero_malloc, free);/bsc_platform_init(features, NULL, NULL, NULL);/" libbsc/libbsc/libbsc.cpp >> ../../../smash.log 2>&1
-  CHECK 0
-  sed -i "s/bsc_init_full(features, NULL, NULL, NULL);/bsc_init_full(features);/" libbsc/libbsc/libbsc.cpp >> ../../../smash.log 2>&1
-}
-
 MESSAGE "Libbsc"
 cd ${DIRECTORY} >> ../../smash.log 2>&1
 CHECK 0
 UPDATE_REPOSITORY
-CHECK 0
-FIXING_CODE
 CHECK
 cd ..

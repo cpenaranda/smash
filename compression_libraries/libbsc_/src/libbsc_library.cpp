@@ -7,7 +7,7 @@
  */
 
 #include <functional>
-// Necesary to compile with libbsc
+// Necessary to compile with libbsc
 #include <libbsc/libbsc.h>  // NOLINT
 
 // SMASH LIBRARIES

@@ -1,6 +1,7 @@
 #! /bin/bash
 
 VERSION="2.0.2"
+VERSION_FIXED="2.0.2"
 DIRECTORY="zlib-ng"
 
 RED='\033[0;31m'
@@ -39,9 +40,27 @@ UPDATE_REPOSITORY() {
   fi
 }
 
+WARNING() {
+  if [[ ${VERSION} != ${VERSION_FIXED} ]]; then
+    WARNING=1
+    echo -ne "${YELLOW}[WARNING] Code has been fixed using ${VERSION_FIXED} version${NO_COLOR}"
+  fi
+}
+
+FIXING_CODE() {
+  WARNING
+  sed -i "s/add_library(zlib/add_library(ng_zlib/" CMakeLists.txt
+  CHECK 0
+  sed -i "s/ALIAS zlib)/ALIAS ng_zlib)/" CMakeLists.txt
+  CHECK 0
+  sed -i "s/set(ZLIB_INSTALL_LIBRARIES zlib)/set(ZLIB_INSTALL_LIBRARIES ng_zlib)/" CMakeLists.txt
+}
+
 MESSAGE "Zlib-ng"
 cd ${DIRECTORY} >> ../../smash.log 2>&1
 CHECK 0
 UPDATE_REPOSITORY
+CHECK 0
+FIXING_CODE
 CHECK
 cd ..
