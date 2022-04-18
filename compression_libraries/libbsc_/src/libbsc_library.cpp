@@ -82,7 +82,7 @@ bool LibbscLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
                                char *decompressed_data,
                                uint64_t *decompressed_size) {
   bool result{initialized_decompressor_};
-  if (result) {
+  if (result = (bsc_init(options_.GetFlags()) == LIBBSC_NO_ERROR)) {
     GetDecompressedDataSize(compressed_data, compressed_size,
                             decompressed_size);
     int res = bsc_decompress(

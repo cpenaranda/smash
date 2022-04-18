@@ -17,6 +17,7 @@ class Result {
   uint64_t uncompressed_size_;
   uint64_t compressed_size_;
   double compression_vel_;
+  double transfer_vel_;
   double decompression_vel_;
   double total_vel_;
   uint8_t option_;
@@ -25,6 +26,11 @@ class Result {
          const uint64_t &compressed_size = 0, const double &compression_vel = 0,
          const double &decompression_vel = 0, const double &total_vel = 0,
          const uint8_t &option = 0);
+
+  Result(const std::string &message, const uint64_t &uncompressed_size = 0,
+         const uint64_t &compressed_size = 0, const double &compression_vel = 0,
+         const double &transfer_vel = 0, const double &decompression_vel = 0,
+         const double &total_vel = 0, const uint8_t &option = 0);
 
   bool operator<(const Result &other) const;
 };

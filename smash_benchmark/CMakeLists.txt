@@ -12,3 +12,21 @@ add_executable(${TARGET_NAME} src/smash_benchmark.cpp
                               src/utils.cpp
 )
 target_link_libraries(${TARGET_NAME} smash_library)
+
+add_executable(${TARGET_NAME}_client src/smash_benchmark_client.cpp
+                                     src/result.cpp
+                                     src/utils.cpp
+                                     src/network.cpp
+                                     src/network_client.cpp
+)
+
+target_link_libraries(${TARGET_NAME}_client smash_library)
+
+add_executable(${TARGET_NAME}_server src/smash_benchmark_server.cpp
+                                     src/result.cpp
+                                     src/utils.cpp
+                                     src/network.cpp
+                                     src/network_server.cpp
+)
+
+target_link_libraries(${TARGET_NAME}_server smash_library)

@@ -17,12 +17,23 @@
 #include <smash.hpp>
 class Utils {
  private:
+  enum class KindBenchmark { Simple, Client, Server };
+
   inline static const std::string how_to_run_ = "To run the smash benchmark:";
+  inline static const std::string how_to_run_client_ =
+      "To run the client smash benchmark:";
+  inline static const std::string how_to_run_server_ =
+      "To run the server smash benchmark:";
   inline static const std::string how_to_execute_ =
       " -c <library_name> -i <name_file>";
+  inline static const std::string how_to_execute_client_ =
+      " -c <library_name> -i <name_file> -p <port_number> -d <ip>";
+  inline static const std::string how_to_execute_server_ = " -p <port_number>";
   inline static const std::string available_arguments_ =
       "Available arguments where minimum values are used by default.\n"
       "The minimum values depend on compression libraries:";
+  inline static const std::string available_arguments_server_ =
+      "Available arguments are specified on client side";
 
   inline static const std::string help_p1_ = "-h";
   inline static const std::string help_p2_ = "--help";
@@ -54,6 +65,10 @@ class Utils {
   inline static const std::string reference_p2_ = "--back_reference_bits";
   inline static const std::string threads_p1_ = "-t";
   inline static const std::string threads_p2_ = "--threads";
+  inline static const std::string destination_p1_ = "-d";
+  inline static const std::string destination_p2_ = "--destination_address";
+  inline static const std::string port_p1_ = "-p";
+  inline static const std::string port_p2_ = "--port";
 
   static const uint16_t length_left_message_ = 45;
   inline static const std::string help_left_message_ =
@@ -88,6 +103,10 @@ class Utils {
       reference_p1_ + ", " + reference_p2_ + " <number>";
   inline static const std::string threads_left_message_ =
       threads_p1_ + ", " + threads_p2_ + " <number>";
+  inline static const std::string destination_left_message_ =
+      destination_p1_ + ", " + destination_p2_ + " <ip>";
+  inline static const std::string port_left_message_ =
+      port_p1_ + ", " + port_p2_ + " <port_number>";
 
   static const uint16_t length_right_message_ = 71;
   inline static const std::string help_right_message_ = "Show this message";
@@ -108,6 +127,7 @@ class Utils {
   inline static const std::string best_right_message_ =
       "Get the <number> configurations of the selected library                "
       "with the best <option>. Available options:                             "
+      "0: Compression ratio                                                   "
       "1: Compression time                                                    "
       "2: Decompression time                                                  "
       "3: Total time";
@@ -126,6 +146,10 @@ class Utils {
       "Threads used in algorithms";
   inline static const std::string values_depend_libraries_message_ =
       "Values depend of different libraries";
+  inline static const std::string destination_right_message_ =
+      "Ip or host name where the Smash server is running";
+  inline static const std::string port_right_message_ =
+      "Port where the Smash server is listening";
 
   static const uint16_t size_row_library_ = 13;
   static const uint16_t size_row_level_ = 8;
@@ -139,6 +163,7 @@ class Utils {
   static const uint16_t size_rows_packed_data_ = 14;
   static const uint16_t size_rows_ratio_ = 9;
   static const uint16_t size_rows_compress_ = 14;
+  static const uint16_t size_rows_transfer_ = 14;
   static const uint16_t size_rows_decompress_ = 14;
   static const uint16_t size_rows_total_ = 14;
 
@@ -179,11 +204,70 @@ class Utils {
 
   static void SetCopressionLevel(Smash *lib, std::vector<Options> *options);
 
- public:
-  static void ShowMessage(const std::string &exe);
+  static bool CheckHelp(const int &number_params, const char *const params[],
+                        const int &position, const KindBenchmark &benchmark);
 
-  static void ShowLibraryInformation(const std::string &library_name,
-                                     const std::string &exe);
+  static bool CheckAvailable(const int &number_params,
+                             const char *const params[], const int &position);
+
+  static bool CheckCompression(const int &number_params,
+                               const char *const params[], const int &position,
+                               std::string *compression_library_name);
+
+  static bool CheckInput(const int &number_params, const char *const params[],
+                         const int &position, std::string *input_file_name);
+
+  static bool CheckOutput(const int &number_params, const char *const params[],
+                          const int &position, std::string *output_file_name);
+
+  static bool CheckLevel(const int &number_params, const char *const params[],
+                         const int &position, Options *opt);
+
+  static bool CheckWindow(const int &number_params, const char *const params[],
+                          const int &position, Options *opt);
+
+  static bool CheckMode(const int &number_params, const char *const params[],
+                        const int &position, Options *opt);
+
+  static bool CheckWork(const int &number_params, const char *const params[],
+                        const int &position, Options *opt);
+
+  static bool CheckFlags(const int &number_params, const char *const params[],
+                         const int &position, Options *opt);
+
+  static bool CheckReference(const int &number_params,
+                             const char *const params[], const int &position,
+                             Options *opt);
+
+  static bool CheckThreads(const int &number_params, const char *const params[],
+                           const int &position, Options *opt);
+
+  static bool CheckEffort(const int &number_params, const char *const params[],
+                          const int &position, const bool &has_been_set);
+
+  static bool CheckBest(const int &number_params, const char *const params[],
+                        const int &position, const bool &has_been_set,
+                        uint8_t *option, uint32_t *result_number);
+
+  static bool CheckRepetitions(const int &number_params,
+                               const char *const params[], const int &position,
+                               const bool &has_been_set, uint32_t *repetitions);
+
+  static bool CheckDestination(const int &number_params,
+                               const char *const params[], const int &position,
+                               std::string *address);
+
+  static bool CheckPort(const int &number_params, const char *const params[],
+                        const int &position, const bool &has_been_set,
+                        int *port);
+
+ public:
+  static void ShowMessage(const std::string &exe,
+                          const KindBenchmark &benchmark);
+
+  static bool ShowLibraryInformation(const std::string &library_name,
+                                     const std::string &exe,
+                                     const KindBenchmark &benchmark);
 
   static bool GetParams(const int &number_params, const char *const params[],
                         Options *opt, std::string *input_file_name,
@@ -192,7 +276,19 @@ class Utils {
                         bool *all_options, uint8_t *option,
                         uint32_t *result_number, uint32_t *repetitions);
 
-  static void ShowTitle(const uint64_t &size, const uint64_t &repetitions);
+  static bool GetParamsClient(const int &number_params,
+                              const char *const params[], Options *opt,
+                              std::string *input_file_name,
+                              std::string *compression_library_name,
+                              bool *all_options, uint8_t *option,
+                              uint32_t *result_number, uint32_t *repetitions,
+                              int *port, std::string *address);
+
+  static bool GetParamsServer(const int &number_params,
+                              const char *const params[], int *port);
+
+  static void ShowTitle(const uint64_t &size, const uint64_t &repetitions,
+                        const bool &show_transfer = false);
 
   static std::string ShowResult(Smash *lib, const std::string &library_name,
                                 const uint64_t &uncompressed_size,
@@ -203,6 +299,15 @@ class Utils {
                                 const double &error_vel_decompression,
                                 const double &mean_vel_total,
                                 const double &error_vel_total);
+
+  static std::string ShowResult(
+      Smash *lib, const std::string &library_name,
+      const uint64_t &uncompressed_size, const uint64_t &compressed_size,
+      const double &mean_vel_compression, const double &error_vel_compression,
+      const double &mean_vel_transfer, const double &error_vel_transfer,
+      const double &mean_vel_decompression,
+      const double &error_vel_decompression, const double &mean_vel_total,
+      const double &error_vel_total);
 
   static void GetAllOptions(Smash *lib, std::vector<Options> *options);
 };

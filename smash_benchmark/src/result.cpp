@@ -21,6 +21,19 @@ Result::Result(const std::string &message, const uint64_t &uncompressed_size,
       total_vel_(total_vel),
       option_(option) {}
 
+Result::Result(const std::string &message, const uint64_t &uncompressed_size,
+               const uint64_t &compressed_size, const double &compression_vel,
+               const double &transfer_vel, const double &decompression_vel,
+               const double &total_vel, const uint8_t &option)
+    : message_(message),
+      uncompressed_size_(uncompressed_size),
+      compressed_size_(compressed_size),
+      compression_vel_(compression_vel),
+      transfer_vel_(transfer_vel),
+      decompression_vel_(decompression_vel),
+      total_vel_(total_vel),
+      option_(option) {}
+
 bool Result::operator<(const Result &other) const {
   bool result{false};
   if (option_ == 1) {
