@@ -17,7 +17,7 @@ bool Bzip2Library::CheckOptions(Options *options, const bool &compressor) {
   if (compressor) {
     result = CompressionLibrary::CheckCompressionLevel("bzip2", options, 1, 9);
     if (result) {
-      result = CompressionLibrary::CheckWorkFactor("bzip2", options, 0, 250);
+      result = CompressionLibrary::CheckWorkFactor("bzip2", options, 0, 25);
     }
   } else {
     result = CompressionLibrary::CheckMode("bzip2", options, 0, 1);
@@ -33,7 +33,7 @@ bool Bzip2Library::Compress(char *uncompressed_data, uint64_t uncompressed_size,
         compressed_data, reinterpret_cast<uint32_t *>(compressed_size),
         uncompressed_data, static_cast<uint32_t>(uncompressed_size),
         options_.GetCompressionLevel(), 0 /* verbosity */,
-        options_.GetWorkFactor());
+        options_.GetWorkFactor()*10);
     if (bzerr != BZ_OK && bzerr != BZ_OUTBUFF_FULL) {
       std::cout << "ERROR: bzip2 error when compress data" << std::endl;
       result = false;
@@ -98,10 +98,10 @@ bool Bzip2Library::GetWorkFactorInformation(
     std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
     uint8_t *maximum_factor) {
   if (minimum_factor) *minimum_factor = 0;
-  if (maximum_factor) *maximum_factor = 250;
+  if (maximum_factor) *maximum_factor = 25;
   if (work_factor_information) {
     work_factor_information->clear();
-    work_factor_information->push_back("Available values [0-250]");
+    work_factor_information->push_back("Available values [0-25]");
     work_factor_information->push_back(
         "Controls the compression behaviour when there is repetitive data");
     work_factor_information->push_back("[compression]");
