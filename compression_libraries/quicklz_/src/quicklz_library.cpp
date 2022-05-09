@@ -15,7 +15,12 @@
 void QuicklzLibrary::GetCompressedDataSize(char *uncompressed_data,
                                            uint64_t uncompressed_size,
                                            uint64_t *compressed_size) {
-  *compressed_size = qlz_size_compressed(uncompressed_data);
+  if (uncompressed_data) {
+    *compressed_size = qlz_size_compressed(uncompressed_data);
+  } else {
+    CompressionLibrary::GetCompressedDataSize(
+        uncompressed_data, uncompressed_size, compressed_size);
+  }
 }
 
 bool QuicklzLibrary::Compress(char *uncompressed_data,

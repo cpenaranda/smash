@@ -42,6 +42,8 @@ void LibdeflateLibrary::GetCompressedDataSize(char *uncompressed_data,
           libdeflate_gzip_compress_bound(NULL, uncompressed_size);
       break;
     default:
+      CompressionLibrary::GetCompressedDataSize(
+          uncompressed_data, uncompressed_size, compressed_size);
       break;
   }
 }

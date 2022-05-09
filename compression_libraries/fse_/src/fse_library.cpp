@@ -23,24 +23,24 @@ bool FseLibrary::CheckOptions(Options *options, const bool &compressor) {
 void FseLibrary::GetCompressedDataSize(char *uncompressed_data,
                                        uint64_t uncompressed_size,
                                        uint64_t *compressed_size) {
-  if (initialized_compressor_ || initialized_decompressor_) {
-    switch (options_.GetMode()) {
-      case 0:
-        *compressed_size = FSE_original_compressBound(uncompressed_size);
-        break;
-      case 1:
-        *compressed_size = 0;
-        for (uint32_t bytes = 0; uncompressed_size;) {
-          bytes = (uncompressed_size < HUF_original_BLOCKSIZE_MAX)
-                      ? uncompressed_size
-                      : HUF_original_BLOCKSIZE_MAX;
-          *compressed_size += HUF_original_compressBound(bytes) + sizeof(bytes);
-          uncompressed_size -= bytes;
-        }
-        break;
-      default:
-        break;
-    }
+  switch (options_.GetMode()) {
+    case 0:
+      *compressed_size = FSE_original_compressBound(uncompressed_size);
+      break;
+    case 1:
+      *compressed_size = 0;
+      for (uint32_t bytes = 0; uncompressed_size;) {
+        bytes = (uncompressed_size < HUF_original_BLOCKSIZE_MAX)
+                    ? uncompressed_size
+                    : HUF_original_BLOCKSIZE_MAX;
+        *compressed_size += HUF_original_compressBound(bytes) + sizeof(bytes);
+        uncompressed_size -= bytes;
+      }
+      break;
+    default:
+      CompressionLibrary::GetCompressedDataSize(
+          uncompressed_data, uncompressed_size, compressed_size);
+      break;
   }
 }
 
@@ -51,9 +51,12 @@ bool FseLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
     uint64_t compressed_bytes{0};
     switch (options_.GetMode()) {
       case 0:
+      // std::cout << "UD_" << uncompressed_size << std::endl;
+      // std::cout << "CD_" << *compressed_size << std::endl;
         compressed_bytes =
             FSE_original_compress(compressed_data, *compressed_size,
                                   uncompressed_data, uncompressed_size);
+      std::cout << "CD_" << compressed_bytes << std::endl;
         break;
       case 1:
         for (uint32_t current_bytes_to_compress = 0,
@@ -105,9 +108,12 @@ bool FseLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
     uint64_t decompressed_bytes{0};
     switch (options_.GetMode()) {
       case 0:
+      std::cout << "CD_" << compressed_size << std::endl;
+      std::cout << "DD_" << *decompressed_size << std::endl;
         decompressed_bytes =
             FSE_original_decompress(decompressed_data, *decompressed_size,
                                     compressed_data, compressed_size);
+      std::cout << "DD_" << decompressed_bytes << std::endl;
         break;
       case 1:
         for (uint32_t current_bytes_to_decompress = 0,
