@@ -222,6 +222,14 @@ void Utils::ShowMessage(const std::string &exe,
     PrintLine(repetition_number_left_message_,
               repetition_number_right_message_);
     PrintLine(best_left_message_, best_right_message_);
+    if (benchmark == KindBenchmark::Client) {
+      PrintLine(pipeline_left_message_, pipeline_right_message_);
+      PrintLine(pipeline_threads_left_message_,
+                pipeline_threads_right_message_);
+      PrintLine(pipeline_chunk_left_message_, pipeline_chunk_right_message_);
+      PrintLine(pipeline_number_of_chunks_left_message_,
+                pipeline_number_of_chunks_right_message_);
+    }
     PrintLine(level_left_message_, level_right_message_,
               values_depend_libraries_message_);
     PrintLine(window_size_left_message_, window_size_right_message_,
@@ -471,6 +479,56 @@ bool Utils::CheckPort(const int &number_params, const char *const params[],
   return result;
 }
 
+bool Utils::CheckPipeline(const int &number_params, const char *const params[],
+                          const int &position, const bool &has_been_set,
+                          bool *pipeline) {
+  bool result =
+      !has_been_set && Check(params[position], pipeline_p1_, pipeline_p2_);
+  if (result) {
+    *pipeline = true;
+  }
+  return result;
+}
+
+bool Utils::CheckPipelineThreads(const int &number_params,
+                                 const char *const params[],
+                                 const int &position, const bool &has_been_set,
+                                 uint8_t *pipeline_threads) {
+  bool result = !has_been_set && Check(params[position], pipeline_threads_p1_,
+                                       pipeline_threads_p2_);
+  if (result && (result = position + 1 < number_params)) {
+    result = *pipeline_threads = atoi(params[position + 1]);
+  }
+  return result;
+}
+
+bool Utils::CheckPipelineChunkSize(const int &number_params,
+                                   const char *const params[],
+                                   const int &position,
+                                   const bool &has_been_set,
+                                   uint32_t *pipeline_chunk_size) {
+  bool result = !has_been_set &&
+                Check(params[position], pipeline_chunk_p1_, pipeline_chunk_p2_);
+  if (result && (result = position + 1 < number_params)) {
+    result = *pipeline_chunk_size = atoi(params[position + 1]);
+  }
+  return result;
+}
+
+bool Utils::CheckPipelineNumberOfChunks(const int &number_params,
+                                        const char *const params[],
+                                        const int &position,
+                                        const bool &has_been_set,
+                                        uint16_t *pipeline_number_of_chunks) {
+  bool result =
+      !has_been_set && Check(params[position], pipeline_number_of_chunks_p1_,
+                             pipeline_number_of_chunks_p2_);
+  if (result && (result = position + 1 < number_params)) {
+    result = *pipeline_number_of_chunks = atoi(params[position + 1]);
+  }
+  return result;
+}
+
 bool Utils::GetParams(const int &number_params, const char *const params[],
                       Options *opt, std::string *input_file_name,
                       std::string *output_file_name,
@@ -540,19 +598,23 @@ bool Utils::GetParams(const int &number_params, const char *const params[],
   return true;
 }
 
-bool Utils::GetParamsClient(const int &number_params,
-                            const char *const params[], Options *opt,
-                            std::string *input_file_name,
-                            std::string *compression_library_name,
-                            bool *all_options, uint8_t *option,
-                            uint32_t *result_number, uint32_t *repetitions,
-                            int *port, std::string *address) {
+bool Utils::GetParamsClient(
+    const int &number_params, const char *const params[], Options *opt,
+    std::string *input_file_name, std::string *compression_library_name,
+    bool *all_options, uint8_t *option, uint32_t *result_number,
+    uint32_t *repetitions, int *port, std::string *address, bool *pipeline,
+    uint8_t *pipeline_threads, uint32_t *pipeline_chunk_size,
+    uint16_t *pipeline_number_of_chunks) {
   bool show_message{true};
   bool error{false};
   bool best_effort_set{false};
   bool best_set{false};
   bool repetitions_set{false};
   bool port_set{false};
+  bool pipeline_set{false};
+  bool pipeline_threads_set{false};
+  bool pipeline_chunk_size_set{false};
+  bool pipeline_number_of_chunks_set{false};
 
   for (int n = 1; n < number_params && !error; ++n) {
     if (CheckHelp(number_params, params, n, KindBenchmark::Client)) {
@@ -592,6 +654,26 @@ bool Utils::GetParamsClient(const int &number_params,
       ++n;
     } else if (CheckPort(number_params, params, n, port_set, port)) {
       port_set = true;
+      ++n;
+    } else if (pipeline && CheckPipeline(number_params, params, n, pipeline_set,
+                                         pipeline)) {
+      pipeline_set = true;
+    } else if (pipeline_threads &&
+               CheckPipelineThreads(number_params, params, n,
+                                    pipeline_threads_set, pipeline_threads)) {
+      pipeline_threads_set = true;
+      ++n;
+    } else if (pipeline_chunk_size &&
+               CheckPipelineChunkSize(number_params, params, n,
+                                      pipeline_chunk_size_set,
+                                      pipeline_chunk_size)) {
+      pipeline_chunk_size_set = true;
+      ++n;
+    } else if (pipeline_number_of_chunks_set &&
+               CheckPipelineNumberOfChunks(number_params, params, n,
+                                           pipeline_number_of_chunks_set,
+                                           pipeline_number_of_chunks)) {
+      pipeline_number_of_chunks_set = true;
       ++n;
     } else {
       error = true;
@@ -649,7 +731,7 @@ bool Utils::GetParamsServer(const int &number_params,
 }
 
 void Utils::ShowTitle(const uint64_t &size, const uint64_t &repetitions,
-                      const bool &show_transfer) {
+                      const bool &show_transfer, const bool &pipeline) {
   const uint16_t size_rows_original_data =
       (size_rows_original_data_ < (std::to_string(size).size() + 9))
           ? std::to_string(size).size() + 9
@@ -682,25 +764,27 @@ void Utils::ShowTitle(const uint64_t &size, const uint64_t &repetitions,
             << std::setfill(' ') << "| Packed data";
   std::cout << std::left << std::setw(size_rows_ratio_) << std::setfill(' ')
             << "| Ratio";
-  std::cout << std::left << std::setw(size_rows_compress_) << std::setfill(' ')
-            << "| Compress";
-  if (repetitions > 1) {
-    std::cout << std::left << std::setw(size_rows_compress_ + 3)
-              << std::setfill(' ') << "| Error Compress";
-  }
-  if (show_transfer) {
-    std::cout << std::left << std::setw(size_rows_transfer_)
-              << std::setfill(' ') << "| Transfer";
+  if (!pipeline) {
+    std::cout << std::left << std::setw(size_rows_compress_)
+              << std::setfill(' ') << "| Compress";
     if (repetitions > 1) {
-      std::cout << std::left << std::setw(size_rows_transfer_ + 3)
-                << std::setfill(' ') << "| Error Transfer";
+      std::cout << std::left << std::setw(size_rows_compress_ + 3)
+                << std::setfill(' ') << "| Error Compress";
     }
-  }
-  std::cout << std::left << std::setw(size_rows_decompress_)
-            << std::setfill(' ') << "| Decompress";
-  if (repetitions > 1) {
-    std::cout << std::left << std::setw(size_rows_compress_ + 5)
-              << std::setfill(' ') << "| Error Decompress";
+    if (show_transfer) {
+      std::cout << std::left << std::setw(size_rows_transfer_)
+                << std::setfill(' ') << "| Transfer";
+      if (repetitions > 1) {
+        std::cout << std::left << std::setw(size_rows_transfer_ + 3)
+                  << std::setfill(' ') << "| Error Transfer";
+      }
+    }
+    std::cout << std::left << std::setw(size_rows_decompress_)
+              << std::setfill(' ') << "| Decompress";
+    if (repetitions > 1) {
+      std::cout << std::left << std::setw(size_rows_compress_ + 5)
+                << std::setfill(' ') << "| Error Decompress";
+    }
   }
   std::cout << std::left << std::setw(size_rows_total_) << std::setfill(' ')
             << "| Total";
@@ -709,21 +793,28 @@ void Utils::ShowTitle(const uint64_t &size, const uint64_t &repetitions,
               << std::setfill(' ') << "| Error Total";
   }
   std::cout << "|" << std::endl;
-
-  std::cout << std::left
-            << std::setw(size_row_library_ + size_row_level_ +
-                         size_row_window_ + size_row_mode_ + size_row_factor_ +
-                         size_row_flags_ + size_row_threads_ +
-                         size_row_back_reference_ + size_rows_original_data +
-                         size_rows_packed_data + size_rows_ratio_ +
-                         size_rows_compress_ + size_rows_decompress_ +
-                         size_rows_total_ + 1 +
-                         ((repetitions > 1)
-                              ? size_rows_compress_ + size_rows_decompress_ +
-                                    size_rows_total_ + 3 + 5
-                              : 0) +
-                         (show_transfer ? size_rows_transfer_ : 0))
-            << std::setfill('-') << "-" << std::endl;
+  uint16_t total = size_row_library_ + size_row_level_ + size_row_window_ +
+                   size_row_mode_ + size_row_factor_ + size_row_flags_ +
+                   size_row_threads_ + size_row_back_reference_ +
+                   size_rows_original_data + size_rows_packed_data +
+                   size_rows_ratio_ + size_rows_total_ + 1;
+  if (!pipeline) {
+    total += size_rows_compress_ + size_rows_decompress_;
+    if (show_transfer) {
+      total += size_rows_transfer_;
+    }
+  }
+  if (repetitions > 1) {
+    if (!pipeline) {
+      total += (size_rows_compress_ + 3) + (size_rows_decompress_ + 5);
+      if (show_transfer) {
+        total += (size_rows_transfer_ + 3);
+      }
+    }
+    total += size_rows_total_;
+  }
+  std::cout << std::left << std::setw(total) << std::setfill('-') << "-"
+            << std::endl;
 }
 
 std::string Utils::ShowResult(
@@ -732,7 +823,8 @@ std::string Utils::ShowResult(
     const double &mean_vel_compression, const double &error_vel_compression,
     const double &mean_vel_transfer, const double &error_vel_transfer,
     const double &mean_vel_decompression, const double &error_vel_decompression,
-    const double &mean_vel_total, const double &error_vel_total) {
+    const double &mean_vel_total, const double &error_vel_total,
+    const bool &pipeline) {
   Options opt = lib->GetOptions();
   const uint16_t size_rows_original_data =
       (size_rows_original_data_ <
@@ -746,7 +838,7 @@ std::string Utils::ShowResult(
           : size_rows_packed_data_;
 
   std::ostringstream result;
-  bool repetitions = error_vel_compression;
+  bool repetitions = error_vel_total;
   result << std::left << std::setw(size_row_library_) << std::setfill(' ')
          << "| " + library_name;
 
@@ -822,32 +914,34 @@ std::string Utils::ShowResult(
   result << std::left << std::setw(size_rows_ratio_) << std::setfill(' ')
          << "| " + ToStringDouble((static_cast<double>(uncompressed_size) /
                                    static_cast<double>(compressed_size)));
-
-  result << std::left << std::setw(size_rows_compress_) << std::setfill(' ')
-         << "| " + ToStringDouble(mean_vel_compression) + " MB/s";
-  if (repetitions) {
-    result << std::left << std::setw(size_rows_compress_ + 3)
-           << std::setfill(' ')
-           << "| " + ToStringDouble(error_vel_compression) + " MB/s";
-  }
-
-  if (mean_vel_transfer) {
-    result << std::left << std::setw(size_rows_transfer_) << std::setfill(' ')
-           << "| " + ToStringDouble(mean_vel_transfer) + " MB/s";
+  if (!pipeline) {
+    result << std::left << std::setw(size_rows_compress_) << std::setfill(' ')
+           << "| " + ToStringDouble(mean_vel_compression) + " MB/s";
     if (repetitions) {
-      result << std::left << std::setw(size_rows_transfer_ + 3)
+      result << std::left << std::setw(size_rows_compress_ + 3)
              << std::setfill(' ')
-             << "| " + ToStringDouble(error_vel_transfer) + " MB/s";
+             << "| " + ToStringDouble(error_vel_compression) + " MB/s";
+    }
+
+    if (mean_vel_transfer) {
+      result << std::left << std::setw(size_rows_transfer_) << std::setfill(' ')
+             << "| " + ToStringDouble(mean_vel_transfer) + " MB/s";
+      if (repetitions) {
+        result << std::left << std::setw(size_rows_transfer_ + 3)
+               << std::setfill(' ')
+               << "| " + ToStringDouble(error_vel_transfer) + " MB/s";
+      }
+    }
+
+    result << std::left << std::setw(size_rows_decompress_) << std::setfill(' ')
+           << "| " + ToStringDouble(mean_vel_decompression) + " MB/s";
+    if (repetitions) {
+      result << std::left << std::setw(size_rows_decompress_ + 5)
+             << std::setfill(' ')
+             << "| " + ToStringDouble(error_vel_decompression) + " MB/s";
     }
   }
 
-  result << std::left << std::setw(size_rows_decompress_) << std::setfill(' ')
-         << "| " + ToStringDouble(mean_vel_decompression) + " MB/s";
-  if (repetitions) {
-    result << std::left << std::setw(size_rows_decompress_ + 5)
-           << std::setfill(' ')
-           << "| " + ToStringDouble(error_vel_decompression) + " MB/s";
-  }
   result << std::left << std::setw(size_rows_total_) << std::setfill(' ')
          << "| " + ToStringDouble(mean_vel_total) + " MB/s";
   if (repetitions) {

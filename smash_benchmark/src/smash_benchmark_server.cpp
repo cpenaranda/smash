@@ -22,6 +22,7 @@
 #include <options.hpp>
 #include <result.hpp>
 #include <smash.hpp>
+#include <smash_network.hpp>
 #include <utils.hpp>
 
 bool SetUnpackedMemory(char **data, uint64_t *size, NetworkServer *net) {
@@ -104,7 +105,8 @@ inline void GetDuration(const std::chrono::_V2::system_clock::time_point &start,
 bool RecvInformationFromClient(Options *options, std::string *library_name,
                                bool *all_options, uint8_t *best_options,
                                uint32_t *best_result_number,
-                               uint32_t *repetitions, NetworkServer *net) {
+                               uint32_t *repetitions, NetworkServer *net,
+                               bool *pipeline) {
   bool status{true};
   status = net->RecvBuffer(reinterpret_cast<char *>(options), sizeof(*options));
   if (status) {
@@ -128,11 +130,93 @@ bool RecvInformationFromClient(Options *options, std::string *library_name,
             if (status) {
               status = net->RecvBuffer(reinterpret_cast<char *>(repetitions),
                                        sizeof(*repetitions));
+              if (status) {
+                status = net->RecvBuffer(reinterpret_cast<char *>(pipeline),
+                                         sizeof(*pipeline));
+              }
             }
           }
         }
       }
     }
+  }
+  return status;
+}
+
+bool ReceiveAndDecompress(char *uncompressed_data, uint64_t uncompressed_size,
+                          char *compressed_data, uint64_t *compressed_size,
+                          char *decompressed_data, uint64_t *decompressed_size,
+                          const std::string &library_name, Smash *lib,
+                          NetworkServer *net, Options *option) {
+  bool status{true};
+  std::chrono::_V2::system_clock::time_point start;
+  std::chrono::duration<double> decompression_time;
+  // Receive Compressed Data
+  // First, data size is received
+  status = net->RecvBuffer(reinterpret_cast<char *>(compressed_size),
+                           sizeof(*compressed_size));
+  if (status) {
+    // Second, the data is received
+    status = net->RecvBuffer(compressed_data, *compressed_size, true);
+    if (status) {
+      // Set Decompression Options
+      status = lib->SetOptionsDecompressor(option);
+      if (status) {
+        InitializeTime(&start);
+        // Compress Data
+        status = lib->Decompress(compressed_data, *compressed_size,
+                                 decompressed_data, decompressed_size);
+        GetDuration(start, &decompression_time);
+        if (status) {
+          if (lib->CompareData(uncompressed_data, uncompressed_size,
+                               decompressed_data, *decompressed_size)) {
+            net->SendACK(true);
+            double dec_time = decompression_time.count();
+            net->SendBuffer(reinterpret_cast<char *>(&dec_time),
+                            sizeof(dec_time));
+          } else {
+            std::cout << "ERROR: " << library_name
+                      << " does not obtain the correct data" << std::endl;
+            status = false;
+            net->SendACK(false);
+          }
+        } else {
+          std::cout << "ERROR: " << library_name
+                    << " does not obtain the correct data" << std::endl;
+        }
+      } else {
+        std::cout << "ERROR: " << library_name
+                  << " does not set options correctly" << std::endl;
+      }
+    } else {
+      std::cout << "ERROR: " << library_name << " when data is transfered"
+                << std::endl;
+    }
+  } else {
+    std::cout << "ERROR: " << library_name << " when data is transfered"
+              << std::endl;
+  }
+  return status;
+}
+
+bool ReceiveAndDecompressPipeline(char *uncompressed_data,
+                                  const uint64_t &uncompressed_size,
+                                  char *decompressed_data,
+                                  const uint64_t &decompressed_size,
+                                  const std::string &library_name, Smash *lib,
+                                  const Options &option, NetworkServer *net) {
+  bool status{true};
+  SmashNetwork smash(library_name, option);
+  smash.Connect(net->socket_id);
+  status = (smash.Read_v1(decompressed_data, decompressed_size, true) >= 0);
+  if (lib->CompareData(uncompressed_data, uncompressed_size, decompressed_data,
+                       decompressed_size)) {
+    net->SendACK(true);
+  } else {
+    std::cout << "ERROR: " << library_name
+              << " does not obtain the correct data" << std::endl;
+    status = false;
+    net->SendACK(false);
   }
   return status;
 }
@@ -151,6 +235,7 @@ int main(int argc, char *argv[]) {
   int result{EXIT_FAILURE};
   int port{-1};
   NetworkServer *net{nullptr};
+  bool pipeline{false};
   if (Utils::GetParamsServer(argc, argv, &port)) {
     net = new NetworkServer();
     result = net->InitializeServer(port) ? EXIT_SUCCESS : EXIT_FAILURE;
@@ -160,7 +245,7 @@ int main(int argc, char *argv[]) {
         if (result == EXIT_SUCCESS) {
           if (RecvInformationFromClient(
                   &opt, &compression_library_name, &all_options, &best_options,
-                  &best_result_number, &repetitions, net)) {
+                  &best_result_number, &repetitions, net, &pipeline)) {
             std::vector<std::string> libraries =
                 GetLibraries(compression_library_name);
             for (auto &library_name : libraries) {
@@ -176,68 +261,21 @@ int main(int argc, char *argv[]) {
                   result = EXIT_SUCCESS;
                   for (uint32_t r = 0;
                        r < repetitions && result == EXIT_SUCCESS; ++r) {
-                    std::chrono::_V2::system_clock::time_point start;
-                    std::chrono::duration<double> decompression_time;
-                    // Receive Compressed Data
-                    // First, data size is received
-                    result = net->RecvBuffer(
-                                 reinterpret_cast<char *>(&compressed_size),
-                                 sizeof(compressed_size))
-                                 ? EXIT_SUCCESS
-                                 : EXIT_FAILURE;
-                    if (result == EXIT_SUCCESS) {
-                      // Second, the data is received
-                      result = net->RecvBuffer(compressed_data, compressed_size,
-                                               true)
+                    if (!pipeline) {
+                      result = ReceiveAndDecompress(
+                                   uncompressed_data, uncompressed_size,
+                                   compressed_data, &compressed_size,
+                                   decompressed_data, &decompressed_size,
+                                   library_name, lib, net, &option)
                                    ? EXIT_SUCCESS
                                    : EXIT_FAILURE;
-                      if (result == EXIT_SUCCESS) {
-                        // Set Decompression Options
-                        result = lib->SetOptionsDecompressor(&option)
-                                     ? EXIT_SUCCESS
-                                     : EXIT_FAILURE;
-                        if (result == EXIT_SUCCESS) {
-                          InitializeTime(&start);
-                          // Compress Data
-                          result = lib->Decompress(
-                                       compressed_data, compressed_size,
-                                       decompressed_data, &decompressed_size)
-                                       ? EXIT_SUCCESS
-                                       : EXIT_FAILURE;
-                          GetDuration(start, &decompression_time);
-                          if (result == EXIT_SUCCESS) {
-                            if (lib->CompareData(
-                                    uncompressed_data, uncompressed_size,
-                                    decompressed_data, decompressed_size)) {
-                              net->SendACK(true);
-                              double dec_time = decompression_time.count();
-                              net->SendBuffer(
-                                  reinterpret_cast<char *>(&dec_time),
-                                  sizeof(dec_time));
-                            } else {
-                              std::cout << "ERROR: " << library_name
-                                        << " does not obtain the correct data"
-                                        << std::endl;
-                              result = EXIT_FAILURE;
-                              net->SendACK(false);
-                            }
-                          } else {
-                            std::cout << "ERROR: " << library_name
-                                      << " does not obtain the correct data"
-                                      << std::endl;
-                          }
-                        } else {
-                          std::cout << "ERROR: " << library_name
-                                    << " does not set options correctly"
-                                    << std::endl;
-                        }
-                      } else {
-                        std::cout << "ERROR: " << library_name
-                                  << " when data is transfered" << std::endl;
-                      }
                     } else {
-                      std::cout << "ERROR: " << library_name
-                                << " when data is transfered" << std::endl;
+                      result = ReceiveAndDecompressPipeline(
+                                   uncompressed_data, uncompressed_size,
+                                   decompressed_data, decompressed_size,
+                                   library_name, lib, option, net)
+                                   ? EXIT_SUCCESS
+                                   : EXIT_FAILURE;
                     }
                   }
                 }
