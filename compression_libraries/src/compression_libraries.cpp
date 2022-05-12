@@ -29,9 +29,6 @@
 #ifdef DENSITY
 #include <density_library.hpp>
 #endif  // DENSITY
-#ifdef FARI
-#include <fari_library.hpp>
-#endif  // FARI
 #ifdef FLZ
 #include <flz_library.hpp>
 #endif  // FLZ
@@ -188,9 +185,6 @@ CompressionLibraries::CompressionLibraries() {
 #ifdef DENSITY
   map_["density"] = []() { return new DensityLibrary(); };
 #endif  // DENSITY
-#ifdef FARI
-  map_["fari"] = []() { return new FariLibrary(); };
-#endif  // FARI
 #ifdef FLZ
   map_["flz"] = []() { return new FlzLibrary(); };
 #endif  // FLZ

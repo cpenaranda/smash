@@ -58,10 +58,6 @@
 	path = compression_libraries/zstd_/zstd
 	url = https://github.com/facebook/zstd.git
 	ignore = all
-[submodule "compression_libraries/fari_/FastARI"]
-	path = compression_libraries/fari_/FastARI
-	url = https://github.com/davidcatt/FastARI.git
-	ignore = all
 [submodule "compression_libraries/flz_/fastlz"]
 	path = compression_libraries/flz_/fastlz
 	url = https://github.com/svn2github/fastlz.git

@@ -220,19 +220,6 @@ if (NOT LZFX MATCHES OFF)
   add_definitions(-DLZFX)
 endif()
 
-if (NOT FARI MATCHES OFF)
-  add_subdirectory(fari_)
-  set(SMASH_LIBRARIES ${SMASH_LIBRARIES} fari)
-  set(SMASH_INCLUDES ${SMASH_INCLUDES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/fari_/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/fari_/FastARI
-  )
-  set(SMASH_SOURCES ${SMASH_SOURCES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/fari_/src/fari_library.cpp
-  )
-  add_definitions(-DFARI)
-endif()
-
 if (NOT FLZ MATCHES OFF)
   add_subdirectory(flz_)
   set(SMASH_LIBRARIES ${SMASH_LIBRARIES} flz)

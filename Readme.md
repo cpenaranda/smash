@@ -182,7 +182,6 @@ bin/smash_benchmark -c all -i Makefile
 | fse        | ----- | ------ | FSE            | --- | ------------- | ------- | --- | 121832 Bytes  | 77556 Bytes   | 1.57   | 224.41 MB/s | 209.55 MB/s | 133.44 MB/s |
 | flzma2     | 1     | ------ | -------------- | --- | ------------- | 1       | --- | 121832 Bytes  | 9817 Bytes    | 12.41  | 20.13 MB/s  | 14.07 MB/s  | 18.05 MB/s  |
 | flz        | 1     | ------ | -------------- | --- | ------------- | ------- | --- | 121832 Bytes  | 18007 Bytes   | 6.77   | 416.19 MB/s | 78.08 MB/s  | 232.79 MB/s |
-| fari       | ----- | ------ | -------------- | --- | ------------- | ------- | --- | 121832 Bytes  | 23163 Bytes   | 5.26   | 23.34 MB/s  | 3.42 MB/s   | 10.16 MB/s  |
 | density    | ----- | ------ | Chameleon      | --- | ------------- | ------- | --- | 121832 Bytes  | 71258 Bytes   | 1.71   | 498.68 MB/s | 541.81 MB/s | 324.17 MB/s |
 | csc        | 1     | 15     | -------------- | --- | None          | ------- | --- | 121832 Bytes  | 10367 Bytes   | 11.75  | 29.93 MB/s  | 8.44 MB/s   | 22.99 MB/s  |
 | c-blosc2   | 0     | ------ | -------------- | --- | None          | 1       | --- | 121832 Bytes  | 121864 Bytes  | 1.00   | 5242.57 MB/s| 7862.70 MB/s| 3145.03 MB/s|
@@ -298,7 +297,6 @@ Using **configure** script, you can specify the name of the compression librarie
 | [c-blosc2](https://github.com/Blosc/c-blosc2) | v2.0.4 |
 | [csc](https://github.com/fusiyuan2010/CSC) | commit c5dbe0944d07acbc97d2c04ec9f99a139c6f3931 |
 | [density](https://github.com/k0dai/density) | density-0.14.2 |
-| [fari](https://github.com/davidcatt/FastARI) | main |
 | [flz](https://github.com/svn2github/fastlz) | commit 9ed1867d81a18cbda42805e7238e2dd5997dedfc |
 | [flzma2](https://github.com/conor42/fast-lzma2) | v1.0.1 |
 | [fse](https://github.com/Cyan4973/FiniteStateEntropy) | commit 9ba32518ad023cd4c3726fb44bba5b768ef291c8 |
