@@ -48,5 +48,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(ALLOW_DUPLICATE_CUSTOM_TARGETS TRUE)
 
-add_subdirectory(compression_libraries)
+add_subdirectory(smash_library)
 add_subdirectory(smash_benchmark)

@@ -1,148 +1,123 @@
-[submodule "compression_libraries/brieflz_/brieflz"]
-	path = compression_libraries/brieflz_/brieflz
-	url = https://github.com/jibsen/brieflz.git
-	ignore = all
-[submodule "compression_libraries/brotli_/brotli"]
-	path = compression_libraries/brotli_/brotli
-	url = https://github.com/google/brotli.git
-	ignore = all
-[submodule "compression_libraries/bzip2_/bzip2"]
-	path = compression_libraries/bzip2_/bzip2
-	url = https://gitlab.com/bzip2/bzip2.git
-	ignore = all
-[submodule "compression_libraries/c-blosc2_/c-blosc2"]
-	path = compression_libraries/c-blosc2_/c-blosc2
-	url = https://github.com/Blosc/c-blosc2.git
-	ignore = all
-[submodule "compression_libraries/density_/density"]
-	path = compression_libraries/density_/density
-	url = https://github.com/k0dai/density.git
-	ignore = all
-[submodule "compression_libraries/libdeflate_/libdeflate"]
-	path = compression_libraries/libdeflate_/libdeflate
-	url = https://github.com/ebiggers/libdeflate.git
-	ignore = all
-[submodule "compression_libraries/lzfse_/lzfse"]
-	path = compression_libraries/lzfse_/lzfse
-	url = https://github.com/lzfse/lzfse.git
-	ignore = all
-[submodule "compression_libraries/lzma_/xz"]
-	path = compression_libraries/lzma_/xz
-	url = https://git.tukaani.org/xz.git
-	ignore = all
-[submodule "compression_libraries/lzo_/lzo"]
-	path = compression_libraries/lzo_/lzo
-	url = https://github.com/nemequ/lzo.git
-	ignore = all
-[submodule "compression_libraries/ms_/ms-compress"]
-	path = compression_libraries/ms_/ms-compress
-	url = https://github.com/coderforlife/ms-compress.git
-	ignore = all
-[submodule "compression_libraries/snappy_/snappy"]
-	path = compression_libraries/snappy_/snappy
-	url = https://github.com/google/snappy.git
-	ignore = all
-[submodule "compression_libraries/xpack_/xpack"]
-	path = compression_libraries/xpack_/xpack
-	url = https://github.com/ebiggers/xpack.git
-	ignore = all
-[submodule "compression_libraries/zlib_/zlib"]
-	path = compression_libraries/zlib_/zlib
-	url = https://github.com/madler/zlib.git
-	ignore = all
-[submodule "compression_libraries/zlib-ng_/zlib-ng"]
-	path = compression_libraries/zlib-ng_/zlib-ng
-	url = https://github.com/Dead2/zlib-ng.git
-	ignore = all
-[submodule "compression_libraries/zstd_/zstd"]
-	path = compression_libraries/zstd_/zstd
-	url = https://github.com/facebook/zstd.git
-	ignore = all
-[submodule "compression_libraries/flz_/fastlz"]
-	path = compression_libraries/flz_/fastlz
-	url = https://github.com/svn2github/fastlz.git
-	ignore = all
-[submodule "compression_libraries/gipfeli_/gipfeli"]
-	path = compression_libraries/gipfeli_/gipfeli
-	url = https://github.com/google/gipfeli.git
-	ignore = all
-[submodule "compression_libraries/lzf_/liblzf"]
-	path = compression_libraries/lzf_/liblzf
-	url = https://github.com/nemequ/liblzf.git
-	ignore = all
-[submodule "compression_libraries/lzjb_/lzjb"]
-	path = compression_libraries/lzjb_/lzjb
-	url = https://github.com/nemequ/lzjb.git
-	ignore = all
-[submodule "compression_libraries/wflz_/wflz"]
-	path = compression_libraries/wflz_/wflz
-	url = https://github.com/ShaneYCG/wflz.git
-	ignore = all
-[submodule "compression_libraries/yalz77_/yalz77"]
-	path = compression_libraries/yalz77_/yalz77
-	url = https://bitbucket.org/tkatchev/yalz77.git
-	ignore = all
-[submodule "compression_libraries/zpaq_/zpaq"]
-	path = compression_libraries/zpaq_/zpaq
-	url = https://github.com/zpaq/zpaq.git
-	ignore = all
-[submodule "compression_libraries/lzham_/lzham_codec_devel"]
-	path = compression_libraries/lzham_/lzham_codec_devel
-	url = https://github.com/richgel999/lzham_codec_devel.git
-	ignore = all
-[submodule "compression_libraries/libbsc_/libbsc"]
-	path = compression_libraries/libbsc_/libbsc
-	url = https://github.com/IlyaGrebnov/libbsc.git
-	ignore = all
-[submodule "compression_libraries/heatshrink_/heatshrink"]
-	path = compression_libraries/heatshrink_/heatshrink
-	url = https://github.com/atomicobject/heatshrink.git
-	ignore = all
-[submodule "compression_libraries/zling_/libzling"]
-	path = compression_libraries/zling_/libzling
-	url = https://github.com/richox/libzling.git
-	ignore = all
-[submodule "compression_libraries/csc_/CSC"]
-	path = compression_libraries/csc_/CSC
-	url = https://github.com/fusiyuan2010/CSC.git
-	ignore = all
-[submodule "compression_libraries/lz4_/lz4"]
-	path = compression_libraries/lz4_/lz4
-	url = https://github.com/lz4/lz4.git
-	ignore = all
-[submodule "compression_libraries/miniz_/miniz"]
-	path = compression_libraries/miniz_/miniz
-	url = https://github.com/richgel999/miniz.git
-	ignore = all
-[submodule "compression_libraries/liblzg_/liblzg"]
-	path = compression_libraries/liblzg_/liblzg
-	url = https://github.com/mbitsnbites/liblzg.git
-	ignore = all
-[submodule "compression_libraries/fse_/FiniteStateEntropy"]
-	path = compression_libraries/fse_/FiniteStateEntropy
-	url = https://github.com/Cyan4973/FiniteStateEntropy.git
-	ignore = all
-[submodule "compression_libraries/lodepng_/lodepng"]
-	path = compression_libraries/lodepng_/lodepng
-	url = https://github.com/lvandeve/lodepng.git
-	ignore = all
-[submodule "compression_libraries/flzma2_/fast-lzma2"]
-	path = compression_libraries/flzma2_/fast-lzma2
-	url = https://github.com/conor42/fast-lzma2.git
-	ignore = all
-[submodule "compression_libraries/lizard_/lizard"]
-	path = compression_libraries/lizard_/lizard
-	url = https://github.com/inikep/lizard.git
-	ignore = all
-[submodule "compression_libraries/lzsse_/LZSSE"]
-	path = compression_libraries/lzsse_/LZSSE
-	url = https://github.com/ConorStokes/LZSSE.git
-	ignore = all
-[submodule "compression_libraries/pithy_/pithy"]
-	path = compression_libraries/pithy_/pithy
-	url = https://github.com/johnezang/pithy.git
-	ignore = all
-[submodule "compression_libraries/lzmat_/lzmat"]
-	path = compression_libraries/lzmat_/lzmat
-	url = https://github.com/nemequ/lzmat.git
-	ignore = all
+[submodule "smash_library/compression_libraries/zling_/libzling"]
+	path = smash_library/compression_libraries/zling_/libzling
+	url = git@github.com:cpenaranda/libzling.git
+[submodule "smash_library/compression_libraries/zstd_/zstd"]
+	path = smash_library/compression_libraries/zstd_/zstd
+	url = git@github.com:cpenaranda/zstd.git
+[submodule "smash_library/compression_libraries/zlib-ng_/zlib-ng"]
+	path = smash_library/compression_libraries/zlib-ng_/zlib-ng
+	url = git@github.com:cpenaranda/zlib-ng.git
+[submodule "smash_library/compression_libraries/zlib_/zlib"]
+	path = smash_library/compression_libraries/zlib_/zlib
+	url = git@github.com:cpenaranda/zlib.git
+[submodule "smash_library/compression_libraries/xpack_/xpack"]
+	path = smash_library/compression_libraries/xpack_/xpack
+	url = git@github.com:cpenaranda/xpack.git
+[submodule "smash_library/compression_libraries/wflz_/wflz"]
+	path = smash_library/compression_libraries/wflz_/wflz
+	url = git@github.com:cpenaranda/wflz.git
+[submodule "smash_library/compression_libraries/snappy_/snappy"]
+	path = smash_library/compression_libraries/snappy_/snappy
+	url = git@github.com:cpenaranda/snappy.git
+[submodule "smash_library/compression_libraries/pithy_/pithy"]
+	path = smash_library/compression_libraries/pithy_/pithy
+	url = git@github.com:cpenaranda/pithy.git
+[submodule "smash_library/compression_libraries/ms_/ms-compress"]
+	path = smash_library/compression_libraries/ms_/ms-compress
+	url = git@github.com:cpenaranda/ms-compress.git
+[submodule "smash_library/compression_libraries/miniz_/miniz"]
+	path = smash_library/compression_libraries/miniz_/miniz
+	url = git@github.com:cpenaranda/miniz.git
+[submodule "smash_library/compression_libraries/lzsse_/LZSSE"]
+	path = smash_library/compression_libraries/lzsse_/LZSSE
+	url = git@github.com:cpenaranda/LZSSE.git
+[submodule "smash_library/compression_libraries/lzo_/lzo"]
+	path = smash_library/compression_libraries/lzo_/lzo
+	url = git@github.com:cpenaranda/lzo.git
+[submodule "smash_library/compression_libraries/lzmat_/lzmat"]
+	path = smash_library/compression_libraries/lzmat_/lzmat
+	url = git@github.com:cpenaranda/lzmat.git
+[submodule "smash_library/compression_libraries/lzjb_/lzjb"]
+	path = smash_library/compression_libraries/lzjb_/lzjb
+	url = git@github.com:cpenaranda/lzjb.git
+[submodule "smash_library/compression_libraries/lzham_/lzham_codec_devel"]
+	path = smash_library/compression_libraries/lzham_/lzham_codec_devel
+	url = git@github.com:cpenaranda/lzham_codec_devel.git
+[submodule "smash_library/compression_libraries/lzfse_/lzfse"]
+	path = smash_library/compression_libraries/lzfse_/lzfse
+	url = git@github.com:cpenaranda/lzfse.git
+[submodule "smash_library/compression_libraries/lz4_/lz4"]
+	path = smash_library/compression_libraries/lz4_/lz4
+	url = git@github.com:cpenaranda/lz4.git
+[submodule "smash_library/compression_libraries/lodepng_/lodepng"]
+	path = smash_library/compression_libraries/lodepng_/lodepng
+	url = git@github.com:cpenaranda/lodepng.git
+[submodule "smash_library/compression_libraries/lizard_/lizard"]
+	path = smash_library/compression_libraries/lizard_/lizard
+	url = git@github.com:cpenaranda/lizard.git
+[submodule "smash_library/compression_libraries/liblzg_/liblzg"]
+	path = smash_library/compression_libraries/liblzg_/liblzg
+	url = git@github.com:cpenaranda/liblzg.git
+[submodule "smash_library/compression_libraries/libdeflate_/libdeflate"]
+	path = smash_library/compression_libraries/libdeflate_/libdeflate
+	url = git@github.com:cpenaranda/libdeflate.git
+[submodule "smash_library/compression_libraries/libbsc_/libbsc"]
+	path = smash_library/compression_libraries/libbsc_/libbsc
+	url = git@github.com:cpenaranda/libbsc.git
+[submodule "smash_library/compression_libraries/heatshrink_/heatshrink"]
+	path = smash_library/compression_libraries/heatshrink_/heatshrink
+	url = git@github.com:cpenaranda/heatshrink.git
+[submodule "smash_library/compression_libraries/gipfeli_/gipfeli"]
+	path = smash_library/compression_libraries/gipfeli_/gipfeli
+	url = git@github.com:cpenaranda/gipfeli.git
+[submodule "smash_library/compression_libraries/flzma2_/fast-lzma2"]
+	path = smash_library/compression_libraries/flzma2_/fast-lzma2
+	url = git@github.com:cpenaranda/fast-lzma2.git
+[submodule "smash_library/compression_libraries/fse_/FiniteStateEntropy"]
+	path = smash_library/compression_libraries/fse_/FiniteStateEntropy
+	url = git@github.com:cpenaranda/FiniteStateEntropy.git
+[submodule "smash_library/compression_libraries/flz_/fastlz"]
+	path = smash_library/compression_libraries/flz_/fastlz
+	url = git@github.com:cpenaranda/fastlz.git
+[submodule "smash_library/compression_libraries/csc_/CSC"]
+	path = smash_library/compression_libraries/csc_/CSC
+	url = git@github.com:cpenaranda/CSC.git
+[submodule "smash_library/compression_libraries/zpaq_/zpaq"]
+	path = smash_library/compression_libraries/zpaq_/zpaq
+	url = git@github.com:cpenaranda/zpaq.git
+[submodule "smash_library/compression_libraries/density_/density"]
+	path = smash_library/compression_libraries/density_/density
+	url = git@github.com:cpenaranda/density.git
+[submodule "smash_library/compression_libraries/c-blosc2_/c-blosc2"]
+	path = smash_library/compression_libraries/c-blosc2_/c-blosc2
+	url = git@github.com:cpenaranda/c-blosc2.git
+[submodule "smash_library/compression_libraries/brotli_/brotli"]
+	path = smash_library/compression_libraries/brotli_/brotli
+	url = git@github.com:cpenaranda/brotli.git
+[submodule "smash_library/compression_libraries/brieflz_/brieflz"]
+	path = smash_library/compression_libraries/brieflz_/brieflz
+	url = git@github.com:cpenaranda/brieflz.git
+[submodule "smash_library/compression_libraries/bzip2_/bzip2"]
+	path = smash_library/compression_libraries/bzip2_/bzip2
+	url = git@github.com:cpenaranda/bzip2.git
+[submodule "smash_library/compression_libraries/lzfx_/lzfx"]
+	path = smash_library/compression_libraries/lzfx_/lzfx
+	url = git@github.com:cpenaranda/lzfx.git
+[submodule "smash_library/compression_libraries/yalz77_/yalz77"]
+	path = smash_library/compression_libraries/yalz77_/yalz77
+	url = git@github.com:cpenaranda/yalz77.git
+[submodule "smash_library/compression_libraries/quicklz_/quicklz"]
+	path = smash_library/compression_libraries/quicklz_/quicklz
+	url = git@github.com:cpenaranda/quicklz.git
+[submodule "smash_library/compression_libraries/z3lib_/z3lib"]
+	path = smash_library/compression_libraries/z3lib_/z3lib
+	url = git@github.com:cpenaranda/z3lib.git
+[submodule "smash_library/compression_libraries/ucl_/ucl"]
+	path = smash_library/compression_libraries/ucl_/ucl
+	url = git@github.com:cpenaranda/ucl.git
+[submodule "smash_library/compression_libraries/lzf_/liblzf"]
+	path = smash_library/compression_libraries/lzf_/liblzf
+	url = git@github.com:cpenaranda/liblzf.git
+[submodule "smash_library/compression_libraries/lzma_/xz"]
+	path = smash_library/compression_libraries/lzma_/xz
+	url = git@github.com:cpenaranda/xz.git
