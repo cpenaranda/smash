@@ -121,3 +121,6 @@
 [submodule "smash_library/compression_libraries/lzma_/xz"]
 	path = smash_library/compression_libraries/lzma_/xz
 	url = git@github.com:cpenaranda/xz.git
+[submodule "datasets/AI-dataset"]
+	path = datasets/AI-dataset
+	url = git@github.com:cpenaranda/AI-dataset.git
