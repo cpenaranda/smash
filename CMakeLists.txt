@@ -56,10 +56,6 @@ set(SMASH_SOURCES
   src/compression_library.cpp
   src/compression_libraries.cpp
   src/options.cpp
-  src/smash_chunks.cpp
-  src/smash_connection.cpp
-  src/smash_memory.cpp
-  src/smash_network.cpp
 )
 
 include_directories(
