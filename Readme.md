@@ -1,10 +1,10 @@
-# Smash: Compression abstraction library
+# CPU-Smash: Compression abstraction library
 
-Smash is a library that presents a single c++ API to use many compression libraries.
+CPU-Smash library presents a single C++ API to use many CPU-based compression libraries.
 
 ## References
 You can access results obtained with the [AI dataset](https://github.com/cpenaranda/AI-dataset) in this [paper](https://doi.org/10.1007/978-3-031-15471-3_21). Also, if you are using this repository in your research, you need to cite the paper:
-> Peñaranda, C., Reaño, C., Silla, F. (2022). Smash: A Compression Benchmark with AI Datasets from Remote GPU Virtualization Systems. In: , et al. Hybrid Artificial Intelligent Systems. HAIS 2022. Lecture Notes in Computer Science(), vol 13469. Springer, Cham. https://doi.org/10.1007/978-3-031-15471-3_21
+> Peñaranda, C., Reaño, C., & Silla, F. (2022, September). Smash: A Compression Benchmark with AI Datasets from Remote GPU Virtualization Systems. In International Conference on Hybrid Artificial Intelligence Systems (pp. 236-248). Cham: Springer International Publishing.
 
 <details><summary>BibTeX</summary>
 
@@ -25,10 +25,10 @@ You can access results obtained with the [AI dataset](https://github.com/cpenara
 
 </details>
 
-## How to compile Smash
-Smash contains external code. Compression libraries have been added as submodules. Some compression libraries can return an error if the data to compress is too small, or in other situations (e.g. If you try to compress small data, the result could be data that is larger than the original data. That is why some compression libraries prefer to return an error). For that reason, some compression libraries have been modified to remove this behavior and have been stored in local repositories. The idea is the user must decide if compressed data could be used.
+## How to compile CPU-Smash
+CPU-Smash contains external code. Compression libraries have been added as submodules. Some compression libraries can return an error if the data to compress is too small or in other situations (e.g., if you try to compress small data, the result could be data that is larger than the original data. That is why some compression libraries prefer to return an error). Therefore, some compression libraries have been modified to remove this behavior and stored in local repositories. The idea is the user must decide if compressed data could be used.
 
-An easy way to compile this repository is:
+An easy way to compile this repository is as follows:
 
 ```
 git clone git@github.com:cpenaranda/smash.git
@@ -40,14 +40,14 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Release --target all
 ```
 
-## How to run Smash
-Smash API is very flexible. Compression libraries can be selected using different parameters. Here is a code example.
+## How to run CPU-Smash
+CPU-Smash API is very flexible. Compression libraries can be selected using different parameters. Here is a code example.
 
 ``` c++
-#include <smash.hpp>
-#include <options.hpp>
+#include <cpu_smash.hpp>
+#include <cpu_options.hpp>
 
-Options options;
+CpuOptions options;
 // Set compression library options
 options.SetCompressionLevel(1);
 // options.SetWindowSize(const uint32_t &window_size);
@@ -55,55 +55,55 @@ options.SetCompressionLevel(1);
 // options.SetWorkFactor(const uint8_t &work_factor);
 // options.SetFlags(const uint8_t &flags);
 // options.SetNumberThreads(const uint8_t &number_threads);
-// options.SetBackReferenceBits(const uint8_t &back_reference_bits);
+// options.SetBackReference(const uint8_t &back_reference);
 
-uint64_t uncompress_size = 100, compressed_size = 0, decompressed_size = 0;
+uint64_t uncompressed_data_size = 100, compressed_data_size = 0, decompressed_data_size = 0;
 
 // Initialize uncompressed data with any information
-char uncompressed_data[uncompressed_size];
+char uncompressed_data[uncompressed_data_size];
 
 // Set the compression library to use
-Smash lib("zstd");
+CpuSmash lib("zstd");
 
 // Set options to compress
 lib.SetOptionsCompressor(&options);
 // Get estimated compressed data size
-lib.GetCompressedDataSize(uncompressed_data, uncompressed_size, &compressed_size);
+lib.GetCompressedDataSize(uncompressed_data, uncompressed_data_size, &compressed_data_size);
 // Initialize compressed data
-char compressed_data[compressed_size];
+char compressed_data[compressed_data_size];
 // Compress the uncompressed data, and the real compressed data size is taken
-lib.Compress(uncompressed_data, uncompressed_size, compressed_data, &compressed_size);
+lib.Compress(uncompressed_data, uncompressed_data_size, compressed_data, &compressed_size);
 
 // Set options to decompress
 lib.SetOptionsDecompressor(&options);
 // Get estimated decompressed data size
-lib.GetDecompressedDataSize(compressed_data, compressed_size, &decompressed_size);
+lib.GetDecompressedDataSize(compressed_data, compressed_data_size, &decompressed_data_size);
 // Initialize decompressed data
-char decompressed_data[decompressed_size];
+char decompressed_data[decompressed_data_size];
 // Decompress the compressed data, and the real decompressed data size is taken
-lib.Decompress(compressed_data, compressed_size, decompressed_data, &decompressed_size);
+lib.Decompress(compressed_data, compressed_data_size, decompressed_data, &decompressed_data_size);
 ```
 
 ## Different options available
-There are different options in Smash, but compression libraries use only some of them. Here is the list of all the available options in Smash:
+CPU-Smash has different options, but compression libraries use only some of them. Here is the list of all the available options in CPU-Smash:
 
 | Option              | Description    |
 | :---:               | :---:          |
-| Compression level   | Depending on this value, compression library gets better or faster compression                 |
-| Window size         | Number of bits to indicate the window size where previous uncompressed data is allocated       |
-| Mode                | Compression libraries could implements different compression/decompression modes               |
-| Work factor         | This option controls how the compression works with repetitive data                            |
-| Flags               | Compression libraries could implements different compression/decompression flags               |
-| Back reference bits | Number of bits used to indicate the reference to previous compressed data                      |
-| Number of threads   | Number of threads used by the compression library                                              |
+| Compression level   | This parameter allows to control the quality and speed of the compression data. Depending on the value, the compression can be fast but with a low compression ratio or slow with a high compression ratio. |
+| Window size         | Some compression libraries use previous uncompressed information to compress data. Using this parameter, we can indicate the number of bits used to the window of that uncompressed information. For example, a value of 8 means we use a window size of 256 Bytes, which means 256 Bytes of previous uncompressed data. |
+| Mode                | Compression libraries could implement different compression/decompression modes to optimize their results. Each mode uses different combinations of compression algorithms to compress and decompress data. |
+| Work factor         | This option controls how the library works with reiterative data. |
+| Flags               | Flags control the strategy used by the compression library. |
+| Back reference      | This parameter controls the length representing repeated patterns. |
+| Number of threads   | The number of threads the compression library uses. |
 
 After setting the compression library, these values can be obtained.
 
 ``` c++
-#include <smash.hpp>
+#include <cpu_smash.hpp>
 
 // Set the compression library to use
-Smash lib("zstd");
+CpuSmash lib("zstd");
 // Get compression level values
 uint8_t minimum_level = 0, maximum_level = 0;
 lib.GetCompressionLevelInformation(nullptr, &minimum_level, &maximum_level);
@@ -128,12 +128,12 @@ lib.GetFlagsInformation(nullptr, &minimum_flags, &maximum_flags);
 uint8_t minimum_threads = 0, maximum_threads = 0;
 lib.GetNumberThreadsInformation(nullptr, &minimum_threads, &maximum_threads);
 
-// Get back reference bit values
-uint8_t minimum_bits = 0, maximum_bits = 0;
-lib.GetBackReferenceBitsInformation(nullptr,&minimum_bits, &maximum_bits);
+// Get back reference values
+uint8_t minimum_back_reference = 0, maximum_back_reference = 0;
+lib.GetBackReferenceInformation(nullptr, &minimum_back_reference, &maximum_back_reference);
 ```
 
-## Libraries used in Smash
+## Libraries used in CPU-Smash
 
 |     |     |     | Name |     |     |     |
 | :-: | :-: | :-: | :--: | :-: | :-: | :-: |
