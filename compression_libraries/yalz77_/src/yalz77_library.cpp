@@ -8,72 +8,76 @@
 
 #include <yalz77/lz77.h>
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <yalz77_library.hpp>
 
-bool Yalz77Library::CheckOptions(Options *options, const bool &compressor) {
+bool Yalz77Library::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
     result =
-        CompressionLibrary::CheckCompressionLevel("yalz77", options, 1, 12);
+        CpuCompressionLibrary::CheckCompressionLevel("yalz77", options, 1, 12);
     if (result) {
-      result = CompressionLibrary::CheckWindowSize("yalz77", options, 10, 16);
+      result =
+          CpuCompressionLibrary::CheckWindowSize("yalz77", options, 10, 16);
     }
   }
   return result;
 }
 
-bool Yalz77Library::Compress(char *uncompressed_data,
-                             uint64_t uncompressed_size, char *compressed_data,
-                             uint64_t *compressed_size) {
+bool Yalz77Library::Compress(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             char *compressed_data,
+                             uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     lz77::compress_t compressor(options_.GetCompressionLevel(),
                                 (1 << options_.GetWindowSize()) * 4);
-    std::string compressed_result =
-        compressor.feed(reinterpret_cast<unsigned char *>(uncompressed_data),
-                        reinterpret_cast<unsigned char *>(uncompressed_data +
-                                                          uncompressed_size));
-    if (compressed_result.size() > *compressed_size) {
+    std::string compressed_result = compressor.feed(
+        reinterpret_cast<const unsigned char *const>(uncompressed_data),
+        reinterpret_cast<const unsigned char *const>(uncompressed_data +
+                                                     uncompressed_data_size));
+    if (compressed_result.size() > *compressed_data_size) {
       std::cout << "ERROR: yalz77 error when compress data" << std::endl;
       result = false;
     } else {
-      *compressed_size = compressed_result.size();
-      memcpy(compressed_data, compressed_result.c_str(), *compressed_size);
+      *compressed_data_size = compressed_result.size();
+      memcpy(compressed_data, compressed_result.c_str(), *compressed_data_size);
     }
   }
   return result;
 }
 
-bool Yalz77Library::Decompress(char *compressed_data, uint64_t compressed_size,
+bool Yalz77Library::Decompress(const char *const compressed_data,
+                               const uint64_t &compressed_data_size,
                                char *decompressed_data,
-                               uint64_t *decompressed_size) {
+                               uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
-    lz77::decompress_t decompressor(*decompressed_size);
+    lz77::decompress_t decompressor(*decompressed_data_size);
     std::string extra;
     bool yalz77_result = decompressor.feed(
-        reinterpret_cast<unsigned char *>(compressed_data),
-        reinterpret_cast<unsigned char *>(compressed_data + compressed_size),
+        reinterpret_cast<const unsigned char *const>(compressed_data),
+        reinterpret_cast<const unsigned char *const>(compressed_data +
+                                                     compressed_data_size),
         extra);
     const std::string &decompressed_result = decompressor.result();
     if (!yalz77_result || !extra.empty() ||
-        (decompressed_result.size() > *decompressed_size)) {
+        (decompressed_result.size() > *decompressed_data_size)) {
       std::cout << "ERROR: yalz77 error when decompress data" << std::endl;
       result = false;
     } else {
-      *decompressed_size = decompressed_result.size();
+      *decompressed_data_size = decompressed_result.size();
       memcpy(decompressed_data, decompressed_result.c_str(),
-             *decompressed_size);
+             *decompressed_data_size);
     }
   }
   return result;
 }
 
 void Yalz77Library::GetTitle() {
-  CompressionLibrary::GetTitle("yalz77",
-                               "Variation on the LZ77 compression algorithm");
+  CpuCompressionLibrary::GetTitle(
+      "yalz77", "Variation on the LZ77 compression algorithm");
 }
 
 bool Yalz77Library::GetCompressionLevelInformation(

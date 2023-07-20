@@ -8,55 +8,59 @@
 
 #include <fastlz.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <flz_library.hpp>
-#include <options.hpp>
 
-bool FlzLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool FlzLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("flz", options, 1, 2);
+    result = CpuCompressionLibrary::CheckCompressionLevel("flz", options, 1, 2);
   }
   return result;
 }
 
-bool FlzLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                          char *compressed_data, uint64_t *compressed_size) {
+bool FlzLibrary::Compress(const char *const uncompressed_data,
+                          const uint64_t &uncompressed_data_size,
+                          char *compressed_data,
+                          uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     int flz_result =
         fastlz_compress_level(options_.GetCompressionLevel(), uncompressed_data,
-                              uncompressed_size, compressed_data);
+                              uncompressed_data_size, compressed_data);
     if (flz_result < 1) {
       std::cout << "ERROR: flz error when compress data" << std::endl;
       result = false;
     } else {
-      *compressed_size = flz_result;
+      *compressed_data_size = flz_result;
     }
   }
   return result;
 }
 
-bool FlzLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool FlzLibrary::Decompress(const char *const compressed_data,
+                            const uint64_t &compressed_data_size,
                             char *decompressed_data,
-                            uint64_t *decompressed_size) {
+                            uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
-    int flz_result = fastlz_decompress(compressed_data, compressed_size,
-                                       decompressed_data, *decompressed_size);
+    int flz_result =
+        fastlz_decompress(compressed_data, compressed_data_size,
+                          decompressed_data, *decompressed_data_size);
     if (flz_result < 1) {
       std::cout << "ERROR: flz error when decompress data" << std::endl;
       result = false;
     } else {
-      *decompressed_size = flz_result;
+      *decompressed_data_size = flz_result;
     }
   }
   return result;
 }
 
 void FlzLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("flz",
-                               "Lossless compression library based on LZ77");
+  CpuCompressionLibrary::GetTitle("flz",
+                                  "Lossless compression library based on LZ77");
 }
 
 bool FlzLibrary::GetCompressionLevelInformation(

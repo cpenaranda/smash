@@ -16,45 +16,45 @@
 #include <lzo/lzo1z.h>
 #include <lzo/lzoconf.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <lzo_library.hpp>
-#include <options.hpp>
 
-bool LzoLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool LzoLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("lzo", options, 0, 7);
+  result = CpuCompressionLibrary::CheckMode("lzo", options, 0, 7);
   if (compressor && result) {
     switch (options->GetMode()) {
       case 0:
-        result = CompressionLibrary::CheckCompressionLevel(
+        result = CpuCompressionLibrary::CheckCompressionLevel(
             "mode value 0 in lzo", options, 0, 1);
         break;
       case 1:
-        result = CompressionLibrary::CheckCompressionLevel(
+        result = CpuCompressionLibrary::CheckCompressionLevel(
             "mode value 1 in lzo", options, 0, 1);
         break;
       case 2:
-        result = CompressionLibrary::CheckCompressionLevel(
+        result = CpuCompressionLibrary::CheckCompressionLevel(
             "mode value 2 in lzo", options, 0, 10);
         break;
       case 3:
-        result = CompressionLibrary::CheckCompressionLevel(
+        result = CpuCompressionLibrary::CheckCompressionLevel(
             "mode value 3 in lzo", options, 0, 10);
         break;
       case 4:
-        result = CompressionLibrary::CheckCompressionLevel(
+        result = CpuCompressionLibrary::CheckCompressionLevel(
             "mode value 4 in lzo", options, 0, 4);
         break;
       case 5:
-        result = CompressionLibrary::CheckCompressionLevel(
+        result = CpuCompressionLibrary::CheckCompressionLevel(
             "mode value 5 in lzo", options, 0, 1);
         break;
       case 6:
-        result = CompressionLibrary::CheckCompressionLevel(
+        result = CpuCompressionLibrary::CheckCompressionLevel(
             "mode value 6 in lzo", options, 0, 1);
         break;
       case 7:
-        result = CompressionLibrary::CheckCompressionLevel(
+        result = CpuCompressionLibrary::CheckCompressionLevel(
             "mode value 7 in lzo", options, 0, 0);
         break;
       default:
@@ -317,7 +317,7 @@ void LzoLibrary::GetFunctions(const uint8_t &mode,
   }
 }
 
-bool LzoLibrary::SetOptionsCompressor(Options *options) {
+bool LzoLibrary::SetOptionsCompressor(CpuOptions *options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) {
@@ -327,7 +327,7 @@ bool LzoLibrary::SetOptionsCompressor(Options *options) {
   return initialized_compressor_;
 }
 
-bool LzoLibrary::SetOptionsDecompressor(Options *options) {
+bool LzoLibrary::SetOptionsDecompressor(CpuOptions *options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) {
@@ -337,8 +337,10 @@ bool LzoLibrary::SetOptionsDecompressor(Options *options) {
   return initialized_decompressor_;
 }
 
-bool LzoLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                          char *compressed_data, uint64_t *compressed_size) {
+bool LzoLibrary::Compress(const char *const uncompressed_data,
+                          const uint64_t &uncompressed_data_size,
+                          char *compressed_data,
+                          uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     char *work_memory{nullptr};
@@ -346,10 +348,11 @@ bool LzoLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
     if (compression_work_memory_size_) {
       work_memory = new char[compression_work_memory_size_];
     }
-    error = LZO_compress_(reinterpret_cast<unsigned char *>(uncompressed_data),
-                          uncompressed_size,
-                          reinterpret_cast<unsigned char *>(compressed_data),
-                          compressed_size, work_memory);
+    error = LZO_compress_(
+        reinterpret_cast<const unsigned char *const>(uncompressed_data),
+        uncompressed_data_size,
+        reinterpret_cast<unsigned char *>(compressed_data),
+        compressed_data_size, work_memory);
     if (error != LZO_E_OK) {
       std::cout << "ERROR: lzo error when compress data" << std::endl;
       result = false;
@@ -361,9 +364,10 @@ bool LzoLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool LzoLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool LzoLibrary::Decompress(const char *const compressed_data,
+                            const uint64_t &compressed_data_size,
                             char *decompressed_data,
-                            uint64_t *decompressed_size) {
+                            uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     char *work_memory{nullptr};
@@ -372,9 +376,10 @@ bool LzoLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
       work_memory = new char[decompression_work_memory_size_];
     }
     error = LZO_decompress_(
-        reinterpret_cast<unsigned char *>(compressed_data), compressed_size,
-        reinterpret_cast<unsigned char *>(decompressed_data), decompressed_size,
-        work_memory);
+        reinterpret_cast<const unsigned char *const>(compressed_data),
+        compressed_data_size,
+        reinterpret_cast<unsigned char *>(decompressed_data),
+        decompressed_data_size, work_memory);
     if (error != LZO_E_OK) {
       result = false;
       std::cout << "ERROR: lzo error when decompress data" << std::endl;
@@ -387,8 +392,8 @@ bool LzoLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LzoLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("lzo",
-                               "Portable lossless data compression library");
+  CpuCompressionLibrary::GetTitle("lzo",
+                                  "Portable lossless data compression library");
 }
 
 bool LzoLibrary::GetCompressionLevelInformation(

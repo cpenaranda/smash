@@ -8,29 +8,31 @@
 
 #include <lzma.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <lzma_library.hpp>
-#include <options.hpp>
 
-bool LzmaLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool LzmaLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckMode("lzma", options, 0, 2);
+    result = CpuCompressionLibrary::CheckMode("lzma", options, 0, 2);
     if (result) {
-      result = CompressionLibrary::CheckNumberThreads("lzma", options, 1, 8);
+      result = CpuCompressionLibrary::CheckNumberThreads("lzma", options, 1, 8);
     }
   }
   return result;
 }
 
-void LzmaLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                        uint64_t uncompressed_size,
-                                        uint64_t *compressed_size) {
-  *compressed_size = lzma_stream_buffer_bound(uncompressed_size);
+void LzmaLibrary::GetCompressedDataSize(const char *const uncompressed_data,
+                                        const uint64_t &uncompressed_data_size,
+                                        uint64_t *compressed_data_size) {
+  *compressed_data_size = lzma_stream_buffer_bound(uncompressed_data_size);
 }
 
-bool LzmaLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                           char *compressed_data, uint64_t *compressed_size) {
+bool LzmaLibrary::Compress(const char *const uncompressed_data,
+                           const uint64_t &uncompressed_data_size,
+                           char *compressed_data,
+                           uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     lzma_stream strm = LZMA_STREAM_INIT;
@@ -70,10 +72,10 @@ bool LzmaLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
       result = false;
     } else {
       uint64_t size_aux{0};
-      strm.next_in = reinterpret_cast<uint8_t *>(uncompressed_data);
-      strm.avail_in = uncompressed_size;
+      strm.next_in = reinterpret_cast<const uint8_t *const>(uncompressed_data);
+      strm.avail_in = uncompressed_data_size;
       strm.next_out = reinterpret_cast<uint8_t *>(compressed_data);
-      strm.avail_out = *compressed_size;
+      strm.avail_out = *compressed_data_size;
       ret_lzma = lzma_code(&strm, LZMA_RUN);
       if (ret_lzma != LZMA_OK) {
         result = false;
@@ -85,8 +87,8 @@ bool LzmaLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
           result = false;
 
         } else {
-          *compressed_size =
-              (*compressed_size - size_aux) + (size_aux - strm.avail_out);
+          *compressed_data_size =
+              (*compressed_data_size - size_aux) + (size_aux - strm.avail_out);
         }
       }
     }
@@ -98,9 +100,10 @@ bool LzmaLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool LzmaLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool LzmaLibrary::Decompress(const char *const compressed_data,
+                             const uint64_t &compressed_data_size,
                              char *decompressed_data,
-                             uint64_t *decompressed_size) {
+                             uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     lzma_stream strm = LZMA_STREAM_INIT;
@@ -110,10 +113,10 @@ bool LzmaLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
       result = false;
     } else {
       uint64_t size_aux{0};
-      strm.next_in = reinterpret_cast<uint8_t *>(compressed_data);
-      strm.avail_in = compressed_size;
+      strm.next_in = reinterpret_cast<const uint8_t *const>(compressed_data);
+      strm.avail_in = compressed_data_size;
       strm.next_out = reinterpret_cast<uint8_t *>(decompressed_data);
-      strm.avail_out = *decompressed_size;
+      strm.avail_out = *decompressed_data_size;
 
       ret_lzma = lzma_code(&strm, LZMA_RUN);
 
@@ -125,8 +128,8 @@ bool LzmaLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
         if (ret_lzma != LZMA_STREAM_END) {
           result = false;
         } else {
-          *decompressed_size =
-              (*decompressed_size - size_aux) + (size_aux - strm.avail_out);
+          *decompressed_data_size = (*decompressed_data_size - size_aux) +
+                                    (size_aux - strm.avail_out);
         }
       }
       lzma_end(&strm);
@@ -139,7 +142,7 @@ bool LzmaLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LzmaLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "lzma", "Data compression library with a high compression ratio");
 }
 

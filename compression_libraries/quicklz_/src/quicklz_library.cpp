@@ -8,42 +8,44 @@
 
 #include <quicklz.h>
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <quicklz_library.hpp>
 
-void QuicklzLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                           uint64_t uncompressed_size,
-                                           uint64_t *compressed_size) {
+void QuicklzLibrary::GetCompressedDataSize(
+    const char *const uncompressed_data, const uint64_t &uncompressed_data_size,
+    uint64_t *compressed_data_size) {
   if (uncompressed_data) {
-    *compressed_size = qlz_size_compressed(uncompressed_data);
+    *compressed_data_size = qlz_size_compressed(uncompressed_data);
   } else {
-    CompressionLibrary::GetCompressedDataSize(
-        uncompressed_data, uncompressed_size, compressed_size);
+    CpuCompressionLibrary::GetCompressedDataSize(
+        uncompressed_data, uncompressed_data_size, compressed_data_size);
   }
 }
 
-bool QuicklzLibrary::Compress(char *uncompressed_data,
-                              uint64_t uncompressed_size, char *compressed_data,
-                              uint64_t *compressed_size) {
+bool QuicklzLibrary::Compress(const char *const uncompressed_data,
+                              const uint64_t &uncompressed_data_size,
+                              char *compressed_data,
+                              uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     qlz_state_compress state;
     uint64_t final_size = qlz_compress(uncompressed_data, compressed_data,
-                                       uncompressed_size, &state);
+                                       uncompressed_data_size, &state);
     if (final_size == 0) {
       std::cout << "ERROR: quicklz error when compress data" << std::endl;
       result = false;
     } else {
-      *compressed_size = final_size;
+      *compressed_data_size = final_size;
     }
   }
   return result;
 }
 
-bool QuicklzLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool QuicklzLibrary::Decompress(const char *const compressed_data,
+                                const uint64_t &compressed_data_size,
                                 char *decompressed_data,
-                                uint64_t *decompressed_size) {
+                                uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     qlz_state_decompress state;
@@ -53,20 +55,20 @@ bool QuicklzLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
       std::cout << "ERROR: quicklz error when decompress data" << std::endl;
       result = false;
     } else {
-      *decompressed_size = final_size;
+      *decompressed_data_size = final_size;
     }
   }
   return result;
 }
 
-void QuicklzLibrary::GetDecompressedDataSize(char *compressed_data,
-                                             uint64_t compressed_size,
-                                             uint64_t *decompressed_size) {
-  *decompressed_size = qlz_size_decompressed(compressed_data);
+void QuicklzLibrary::GetDecompressedDataSize(
+    const char *const compressed_data, const uint64_t &compressed_data_size,
+    uint64_t *decompressed_data_size) {
+  *decompressed_data_size = qlz_size_decompressed(compressed_data);
 }
 
 void QuicklzLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("quicklz", "Fast GPL'd compression library.");
+  CpuCompressionLibrary::GetTitle("quicklz", "Fast GPL'd compression library.");
 }
 
 QuicklzLibrary::QuicklzLibrary() {}

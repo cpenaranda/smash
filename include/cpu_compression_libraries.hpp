@@ -14,20 +14,20 @@
 #include <string>
 #include <vector>
 
-// SMASH LIBRARIES
-#include <compression_library.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
 
-class CompressionLibraries {
+class CpuCompressionLibraries {
  private:
-  std::map<std::string, std::function<CompressionLibrary *()>> map_;
+  std::map<std::string, std::function<CpuCompressionLibrary *()>> map_;
 
  public:
-  CompressionLibrary *GetCompressionLibrary(const std::string &library_name);
+  CpuCompressionLibrary *GetCompressionLibrary(const std::string &library_name);
 
   std::vector<std::string> GetNameLibraries();
 
   void GetListInformation();
 
-  CompressionLibraries();
-  ~CompressionLibraries();
+  CpuCompressionLibraries();
+  ~CpuCompressionLibraries();
 };

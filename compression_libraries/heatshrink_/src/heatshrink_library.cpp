@@ -10,54 +10,57 @@ extern "C" {
 #include <heatshrink_encoder.h>
 }
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <heatshrink_library.hpp>
-#include <options.hpp>
 
-bool HeatshrinkLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool HeatshrinkLibrary::CheckOptions(CpuOptions *options,
+                                     const bool &compressor) {
   bool result{true};
 
-  result = CompressionLibrary::CheckWindowSize("heatshrink", options, 4, 14);
+  result = CpuCompressionLibrary::CheckWindowSize("heatshrink", options, 4, 14);
   if (result) {
-    result = CompressionLibrary::CheckBackReferenceBits(
+    result = CpuCompressionLibrary::CheckBackReference(
         "heatshrink", options, 3, options->GetWindowSize() - 1);
   }
   return result;
 }
 
-bool HeatshrinkLibrary::Compress(char *uncompressed_data,
-                                 uint64_t uncompressed_size,
+bool HeatshrinkLibrary::Compress(const char *const uncompressed_data,
+                                 const uint64_t &uncompressed_data_size,
                                  char *compressed_data,
-                                 uint64_t *compressed_size) {
+                                 uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     heatshrink_encoder *compression = heatshrink_encoder_alloc(
-        options_.GetWindowSize(), options_.GetBackReferenceBits());
+        options_.GetWindowSize(), options_.GetBackReference());
     if (result = compression) {
       uint64_t size{0};
       uint64_t bytes{0};
       HSE_sink_res sres;
       HSE_poll_res pres;
       HSE_finish_res fres;
-
-      while (uncompressed_size && result) {
+      uint64_t current_uncompressed_data_size{uncompressed_data_size};
+      uint8_t *current_uncompressed_data = const_cast<uint8_t *>(
+          reinterpret_cast<const uint8_t *const>(uncompressed_data));
+      while (current_uncompressed_data_size && result) {
         sres = heatshrink_encoder_sink(
-            compression, reinterpret_cast<uint8_t *>(uncompressed_data),
-            uncompressed_size, &size);
-        result = (sres >= 0) && (size <= uncompressed_size);
+            compression, reinterpret_cast<uint8_t *>(current_uncompressed_data),
+            current_uncompressed_data_size, &size);
+        result = (sres >= 0) && (size <= current_uncompressed_data_size);
         if (result && size) {
-          uncompressed_data += size;
-          uncompressed_size -= size;
+          current_uncompressed_data += size;
+          current_uncompressed_data_size -= size;
         }
-        if (!uncompressed_size && result) {
+        if (!current_uncompressed_data_size && result) {
           fres = heatshrink_encoder_finish(compression);
           result = (fres == HSER_FINISH_MORE);
         }
         for (pres = HSER_POLL_MORE; pres == HSER_POLL_MORE && result;) {
           pres = heatshrink_encoder_poll(
               compression, reinterpret_cast<uint8_t *>(compressed_data),
-              *compressed_size, &size);
-          result = (pres >= 0) && (bytes + size <= *compressed_size);
+              *compressed_data_size, &size);
+          result = (pres >= 0) && (bytes + size <= *compressed_data_size);
           if (result && size) {
             bytes += size;
             compressed_data += size;
@@ -66,11 +69,12 @@ bool HeatshrinkLibrary::Compress(char *uncompressed_data,
       }
       if (result) {
         fres = heatshrink_encoder_finish(compression);
-        if (fres < 0 || fres != HSER_FINISH_DONE || bytes > *compressed_size) {
+        if (fres < 0 || fres != HSER_FINISH_DONE ||
+            bytes > *compressed_data_size) {
           result = false;
         }
       }
-      *compressed_size = bytes;
+      *compressed_data_size = bytes;
       heatshrink_encoder_free(compression);
     }
     if (!result) {
@@ -80,39 +84,41 @@ bool HeatshrinkLibrary::Compress(char *uncompressed_data,
   return result;
 }
 
-bool HeatshrinkLibrary::Decompress(char *compressed_data,
-                                   uint64_t compressed_size,
+bool HeatshrinkLibrary::Decompress(const char *const compressed_data,
+                                   const uint64_t &compressed_data_size,
                                    char *decompressed_data,
-                                   uint64_t *decompressed_size) {
+                                   uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     heatshrink_decoder *decompression = heatshrink_decoder_alloc(
-        256, options_.GetWindowSize(), options_.GetBackReferenceBits());
+        256, options_.GetWindowSize(), options_.GetBackReference());
     if (result = decompression) {
       uint64_t size{0};
       uint64_t bytes = 0;
       HSD_sink_res sres;
       HSD_poll_res pres;
       HSD_finish_res fres;
-
-      while (compressed_size && result) {
+      uint64_t current_compressed_data_size{compressed_data_size};
+      uint8_t *current_compressed_data = const_cast<uint8_t *>(
+          reinterpret_cast<const uint8_t *const>(compressed_data));
+      while (current_compressed_data_size && result) {
         sres = heatshrink_decoder_sink(
-            decompression, reinterpret_cast<uint8_t *>(compressed_data),
-            compressed_size, &size);
-        result = (sres >= 0) && (size <= compressed_size);
+            decompression, reinterpret_cast<uint8_t *>(current_compressed_data),
+            current_compressed_data_size, &size);
+        result = (sres >= 0) && (size <= current_compressed_data_size);
         if (result && size) {
-          compressed_data += size;
-          compressed_size -= size;
+          current_compressed_data += size;
+          current_compressed_data_size -= size;
         }
-        if (!compressed_size && result) {
+        if (!current_compressed_data_size && result) {
           fres = heatshrink_decoder_finish(decompression);
           result = (fres == HSDR_FINISH_MORE);
         }
         for (pres = HSDR_POLL_MORE; pres == HSDR_POLL_MORE && result;) {
           pres = heatshrink_decoder_poll(
               decompression, reinterpret_cast<uint8_t *>(decompressed_data),
-              *decompressed_size, &size);
-          result = (pres >= 0) && (bytes + size <= *decompressed_size);
+              *decompressed_data_size, &size);
+          result = (pres >= 0) && (bytes + size <= *decompressed_data_size);
           if (result && size) {
             bytes += size;
             decompressed_data += size;
@@ -122,11 +128,11 @@ bool HeatshrinkLibrary::Decompress(char *compressed_data,
       if (result) {
         fres = heatshrink_decoder_finish(decompression);
         if (fres < 0 || fres != HSDR_FINISH_DONE ||
-            bytes > *decompressed_size) {
+            bytes > *decompressed_data_size) {
           result = false;
         }
       }
-      *decompressed_size = bytes;
+      *decompressed_data_size = bytes;
       heatshrink_decoder_free(decompression);
     }
     if (!result) {
@@ -137,9 +143,9 @@ bool HeatshrinkLibrary::Decompress(char *compressed_data,
 }
 
 void HeatshrinkLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("heatshrink",
-                               "LZ77-based compression library targeted at "
-                               "embedded and real-time systems");
+  CpuCompressionLibrary::GetTitle("heatshrink",
+                                  "LZ77-based compression library targeted at "
+                                  "embedded and real-time systems");
 }
 
 bool HeatshrinkLibrary::GetWindowSizeInformation(
@@ -155,16 +161,16 @@ bool HeatshrinkLibrary::GetWindowSizeInformation(
   return true;
 }
 
-bool HeatshrinkLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_bits_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 3;
-  if (maximum_bits) *maximum_bits = 0;
-  if (back_reference_bits_information) {
-    back_reference_bits_information->clear();
-    back_reference_bits_information->push_back(
+bool HeatshrinkLibrary::GetBackReferenceInformation(
+    std::vector<std::string> *back_reference_information,
+    uint8_t *minimum_back_reference, uint8_t *maximum_back_reference) {
+  if (minimum_back_reference) *minimum_back_reference = 3;
+  if (maximum_back_reference) *maximum_back_reference = 0;
+  if (back_reference_information) {
+    back_reference_information->clear();
+    back_reference_information->push_back(
         "Available values [3 - <window_size>[");
-    back_reference_bits_information->push_back("[compression/decompression]");
+    back_reference_information->push_back("[compression/decompression]");
   }
   return true;
 }

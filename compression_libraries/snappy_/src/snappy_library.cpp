@@ -8,23 +8,25 @@
 
 #include <snappy-c.h>
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <snappy_library.hpp>
 
-void SnappyLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                          uint64_t uncompressed_size,
-                                          uint64_t *compressed_size) {
-  *compressed_size = snappy_max_compressed_length(uncompressed_size);
+void SnappyLibrary::GetCompressedDataSize(
+    const char *const uncompressed_data, const uint64_t &uncompressed_data_size,
+    uint64_t *compressed_data_size) {
+  *compressed_data_size = snappy_max_compressed_length(uncompressed_data_size);
 }
 
-bool SnappyLibrary::Compress(char *uncompressed_data,
-                             uint64_t uncompressed_size, char *compressed_data,
-                             uint64_t *compressed_size) {
+bool SnappyLibrary::Compress(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             char *compressed_data,
+                             uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
-    snappy_status error = snappy_compress(uncompressed_data, uncompressed_size,
-                                          compressed_data, compressed_size);
+    snappy_status error =
+        snappy_compress(uncompressed_data, uncompressed_data_size,
+                        compressed_data, compressed_data_size);
     if (SNAPPY_OK != error) {
       std::cout << "ERROR: snappy error when compress data" << std::endl;
       result = false;
@@ -33,20 +35,22 @@ bool SnappyLibrary::Compress(char *uncompressed_data,
   return result;
 }
 
-void SnappyLibrary::GetDecompressedDataSize(char *compressed_data,
-                                            uint64_t compressed_size,
-                                            uint64_t *decompressed_size) {
-  snappy_uncompressed_length(compressed_data, compressed_size,
-                             decompressed_size);
+void SnappyLibrary::GetDecompressedDataSize(
+    const char *const compressed_data, const uint64_t &compressed_data_size,
+    uint64_t *decompressed_data_size) {
+  snappy_uncompressed_length(compressed_data, compressed_data_size,
+                             decompressed_data_size);
 }
 
-bool SnappyLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool SnappyLibrary::Decompress(const char *const compressed_data,
+                               const uint64_t &compressed_data_size,
                                char *decompressed_data,
-                               uint64_t *decompressed_size) {
+                               uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
-    snappy_status error = snappy_uncompress(
-        compressed_data, compressed_size, decompressed_data, decompressed_size);
+    snappy_status error =
+        snappy_uncompress(compressed_data, compressed_data_size,
+                          decompressed_data, decompressed_data_size);
     if (SNAPPY_OK != error) {
       std::cout << "ERROR: snappy error when decompress data" << std::endl;
       result = false;
@@ -56,7 +60,7 @@ bool SnappyLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void SnappyLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "snappy", "Fast compressor/decompressor created by Google");
 }
 

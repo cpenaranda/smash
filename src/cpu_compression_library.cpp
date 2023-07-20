@@ -10,52 +10,52 @@
 
 #include <iomanip>
 
-// SMASH LIBRARIES
-#include <compression_library.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
 
-bool CompressionLibrary::CheckOptions(Options *options,
-                                      const bool &compressor) {
+bool CpuCompressionLibrary::CheckOptions(CpuOptions *options,
+                                         const bool &compressor) {
   return true;
 }
 
-bool CompressionLibrary::SetOptionsCompressor(Options *options) {
+bool CpuCompressionLibrary::SetOptionsCompressor(CpuOptions *options) {
   if (initialized_decompressor_) initialized_decompressor_ = false;
   initialized_compressor_ = CheckOptions(options, true);
   if (initialized_compressor_) options_ = *options;
   return initialized_compressor_;
 }
 
-bool CompressionLibrary::SetOptionsDecompressor(Options *options) {
+bool CpuCompressionLibrary::SetOptionsDecompressor(CpuOptions *options) {
   if (initialized_compressor_) initialized_compressor_ = false;
   initialized_decompressor_ = CheckOptions(options, false);
   if (initialized_decompressor_) options_ = *options;
   return initialized_decompressor_;
 }
 
-void CompressionLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                               uint64_t uncompressed_size,
-                                               uint64_t *compressed_size) {
+void CpuCompressionLibrary::GetCompressedDataSize(
+    const char *const uncompressed_data, const uint64_t &uncompressed_data_size,
+    uint64_t *compressed_data_size) {
   // There is no way to obtain with the library
-  if (uncompressed_size < 2500) {
-    *compressed_size = 5000;
+  if (uncompressed_data_size < 2500) {
+    *compressed_data_size = 5000;
   } else {
-    *compressed_size = uncompressed_size * 2;
+    *compressed_data_size = uncompressed_data_size * 2;
   }
 }
 
-void CompressionLibrary::GetDecompressedDataSize(char *compressed_data,
-                                                 uint64_t compressed_size,
-                                                 uint64_t *decompressed_size) {
+void CpuCompressionLibrary::GetDecompressedDataSize(
+    const char *const compressed_data, const uint64_t &compressed_data_size,
+    uint64_t *decompressed_data_size) {
   // There is no way to obtain with the library
 }
 
-void CompressionLibrary::GetTitle(const std::string &library_name,
-                                  const std::string &description) {
+void CpuCompressionLibrary::GetTitle(const std::string &library_name,
+                                     const std::string &description) {
   std::cout << std::left << std::setw(15) << std::setfill(' ') << library_name
             << "- " << description << std::endl;
 }
 
-bool CompressionLibrary::GetCompressionLevelInformation(
+bool CpuCompressionLibrary::GetCompressionLevelInformation(
     std::vector<std::string> *compression_level_information,
     uint8_t *minimum_level, uint8_t *maximum_level) {
   if (minimum_level) *minimum_level = 0;
@@ -64,7 +64,7 @@ bool CompressionLibrary::GetCompressionLevelInformation(
   return false;
 }
 
-bool CompressionLibrary::GetWindowSizeInformation(
+bool CpuCompressionLibrary::GetWindowSizeInformation(
     std::vector<std::string> *window_size_information, uint32_t *minimum_size,
     uint32_t *maximum_size) {
   if (minimum_size) *minimum_size = 0;
@@ -73,7 +73,7 @@ bool CompressionLibrary::GetWindowSizeInformation(
   return false;
 }
 
-bool CompressionLibrary::GetModeInformation(
+bool CpuCompressionLibrary::GetModeInformation(
     std::vector<std::string> *mode_information, uint8_t *minimum_mode,
     uint8_t *maximum_mode, const uint8_t &compression_level) {
   if (minimum_mode) *minimum_mode = 0;
@@ -82,7 +82,7 @@ bool CompressionLibrary::GetModeInformation(
   return false;
 }
 
-bool CompressionLibrary::GetWorkFactorInformation(
+bool CpuCompressionLibrary::GetWorkFactorInformation(
     std::vector<std::string> *work_factor_information, uint8_t *minimum_factor,
     uint8_t *maximum_factor) {
   if (minimum_factor) *minimum_factor = 0;
@@ -91,7 +91,7 @@ bool CompressionLibrary::GetWorkFactorInformation(
   return false;
 }
 
-bool CompressionLibrary::GetFlagsInformation(
+bool CpuCompressionLibrary::GetFlagsInformation(
     std::vector<std::string> *flags_information, uint8_t *minimum_flags,
     uint8_t *maximum_flags) {
   if (minimum_flags) *minimum_flags = 0;
@@ -100,7 +100,7 @@ bool CompressionLibrary::GetFlagsInformation(
   return false;
 }
 
-bool CompressionLibrary::GetNumberThreadsInformation(
+bool CpuCompressionLibrary::GetNumberThreadsInformation(
     std::vector<std::string> *number_threads_information,
     uint8_t *minimum_threads, uint8_t *maximum_threads) {
   if (minimum_threads) *minimum_threads = 0;
@@ -109,35 +109,35 @@ bool CompressionLibrary::GetNumberThreadsInformation(
   return false;
 }
 
-bool CompressionLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_bits_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 0;
-  if (maximum_bits) *maximum_bits = 0;
-  if (back_reference_bits_information) back_reference_bits_information->clear();
+bool CpuCompressionLibrary::GetBackReferenceInformation(
+    std::vector<std::string> *back_reference_information,
+    uint8_t *minimum_back_reference, uint8_t *maximum_back_reference) {
+  if (minimum_back_reference) *minimum_back_reference = 0;
+  if (maximum_back_reference) *maximum_back_reference = 0;
+  if (back_reference_information) back_reference_information->clear();
   return false;
 }
 
-std::string CompressionLibrary::GetModeName(const uint8_t &mode) {
+std::string CpuCompressionLibrary::GetModeName(const uint8_t &mode) {
   return "------------";
 }
 
-std::string CompressionLibrary::GetFlagsName(const uint8_t &flags) {
+std::string CpuCompressionLibrary::GetFlagsName(const uint8_t &flags) {
   return "------------";
 }
 
-bool CompressionLibrary::CompareData(char *uncompress_data,
-                                     const uint64_t &uncompress_size,
-                                     char *decompress_data,
-                                     const uint64_t &decompress_size) {
-  return ((uncompress_size == decompress_size) &&
-          (memcmp(uncompress_data, decompress_data, decompress_size) == 0));
+bool CpuCompressionLibrary::CompareData(
+    const char *const uncompressed_data, const uint64_t &uncompressed_data_size,
+    const char *const decompressed_data,
+    const uint64_t &decompressed_data_size) {
+  return ((uncompressed_data_size == decompressed_data_size) &&
+          (memcmp(uncompressed_data, decompressed_data,
+                  decompressed_data_size) == 0));
 }
 
-bool CompressionLibrary::CheckCompressionLevel(const std::string &library_name,
-                                               Options *options,
-                                               const uint8_t &minimum_level,
-                                               const uint8_t &maximum_level) {
+bool CpuCompressionLibrary::CheckCompressionLevel(
+    const std::string &library_name, CpuOptions *options,
+    const uint8_t &minimum_level, const uint8_t &maximum_level) {
   bool result{true};
   if (options->CompressionLevelIsSet()) {
     if (minimum_level > 0 && options->GetCompressionLevel() < minimum_level) {
@@ -158,10 +158,10 @@ bool CompressionLibrary::CheckCompressionLevel(const std::string &library_name,
   return result;
 }
 
-bool CompressionLibrary::CheckWindowSize(const std::string &library_name,
-                                         Options *options,
-                                         const uint32_t &minimum_size,
-                                         const uint32_t &maximum_size) {
+bool CpuCompressionLibrary::CheckWindowSize(const std::string &library_name,
+                                            CpuOptions *options,
+                                            const uint32_t &minimum_size,
+                                            const uint32_t &maximum_size) {
   bool result{true};
   if (options->WindowSizeIsSet()) {
     if (minimum_size > 0 && options->GetWindowSize() < minimum_size) {
@@ -181,10 +181,10 @@ bool CompressionLibrary::CheckWindowSize(const std::string &library_name,
   return result;
 }
 
-bool CompressionLibrary::CheckMode(const std::string &library_name,
-                                   Options *options,
-                                   const uint8_t &minimum_mode,
-                                   const uint8_t &maximum_mode) {
+bool CpuCompressionLibrary::CheckMode(const std::string &library_name,
+                                      CpuOptions *options,
+                                      const uint8_t &minimum_mode,
+                                      const uint8_t &maximum_mode) {
   bool result{true};
   if (options->ModeIsSet()) {
     if (minimum_mode > 0 && options->GetMode() < minimum_mode) {
@@ -204,10 +204,10 @@ bool CompressionLibrary::CheckMode(const std::string &library_name,
   return result;
 }
 
-bool CompressionLibrary::CheckWorkFactor(const std::string &library_name,
-                                         Options *options,
-                                         const uint8_t &minimum_factor,
-                                         const uint8_t &maximum_factor) {
+bool CpuCompressionLibrary::CheckWorkFactor(const std::string &library_name,
+                                            CpuOptions *options,
+                                            const uint8_t &minimum_factor,
+                                            const uint8_t &maximum_factor) {
   bool result{true};
   if (options->WorkFactorIsSet()) {
     if (minimum_factor > 0 && options->GetWorkFactor() < minimum_factor) {
@@ -228,10 +228,10 @@ bool CompressionLibrary::CheckWorkFactor(const std::string &library_name,
   return result;
 }
 
-bool CompressionLibrary::CheckFlags(const std::string &library_name,
-                                    Options *options,
-                                    const uint8_t &minimum_flags,
-                                    const uint8_t &maximum_flags) {
+bool CpuCompressionLibrary::CheckFlags(const std::string &library_name,
+                                       CpuOptions *options,
+                                       const uint8_t &minimum_flags,
+                                       const uint8_t &maximum_flags) {
   bool result{true};
   if (options->FlagsIsSet()) {
     if (minimum_flags > 0 && options->GetFlags() < minimum_flags) {
@@ -251,10 +251,10 @@ bool CompressionLibrary::CheckFlags(const std::string &library_name,
   return result;
 }
 
-bool CompressionLibrary::CheckNumberThreads(const std::string &library_name,
-                                            Options *options,
-                                            const uint8_t &minimum_threads,
-                                            const uint8_t &maximum_threads) {
+bool CpuCompressionLibrary::CheckNumberThreads(const std::string &library_name,
+                                               CpuOptions *options,
+                                               const uint8_t &minimum_threads,
+                                               const uint8_t &maximum_threads) {
   bool result{true};
   if (options->NumberThreadsIsSet()) {
     if (minimum_threads > 0 && options->GetNumberThreads() < minimum_threads) {
@@ -275,35 +275,36 @@ bool CompressionLibrary::CheckNumberThreads(const std::string &library_name,
   return result;
 }
 
-bool CompressionLibrary::CheckBackReferenceBits(const std::string &library_name,
-                                                Options *options,
-                                                const uint8_t &minimum_bits,
-                                                const uint8_t &maximum_bits) {
+bool CpuCompressionLibrary::CheckBackReference(
+    const std::string &library_name, CpuOptions *options,
+    const uint8_t &minimum_back_reference,
+    const uint8_t &maximum_back_reference) {
   bool result{true};
-  if (options->BackReferenceBitsIsSet()) {
-    if (minimum_bits > 0 && options->GetBackReferenceBits() < minimum_bits) {
+  if (options->BackReferenceIsSet()) {
+    if (minimum_back_reference > 0 &&
+        options->GetBackReference() < minimum_back_reference) {
       std::cout << "ERROR: Back refence bits can not be lower than "
-                << static_cast<uint64_t>(minimum_bits) << " using "
+                << static_cast<uint64_t>(minimum_back_reference) << " using "
                 << library_name << std::endl;
       result = false;
-    } else if (maximum_bits > 0 &&
-               options->GetBackReferenceBits() > maximum_bits) {
+    } else if (maximum_back_reference > 0 &&
+               options->GetBackReference() > maximum_back_reference) {
       std::cout << "ERROR: Back refence bits can not be higher than "
-                << static_cast<uint64_t>(maximum_bits) << " using "
+                << static_cast<uint64_t>(maximum_back_reference) << " using "
                 << library_name << std::endl;
       result = false;
     }
   } else {
-    options->SetBackReferenceBits(minimum_bits);
+    options->SetBackReference(minimum_back_reference);
   }
   return result;
 }
 
-Options CompressionLibrary::GetOptions() { return options_; }
+CpuOptions CpuCompressionLibrary::GetOptions() { return options_; }
 
-CompressionLibrary::CompressionLibrary() {
+CpuCompressionLibrary::CpuCompressionLibrary() {
   initialized_compressor_ = false;
   initialized_decompressor_ = false;
 }
 
-CompressionLibrary::~CompressionLibrary() {}
+CpuCompressionLibrary::~CpuCompressionLibrary() {}

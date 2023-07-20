@@ -14,31 +14,34 @@
 #include <string>
 #include <vector>
 
-// SMASH LIBRARIES
-#include <compression_library.hpp>
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
+#include <cpu_options.hpp>
 
-class GipfeliLibrary : public CompressionLibrary {
+class GipfeliLibrary : public CpuCompressionLibrary {
  private:
   util::compression::gipfeli::Gipfeli *compressor_;
 
  public:
-  bool SetOptionsCompressor(Options *options);
+  bool SetOptionsCompressor(CpuOptions *options);
 
-  bool SetOptionsDecompressor(Options *options);
+  bool SetOptionsDecompressor(CpuOptions *options);
 
-  void GetCompressedDataSize(char *uncompressed_data,
-                             uint64_t uncompressed_size,
-                             uint64_t *compressed_size);
+  void GetCompressedDataSize(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             uint64_t *compressed_data_size);
 
-  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                char *compressed_data, uint64_t *compressed_size);
+  bool Compress(const char *const uncompressed_data,
+                const uint64_t &uncompressed_data_size, char *compressed_data,
+                uint64_t *compressed_data_size);
 
-  void GetDecompressedDataSize(char *compressed_data, uint64_t compressed_size,
-                               uint64_t *decompressed_size);
+  void GetDecompressedDataSize(const char *const compressed_data,
+                               const uint64_t &compressed_data_size,
+                               uint64_t *decompressed_data_size);
 
-  bool Decompress(char *compressed_data, uint64_t compressed_size,
-                  char *decompressed_data, uint64_t *decompressed_size);
+  bool Decompress(const char *const compressed_data,
+                  const uint64_t &compressed_data_size, char *decompressed_data,
+                  uint64_t *decompressed_data_size);
 
   void GetTitle();
 

@@ -9,7 +9,7 @@
 #include <iomanip>
 #include <iostream>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
 #ifdef BRIEFLZ
 #include <brieflz_library.hpp>
 #endif  // BRIEFLZ
@@ -22,7 +22,7 @@
 #ifdef CBLOSC2
 #include <c-blosc2_library.hpp>
 #endif  // CBLOSC2
-#include <compression_libraries.hpp>
+#include <cpu_compression_libraries.hpp>
 #ifdef CSC
 #include <csc_library.hpp>
 #endif  // CSC
@@ -137,7 +137,7 @@
 #endif  // LZSSE
 #endif  // __x86_64__
 
-CompressionLibrary *CompressionLibraries::GetCompressionLibrary(
+CpuCompressionLibrary *CpuCompressionLibraries::GetCompressionLibrary(
     const std::string &library_name) {
   auto lib = map_.find(library_name);
   if (lib == map_.end()) {
@@ -147,8 +147,8 @@ CompressionLibrary *CompressionLibraries::GetCompressionLibrary(
   return lib->second();
 }
 
-void CompressionLibraries::GetListInformation() {
-  CompressionLibrary *library;
+void CpuCompressionLibraries::GetListInformation() {
+  CpuCompressionLibrary *library;
   int i = 0;
   for (auto &lib : map_) {
     library = lib.second();
@@ -158,7 +158,7 @@ void CompressionLibraries::GetListInformation() {
   }
 }
 
-std::vector<std::string> CompressionLibraries::GetNameLibraries() {
+std::vector<std::string> CpuCompressionLibraries::GetNameLibraries() {
   std::vector<std::string> result;
   for (auto &lib : map_) {
     result.push_back(lib.first);
@@ -166,7 +166,7 @@ std::vector<std::string> CompressionLibraries::GetNameLibraries() {
   return result;
 }
 
-CompressionLibraries::CompressionLibraries() {
+CpuCompressionLibraries::CpuCompressionLibraries() {
 #ifdef BRIEFLZ
   map_["brieflz"] = []() { return new BrieflzLibrary(); };
 #endif  // BRIEFLZ
@@ -295,4 +295,4 @@ CompressionLibraries::CompressionLibraries() {
 #endif  // __x86_64__
 }
 
-CompressionLibraries::~CompressionLibraries() {}
+CpuCompressionLibraries::~CpuCompressionLibraries() {}

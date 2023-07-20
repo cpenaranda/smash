@@ -13,23 +13,23 @@
 #include <iostream>
 #include <string>
 #include <vector>
-// SMASH LIBRARIES
-#include <compression_library.hpp>
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
+#include <cpu_options.hpp>
 
-class ZlingReader : public baidu::zling::Inputter  {
+class ZlingReader : public baidu::zling::Inputter {
  private:
-  char *buffer_;
+  const char *buffer_;
   uint64_t buffer_size_;
   uint64_t total_read_;
   bool error_;
 
  public:
-  size_t GetData(unsigned char* buf, size_t len);
-  bool   IsEnd();
-  bool   IsErr();
+  size_t GetData(unsigned char *buf, size_t len);
+  bool IsEnd();
+  bool IsErr();
   size_t GetInputSize();
-  ZlingReader(char *buffer, const uint64_t &buffer_size);
+  ZlingReader(const char *buffer, const uint64_t &buffer_size);
 };
 
 class ZlingWriter : public baidu::zling::Outputter {
@@ -40,21 +40,23 @@ class ZlingWriter : public baidu::zling::Outputter {
   bool error_;
 
  public:
-  size_t PutData(unsigned char* buf, size_t len);
-  bool   IsErr();
+  size_t PutData(unsigned char *buf, size_t len);
+  bool IsErr();
   size_t GetOutputSize();
   ZlingWriter(char *buffer, const uint64_t &buffer_size);
 };
 
-class ZlingLibrary : public CompressionLibrary {
+class ZlingLibrary : public CpuCompressionLibrary {
  public:
-  bool CheckOptions(Options *options, const bool &compressor);
+  bool CheckOptions(CpuOptions *options, const bool &compressor);
 
-  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                char *compressed_data, uint64_t *compressed_size);
+  bool Compress(const char *const uncompressed_data,
+                const uint64_t &uncompressed_data_size, char *compressed_data,
+                uint64_t *compressed_data_size);
 
-  bool Decompress(char *compressed_data, uint64_t compressed_size,
-                  char *decompressed_data, uint64_t *decompressed_size);
+  bool Decompress(const char *const compressed_data,
+                  const uint64_t &compressed_data_size, char *decompressed_data,
+                  uint64_t *decompressed_data_size);
 
   void GetTitle();
 

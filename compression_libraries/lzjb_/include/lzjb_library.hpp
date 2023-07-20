@@ -12,21 +12,23 @@
 #include <string>
 #include <vector>
 
-// SMASH LIBRARIES
-#include <compression_library.hpp>
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
+#include <cpu_options.hpp>
 
-class LzjbLibrary : public CompressionLibrary {
+class LzjbLibrary : public CpuCompressionLibrary {
  public:
-  void GetCompressedDataSize(char *uncompressed_data,
-                             uint64_t uncompressed_size,
-                             uint64_t *compressed_size);
+  void GetCompressedDataSize(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             uint64_t *compressed_data_size);
 
-  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                char *compressed_data, uint64_t *compressed_size);
+  bool Compress(const char *const uncompressed_data,
+                const uint64_t &uncompressed_data_size, char *compressed_data,
+                uint64_t *compressed_data_size);
 
-  bool Decompress(char *compressed_data, uint64_t compressed_size,
-                  char *decompressed_data, uint64_t *decompressed_size);
+  bool Decompress(const char *const compressed_data,
+                  const uint64_t &compressed_data_size, char *decompressed_data,
+                  uint64_t *decompressed_data_size);
 
   void GetTitle();
 

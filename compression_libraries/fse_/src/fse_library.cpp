@@ -10,140 +10,154 @@
 #include <huf.h>
 #include <string.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <fse_library.hpp>
-#include <options.hpp>
 
-bool FseLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool FseLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("fse", options, 0, 1);
+  result = CpuCompressionLibrary::CheckMode("fse", options, 0, 1);
   return result;
 }
 
-void FseLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                       uint64_t uncompressed_size,
-                                       uint64_t *compressed_size) {
+void FseLibrary::GetCompressedDataSize(const char *const uncompressed_data,
+                                       const uint64_t &uncompressed_data_size,
+                                       uint64_t *compressed_data_size) {
   switch (options_.GetMode()) {
     case 0:
-      *compressed_size = FSE_original_compressBound(uncompressed_size);
+      *compressed_data_size =
+          FSE_original_compressBound(uncompressed_data_size);
       break;
-    case 1:
-      *compressed_size = 0;
-      for (uint32_t bytes = 0; uncompressed_size;) {
-        bytes = (uncompressed_size < HUF_original_BLOCKSIZE_MAX)
-                    ? uncompressed_size
+    case 1: {
+      uint64_t current_uncompressed_data_size{uncompressed_data_size};
+      *compressed_data_size = 0;
+      for (uint32_t bytes = 0; current_uncompressed_data_size;) {
+        bytes = (current_uncompressed_data_size < HUF_original_BLOCKSIZE_MAX)
+                    ? current_uncompressed_data_size
                     : HUF_original_BLOCKSIZE_MAX;
-        *compressed_size += HUF_original_compressBound(bytes) + sizeof(bytes);
-        uncompressed_size -= bytes;
+        *compressed_data_size +=
+            HUF_original_compressBound(bytes) + sizeof(bytes);
+        current_uncompressed_data_size -= bytes;
       }
       break;
+    }
     default:
-      CompressionLibrary::GetCompressedDataSize(
-          uncompressed_data, uncompressed_size, compressed_size);
+      CpuCompressionLibrary::GetCompressedDataSize(
+          uncompressed_data, uncompressed_data_size, compressed_data_size);
       break;
   }
 }
 
-bool FseLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                          char *compressed_data, uint64_t *compressed_size) {
+bool FseLibrary::Compress(const char *const uncompressed_data,
+                          const uint64_t &uncompressed_data_size,
+                          char *compressed_data,
+                          uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     uint64_t compressed_bytes{0};
     switch (options_.GetMode()) {
       case 0:
         compressed_bytes =
-            FSE_original_compress(compressed_data, *compressed_size,
-                                  uncompressed_data, uncompressed_size);
+            FSE_original_compress(compressed_data, *compressed_data_size,
+                                  uncompressed_data, uncompressed_data_size);
         break;
-      case 1:
+      case 1: {
+        uint64_t current_uncompressed_data_size{uncompressed_data_size};
+        char *current_uncompressed_data = const_cast<char *>(uncompressed_data);
         for (uint32_t current_bytes_to_compress = 0,
                       current_compressed_bytes = 0;
-             uncompressed_size;) {
+             current_uncompressed_data_size;) {
           current_bytes_to_compress =
-              (uncompressed_size < HUF_original_BLOCKSIZE_MAX)
-                  ? uncompressed_size
+              (current_uncompressed_data_size < HUF_original_BLOCKSIZE_MAX)
+                  ? current_uncompressed_data_size
                   : HUF_original_BLOCKSIZE_MAX;
           current_compressed_bytes = HUF_original_compress(
               compressed_data + compressed_bytes +
                   sizeof(current_compressed_bytes),
-              *compressed_size -
+              *compressed_data_size -
                   (compressed_bytes + sizeof(current_compressed_bytes)),
-              uncompressed_data, current_bytes_to_compress);
+              current_uncompressed_data, current_bytes_to_compress);
           if (!current_compressed_bytes) {
             // Raw data
             memcpy(compressed_data + compressed_bytes +
                        sizeof(current_compressed_bytes),
-                   uncompressed_data, current_bytes_to_compress);
+                   current_uncompressed_data, current_bytes_to_compress);
             current_compressed_bytes = current_bytes_to_compress;
           }
           *reinterpret_cast<uint32_t *>(compressed_data + compressed_bytes) =
               current_compressed_bytes;
           compressed_bytes +=
               current_compressed_bytes + sizeof(current_compressed_bytes);
-          uncompressed_data += current_bytes_to_compress;
-          uncompressed_size -= current_bytes_to_compress;
+          current_uncompressed_data += current_bytes_to_compress;
+          current_uncompressed_data_size -= current_bytes_to_compress;
         }
         break;
+      }
       default:
         break;
     }
-    if (compressed_bytes == 0 || compressed_bytes > *compressed_size) {
+    if (compressed_bytes == 0 || compressed_bytes > *compressed_data_size) {
       std::cout << "ERROR: fse error when compress data" << std::endl;
       result = false;
     } else {
-      *compressed_size = compressed_bytes;
+      *compressed_data_size = compressed_bytes;
     }
   }
   return result;
 }
 
-bool FseLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool FseLibrary::Decompress(const char *const compressed_data,
+                            const uint64_t &compressed_data_size,
                             char *decompressed_data,
-                            uint64_t *decompressed_size) {
+                            uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     uint64_t decompressed_bytes{0};
     switch (options_.GetMode()) {
       case 0:
         decompressed_bytes =
-            FSE_original_decompress(decompressed_data, *decompressed_size,
-                                    compressed_data, compressed_size);
+            FSE_original_decompress(decompressed_data, *decompressed_data_size,
+                                    compressed_data, compressed_data_size);
         break;
-      case 1:
+      case 1: {
+        uint64_t current_compressed_data_size{compressed_data_size};
+        char *current_compressed_data = const_cast<char *>(compressed_data);
         for (uint32_t current_bytes_to_decompress = 0,
                       current_decompressed_bytes = 0;
-             compressed_size;) {
+             current_compressed_data_size;) {
           current_bytes_to_decompress =
-              *reinterpret_cast<uint32_t *>(compressed_data);
-          compressed_data += sizeof(current_bytes_to_decompress);
-          compressed_size -= sizeof(current_bytes_to_decompress);
+              *reinterpret_cast<uint32_t *>(current_compressed_data);
+          current_compressed_data += sizeof(current_bytes_to_decompress);
+          current_compressed_data_size -= sizeof(current_bytes_to_decompress);
           current_decompressed_bytes =
-              (current_bytes_to_decompress == compressed_size)
-                  ? (*decompressed_size) - decompressed_bytes
+              (current_bytes_to_decompress == current_compressed_data_size)
+                  ? (*decompressed_data_size) - decompressed_bytes
                   : HUF_original_BLOCKSIZE_MAX;
           decompressed_bytes += HUF_original_decompress(
               decompressed_data + decompressed_bytes,
-              current_decompressed_bytes, compressed_data,
+              current_decompressed_bytes, current_compressed_data,
               current_bytes_to_decompress);
-          compressed_data += current_bytes_to_decompress;
-          compressed_size -= current_bytes_to_decompress;
+          current_compressed_data += current_bytes_to_decompress;
+          current_compressed_data_size -= current_bytes_to_decompress;
         }
         break;
+      }
       default:
         break;
     }
-    if (decompressed_bytes == 0 || decompressed_bytes > *decompressed_size) {
+    if (decompressed_bytes == 0 ||
+        decompressed_bytes > *decompressed_data_size) {
       std::cout << "ERROR: fse error when decompress data" << std::endl;
       result = false;
     } else {
-      *decompressed_size = decompressed_bytes;
+      *decompressed_data_size = decompressed_bytes;
     }
   }
   return result;
 }
 
 void FseLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "fse", "Proposes two high speed entropy coders: Huff0 & FSE");
 }
 

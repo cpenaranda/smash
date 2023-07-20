@@ -8,58 +8,63 @@
 
 #include <zstd.h>
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <zstd_library.hpp>
 
-bool ZstdLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool ZstdLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("zstd", options, 1, 22);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("zstd", options, 1, 22);
   }
   return result;
 }
 
-void ZstdLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                        uint64_t uncompressed_size,
-                                        uint64_t *compressed_size) {
-  *compressed_size = ZSTD_compressBound(uncompressed_size);
+void ZstdLibrary::GetCompressedDataSize(const char *const uncompressed_data,
+                                        const uint64_t &uncompressed_data_size,
+                                        uint64_t *compressed_data_size) {
+  *compressed_data_size = ZSTD_compressBound(uncompressed_data_size);
 }
 
-bool ZstdLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                           char *compressed_data, uint64_t *compressed_size) {
+bool ZstdLibrary::Compress(const char *const uncompressed_data,
+                           const uint64_t &uncompressed_data_size,
+                           char *compressed_data,
+                           uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     uint64_t new_size =
-        ZSTD_compress(compressed_data, *compressed_size, uncompressed_data,
-                      uncompressed_size, options_.GetCompressionLevel());
-    if (new_size > *compressed_size) {
+        ZSTD_compress(compressed_data, *compressed_data_size, uncompressed_data,
+                      uncompressed_data_size, options_.GetCompressionLevel());
+    if (new_size > *compressed_data_size) {
       std::cout << "ERROR: zstd error when compress data" << std::endl;
       result = false;
     }
-    *compressed_size = new_size;
+    *compressed_data_size = new_size;
   }
   return result;
 }
 
-bool ZstdLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool ZstdLibrary::Decompress(const char *const compressed_data,
+                             const uint64_t &compressed_data_size,
                              char *decompressed_data,
-                             uint64_t *decompressed_size) {
+                             uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
-    uint64_t new_size = ZSTD_decompress(decompressed_data, *decompressed_size,
-                                        compressed_data, compressed_size);
-    if (new_size != *decompressed_size) {
+    uint64_t new_size =
+        ZSTD_decompress(decompressed_data, *decompressed_data_size,
+                        compressed_data, compressed_data_size);
+    if (new_size != *decompressed_data_size) {
       std::cout << "ERROR: zstd error when decompress data" << std::endl;
       result = false;
     }
-    *decompressed_size = new_size;
+    *decompressed_data_size = new_size;
   }
   return result;
 }
 
 void ZstdLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "zstd",
       "Fast lossless compression algorithm, targeting real-time compression "
       "scenarios at zlib-level and better compression ratios");

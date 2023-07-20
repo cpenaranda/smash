@@ -13,19 +13,19 @@
 #include <iostream>
 #include <string>
 #include <vector>
-// SMASH LIBRARIES
-#include <compression_library.hpp>
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
+#include <cpu_options.hpp>
 
 class ZpaqReader : public libzpaq::Reader {
  private:
-  char *buffer_;
+  const char *buffer_;
   uint64_t buffer_size_;
 
  public:
   int get();
-  int read(char *buf, int n);
-  ZpaqReader(char *buffer, const uint64_t &buffer_size);
+  int read(char *const buf, const int &size);
+  ZpaqReader(const char *buffer, const uint64_t &buffer_size);
 };
 
 class ZpaqWriter : public libzpaq::Writer {
@@ -36,28 +36,22 @@ class ZpaqWriter : public libzpaq::Writer {
 
  public:
   void put(int c);
-  void write(const char *buf, int n);
-  /**
-   * @brief Get the final size
-   *
-   * @param buffer_size Size of the buffer_
-   * @return true There is an error. Buffer size is higher than the current
-   * buffer_
-   * @return false Buffer size is lower than the current buffer_
-   */
+  void write(const char *buf, const int &n);
   bool GetRealSize(uint64_t *buffer_size);
   ZpaqWriter(char *buffer, const uint64_t &buffer_size);
 };
 
-class ZpaqLibrary : public CompressionLibrary {
+class ZpaqLibrary : public CpuCompressionLibrary {
  public:
-  bool CheckOptions(Options *options, const bool &compressor);
+  bool CheckOptions(CpuOptions *options, const bool &compressor);
 
-  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                char *compressed_data, uint64_t *compressed_size);
+  bool Compress(const char *const uncompressed_data,
+                const uint64_t &uncompressed_data_size, char *compressed_data,
+                uint64_t *compressed_data_size);
 
-  bool Decompress(char *compressed_data, uint64_t compressed_size,
-                  char *decompressed_data, uint64_t *decompressed_size);
+  bool Decompress(const char *const compressed_data,
+                  const uint64_t &compressed_data_size, char *decompressed_data,
+                  uint64_t *decompressed_data_size);
 
   void GetTitle();
 

@@ -12,56 +12,59 @@
 #include <lzsse4.h>
 #include <lzsse8.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <lzsse_library.hpp>
-#include <options.hpp>
 
-bool LzsseLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool LzsseLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("lzsse", options, 1, 17);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("lzsse", options, 1, 17);
     if (result) {
-      result = CompressionLibrary::CheckMode("lzsse", options, 0, 2);
+      result = CpuCompressionLibrary::CheckMode("lzsse", options, 0, 2);
     }
   }
   return result;
 }
 
-bool LzsseLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                            char *compressed_data, uint64_t *compressed_size) {
+bool LzsseLibrary::Compress(const char *const uncompressed_data,
+                            const uint64_t &uncompressed_data_size,
+                            char *compressed_data,
+                            uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     uint64_t compressed_bytes{0};
     switch (options_.GetMode()) {
       case 0: {
         LZSSE2_OptimalParseState *state =
-            LZSSE2_MakeOptimalParseState(uncompressed_size);
+            LZSSE2_MakeOptimalParseState(uncompressed_data_size);
         if (result = state) {
           compressed_bytes = LZSSE2_CompressOptimalParse(
-              state, uncompressed_data, uncompressed_size, compressed_data,
-              *compressed_size, options_.GetCompressionLevel());
+              state, uncompressed_data, uncompressed_data_size, compressed_data,
+              *compressed_data_size, options_.GetCompressionLevel());
           LZSSE2_FreeOptimalParseState(state);
         }
         break;
       }
       case 1: {
         LZSSE4_OptimalParseState *state =
-            LZSSE4_MakeOptimalParseState(uncompressed_size);
+            LZSSE4_MakeOptimalParseState(uncompressed_data_size);
         if (result = state) {
           compressed_bytes = LZSSE4_CompressOptimalParse(
-              state, uncompressed_data, uncompressed_size, compressed_data,
-              *compressed_size, options_.GetCompressionLevel());
+              state, uncompressed_data, uncompressed_data_size, compressed_data,
+              *compressed_data_size, options_.GetCompressionLevel());
           LZSSE4_FreeOptimalParseState(state);
         }
         break;
       }
       case 2: {
         LZSSE8_OptimalParseState *state =
-            LZSSE8_MakeOptimalParseState(uncompressed_size);
+            LZSSE8_MakeOptimalParseState(uncompressed_data_size);
         if (result = state) {
           compressed_bytes = LZSSE8_CompressOptimalParse(
-              state, uncompressed_data, uncompressed_size, compressed_data,
-              *compressed_size, options_.GetCompressionLevel());
+              state, uncompressed_data, uncompressed_data_size, compressed_data,
+              *compressed_data_size, options_.GetCompressionLevel());
           LZSSE8_FreeOptimalParseState(state);
         }
         break;
@@ -70,55 +73,58 @@ bool LzsseLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
         break;
     }
     if (result && compressed_bytes == 0 ||
-        compressed_bytes > *compressed_size) {
+        compressed_bytes > *compressed_data_size) {
       std::cout << "ERROR: lzsse error when compress data" << std::endl;
       result = false;
     } else {
-      *compressed_size = compressed_bytes;
+      *compressed_data_size = compressed_bytes;
     }
   }
   return result;
 }
 
-bool LzsseLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool LzsseLibrary::Decompress(const char *const compressed_data,
+                              const uint64_t &compressed_data_size,
                               char *decompressed_data,
-                              uint64_t *decompressed_size) {
+                              uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     uint64_t decompressed_bytes{0};
     switch (options_.GetMode()) {
       case 0:
         decompressed_bytes =
-            LZSSE2_Decompress(compressed_data, compressed_size,
-                              decompressed_data, *decompressed_size);
+            LZSSE2_Decompress(compressed_data, compressed_data_size,
+                              decompressed_data, *decompressed_data_size);
         break;
       case 1:
         decompressed_bytes =
-            LZSSE4_Decompress(compressed_data, compressed_size,
-                              decompressed_data, *decompressed_size);
+            LZSSE4_Decompress(compressed_data, compressed_data_size,
+                              decompressed_data, *decompressed_data_size);
         break;
       case 2:
         decompressed_bytes =
-            LZSSE8_Decompress(compressed_data, compressed_size,
-                              decompressed_data, *decompressed_size);
+            LZSSE8_Decompress(compressed_data, compressed_data_size,
+                              decompressed_data, *decompressed_data_size);
         break;
       default:
         break;
     }
-    if (decompressed_bytes == 0 || decompressed_bytes > *decompressed_size) {
+    if (decompressed_bytes == 0 ||
+        decompressed_bytes > *decompressed_data_size) {
       std::cout << "ERROR: lzsse error when decompress data" << std::endl;
       result = false;
     } else {
-      *decompressed_size = decompressed_bytes;
+      *decompressed_data_size = decompressed_bytes;
     }
   }
   return result;
 }
 
 void LzsseLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("lzsse",
-                               "LZ77-based compression library designed for a "
-                               "branchless SSE decompression implementation");
+  CpuCompressionLibrary::GetTitle(
+      "lzsse",
+      "LZ77-based compression library designed for a "
+      "branchless SSE decompression implementation");
 }
 
 bool LzsseLibrary::GetCompressionLevelInformation(

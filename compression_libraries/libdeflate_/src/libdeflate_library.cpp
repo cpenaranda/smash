@@ -8,50 +8,51 @@
 
 #include <libdeflate.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <libdeflate_library.hpp>
-#include <options.hpp>
 
-bool LibdeflateLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool LibdeflateLibrary::CheckOptions(CpuOptions *options,
+                                     const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("libdeflate", options, 0, 2);
+  result = CpuCompressionLibrary::CheckMode("libdeflate", options, 0, 2);
   if (compressor && result) {
-    result =
-        CompressionLibrary::CheckCompressionLevel("libdeflate", options, 0, 12);
+    result = CpuCompressionLibrary::CheckCompressionLevel("libdeflate", options,
+                                                          0, 12);
   }
   return result;
 }
 
-void LibdeflateLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                              uint64_t uncompressed_size,
-                                              uint64_t *compressed_size) {
+void LibdeflateLibrary::GetCompressedDataSize(
+    const char *const uncompressed_data, const uint64_t &uncompressed_data_size,
+    uint64_t *compressed_data_size) {
   switch (options_.GetMode()) {
     case 0:
       // Deflate
-      *compressed_size =
-          libdeflate_deflate_compress_bound(NULL, uncompressed_size);
+      *compressed_data_size =
+          libdeflate_deflate_compress_bound(NULL, uncompressed_data_size);
       break;
     case 1:
       // Zlib
-      *compressed_size =
-          libdeflate_zlib_compress_bound(NULL, uncompressed_size);
+      *compressed_data_size =
+          libdeflate_zlib_compress_bound(NULL, uncompressed_data_size);
       break;
     case 2:
       // Gzip
-      *compressed_size =
-          libdeflate_gzip_compress_bound(NULL, uncompressed_size);
+      *compressed_data_size =
+          libdeflate_gzip_compress_bound(NULL, uncompressed_data_size);
       break;
     default:
-      CompressionLibrary::GetCompressedDataSize(
-          uncompressed_data, uncompressed_size, compressed_size);
+      CpuCompressionLibrary::GetCompressedDataSize(
+          uncompressed_data, uncompressed_data_size, compressed_data_size);
       break;
   }
 }
 
-bool LibdeflateLibrary::Compress(char *uncompressed_data,
-                                 uint64_t uncompressed_size,
+bool LibdeflateLibrary::Compress(const char *const uncompressed_data,
+                                 const uint64_t &uncompressed_data_size,
                                  char *compressed_data,
-                                 uint64_t *compressed_size) {
+                                 uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     struct libdeflate_compressor *compressor =
@@ -59,28 +60,28 @@ bool LibdeflateLibrary::Compress(char *uncompressed_data,
     switch (options_.GetMode()) {
       case 0:
         // Deflate
-        *compressed_size = libdeflate_deflate_compress(
-            compressor, uncompressed_data, uncompressed_size, compressed_data,
-            *compressed_size);
+        *compressed_data_size = libdeflate_deflate_compress(
+            compressor, uncompressed_data, uncompressed_data_size,
+            compressed_data, *compressed_data_size);
         break;
       case 1:
         // Zlib
-        *compressed_size = libdeflate_zlib_compress(
-            compressor, uncompressed_data, uncompressed_size, compressed_data,
-            *compressed_size);
+        *compressed_data_size = libdeflate_zlib_compress(
+            compressor, uncompressed_data, uncompressed_data_size,
+            compressed_data, *compressed_data_size);
         break;
       case 2:
         // Gzip
-        *compressed_size = libdeflate_gzip_compress(
-            compressor, uncompressed_data, uncompressed_size, compressed_data,
-            *compressed_size);
+        *compressed_data_size = libdeflate_gzip_compress(
+            compressor, uncompressed_data, uncompressed_data_size,
+            compressed_data, *compressed_data_size);
         break;
       default:
         break;
     }
 
     libdeflate_free_compressor(compressor);
-    if (compressed_size == 0) {
+    if (compressed_data_size == 0) {
       std::cout << "ERROR: libdeflate error when compress data" << std::endl;
       result = false;
     }
@@ -88,9 +89,10 @@ bool LibdeflateLibrary::Compress(char *uncompressed_data,
   return result;
 }
 
-bool LibdeflateLibrary::Decompress(char *compress_data, uint64_t compress_size,
-                                   char *decompress_data,
-                                   uint64_t *decompress_size) {
+bool LibdeflateLibrary::Decompress(const char *const compressed_data,
+                                   const uint64_t &compressed_data_size,
+                                   char *decompressed_data,
+                                   uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     struct libdeflate_decompressor *decompressor =
@@ -100,27 +102,27 @@ bool LibdeflateLibrary::Decompress(char *compress_data, uint64_t compress_size,
     switch (options_.GetMode()) {
       case 0:
         // Deflate
-        res = libdeflate_deflate_decompress(decompressor, compress_data,
-                                            compress_size, decompress_data,
-                                            *decompress_size, &bytes);
+        res = libdeflate_deflate_decompress(
+            decompressor, compressed_data, compressed_data_size,
+            decompressed_data, *decompressed_data_size, &bytes);
         break;
       case 1:
         // Zlib
-        res = libdeflate_zlib_decompress(decompressor, compress_data,
-                                         compress_size, decompress_data,
-                                         *decompress_size, &bytes);
+        res = libdeflate_zlib_decompress(
+            decompressor, compressed_data, compressed_data_size,
+            decompressed_data, *decompressed_data_size, &bytes);
         break;
       case 2:
         // Gzip
-        res = libdeflate_gzip_decompress(decompressor, compress_data,
-                                         compress_size, decompress_data,
-                                         *decompress_size, &bytes);
+        res = libdeflate_gzip_decompress(
+            decompressor, compressed_data, compressed_data_size,
+            decompressed_data, *decompressed_data_size, &bytes);
         break;
       default:
         break;
     }
     libdeflate_free_decompressor(decompressor);
-    *decompress_size = bytes;
+    *decompressed_data_size = bytes;
     if (res != LIBDEFLATE_SUCCESS) {
       std::cout << "ERROR: libdeflate error when decompress data" << std::endl;
       result = false;
@@ -130,7 +132,7 @@ bool LibdeflateLibrary::Decompress(char *compress_data, uint64_t compress_size,
 }
 
 void LibdeflateLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "libdeflate",
       "Fast, whole-buffer DEFLATE-based compression and decompression");
 }

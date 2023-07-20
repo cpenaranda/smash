@@ -47,41 +47,43 @@ CPU-Smash API is very flexible. Compression libraries can be selected using diff
 #include <cpu_smash.hpp>
 #include <cpu_options.hpp>
 
-CpuOptions options;
-// Set compression library options
-options.SetCompressionLevel(1);
-// options.SetWindowSize(const uint32_t &window_size);
-// options.SetMode(const uint8_t &mode);
-// options.SetWorkFactor(const uint8_t &work_factor);
-// options.SetFlags(const uint8_t &flags);
-// options.SetNumberThreads(const uint8_t &number_threads);
-// options.SetBackReference(const uint8_t &back_reference);
+int main(int argc, char const *argv[]) {
+  CpuOptions options;
+  // Set compression library options
+  // options.SetCompressionLevel(const uint8_t &compression_level);
+  // options.SetWindowSize(const uint32_t &window_size);
+  // options.SetMode(const uint8_t &mode);
+  // options.SetWorkFactor(const uint8_t &work_factor);
+  // options.SetFlags(const uint8_t &flags);
+  // options.SetNumberThreads(const uint8_t &number_threads);
+  // options.SetBackReference(const uint8_t &back_reference);
 
-uint64_t uncompressed_data_size = 100, compressed_data_size = 0, decompressed_data_size = 0;
+  uint64_t uncompressed_data_size = 100, compressed_data_size = 0, decompressed_data_size = 0;
 
-// Initialize uncompressed data with any information
-char uncompressed_data[uncompressed_data_size];
+  // Initialize uncompressed data with any information
+  char uncompressed_data[uncompressed_data_size];
 
-// Set the compression library to use
-CpuSmash lib("zstd");
+  // Set the compression library to use
+  CpuSmash lib("snappy");
 
-// Set options to compress
-lib.SetOptionsCompressor(&options);
-// Get estimated compressed data size
-lib.GetCompressedDataSize(uncompressed_data, uncompressed_data_size, &compressed_data_size);
-// Initialize compressed data
-char compressed_data[compressed_data_size];
-// Compress the uncompressed data, and the real compressed data size is taken
-lib.Compress(uncompressed_data, uncompressed_data_size, compressed_data, &compressed_size);
+  // Set options to compress
+  lib.SetOptionsCompressor(&options);
+  // Get estimated compressed data size
+  lib.GetCompressedDataSize(uncompressed_data, uncompressed_data_size, &compressed_data_size);
+  // Initialize compressed data
+  char compressed_data[compressed_data_size];
+  // Compress the uncompressed data, and the real compressed data size is taken
+  lib.Compress(uncompressed_data, uncompressed_data_size, compressed_data, &compressed_data_size);
 
-// Set options to decompress
-lib.SetOptionsDecompressor(&options);
-// Get estimated decompressed data size
-lib.GetDecompressedDataSize(compressed_data, compressed_data_size, &decompressed_data_size);
-// Initialize decompressed data
-char decompressed_data[decompressed_data_size];
-// Decompress the compressed data, and the real decompressed data size is taken
-lib.Decompress(compressed_data, compressed_data_size, decompressed_data, &decompressed_data_size);
+  // Set options to decompress
+  lib.SetOptionsDecompressor(&options);
+  // Get estimated decompressed data size
+  lib.GetDecompressedDataSize(compressed_data, compressed_data_size, &decompressed_data_size);
+  // Initialize decompressed data
+  char decompressed_data[decompressed_data_size];
+  // Decompress the compressed data, and the real decompressed data size is taken
+  lib.Decompress(compressed_data, compressed_data_size, decompressed_data, &decompressed_data_size);
+}
 ```
 
 ## Different options available
@@ -102,35 +104,37 @@ After setting the compression library, these values can be obtained.
 ``` c++
 #include <cpu_smash.hpp>
 
-// Set the compression library to use
-CpuSmash lib("zstd");
-// Get compression level values
-uint8_t minimum_level = 0, maximum_level = 0;
-lib.GetCompressionLevelInformation(nullptr, &minimum_level, &maximum_level);
+int main(int argc, char const *argv[]) {
+  // Set the compression library to use
+  CpuSmash lib("zstd");
+  // Get compression level values
+  uint8_t minimum_level = 0, maximum_level = 0;
+  lib.GetCompressionLevelInformation(nullptr, &minimum_level, &maximum_level);
 
-// Get window size values
-uint32_t minimum_size = 0,maximum_size = 0;
-lib.GetWindowSizeInformation(nullptr, &minimum_size, &maximum_size);
+  // Get window size values
+  uint32_t minimum_size = 0,maximum_size = 0;
+  lib.GetWindowSizeInformation(nullptr, &minimum_size, &maximum_size);
 
-// Get the available modes depending on the compression level used
-uint8_t minimum_mode = 0, maximum_mode = 0;
-lib.GetModeInformation(nullptr, &minimum_mode, &maximum_mode, minimum_level);
+  // Get the available modes depending on the compression level used
+  uint8_t minimum_mode = 0, maximum_mode = 0;
+  lib.GetModeInformation(nullptr, &minimum_mode, &maximum_mode, minimum_level);
 
-// Get work factor values
-uint8_t minimum_factor = 0, maximum_factor = 0;
-lib.GetWorkFactorInformation(nullptr, &minimum_factor, &maximum_factor);
+  // Get work factor values
+  uint8_t minimum_factor = 0, maximum_factor = 0;
+  lib.GetWorkFactorInformation(nullptr, &minimum_factor, &maximum_factor);
 
-// Get the available flags
-uint8_t minimum_flags = 0, maximum_flags = 0;
-lib.GetFlagsInformation(nullptr, &minimum_flags, &maximum_flags);
+  // Get the available flags
+  uint8_t minimum_flags = 0, maximum_flags = 0;
+  lib.GetFlagsInformation(nullptr, &minimum_flags, &maximum_flags);
 
-// Get the available number of threads
-uint8_t minimum_threads = 0, maximum_threads = 0;
-lib.GetNumberThreadsInformation(nullptr, &minimum_threads, &maximum_threads);
+  // Get the available number of threads
+  uint8_t minimum_threads = 0, maximum_threads = 0;
+  lib.GetNumberThreadsInformation(nullptr, &minimum_threads, &maximum_threads);
 
-// Get back reference values
-uint8_t minimum_back_reference = 0, maximum_back_reference = 0;
-lib.GetBackReferenceInformation(nullptr, &minimum_back_reference, &maximum_back_reference);
+  // Get back reference values
+  uint8_t minimum_back_reference = 0, maximum_back_reference = 0;
+  lib.GetBackReferenceInformation(nullptr, &minimum_back_reference, &maximum_back_reference);
+}
 ```
 
 ## Libraries used in CPU-Smash

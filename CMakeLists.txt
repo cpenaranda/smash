@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-set(TARGET_NAME smash)
+set(TARGET_NAME cpu_smash)
 
-project(${TARGET_NAME} DESCRIPTION "Smash: Compresion Abstraction Library")
+project(${TARGET_NAME} DESCRIPTION "CPU-Smash: Compresion Abstraction Library")
 
 # Set the debug or relese mode.
 if (CMAKE_BUILD_TYPE MATCHES Debug) # Debug level
@@ -50,18 +50,18 @@ set(ALLOW_DUPLICATE_CUSTOM_TARGETS TRUE)
 
 include(compression_libraries/libraries.cmake)
 
-set(SMASH_SOURCES
-  ${SMASH_SOURCES}
-  src/smash.cpp
-  src/compression_library.cpp
-  src/compression_libraries.cpp
-  src/options.cpp
+set(CPU_SMASH_SOURCES
+  ${CPU_SMASH_SOURCES}
+  src/cpu_smash.cpp
+  src/cpu_compression_library.cpp
+  src/cpu_compression_libraries.cpp
+  src/cpu_options.cpp
 )
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
-  ${SMASH_INCLUDES}
+  ${CPU_SMASH_INCLUDES}
 )
 
-add_library(${TARGET_NAME} STATIC ${SMASH_SOURCES})
-target_link_libraries(${TARGET_NAME} ${SMASH_LIBRARIES})
+add_library(${TARGET_NAME} STATIC ${CPU_SMASH_SOURCES})
+target_link_libraries(${TARGET_NAME} ${CPU_SMASH_LIBRARIES})

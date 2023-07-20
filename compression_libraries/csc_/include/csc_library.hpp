@@ -14,21 +14,21 @@
 #include <string>
 #include <vector>
 
-// SMASH LIBRARIES
-#include <compression_library.hpp>
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
+#include <cpu_options.hpp>
 
 class CscReader : ISeqInStream {
  private:
-  char *buffer_;
+  const char *buffer_;
   uint64_t buffer_size_;
   uint64_t total_read_;
 
  public:
-  static SRes RealRead(void *istream, void *buf, size_t *size);
-  size_t GetData(void *buf, size_t len);
+  static SRes RealRead(void *istream, void *const buf, size_t *size);
+  size_t GetData(void *const buf, const size_t &len);
   size_t GetInputSize();
-  CscReader(char *buffer, const uint64_t &buffer_size);
+  CscReader(const char *buffer, const uint64_t &buffer_size);
 };
 
 class CscWriter : ISeqOutStream {
@@ -39,24 +39,26 @@ class CscWriter : ISeqOutStream {
 
  public:
   static size_t RealWrite(void *ostream, const void *buf, size_t size);
-  size_t PutData(const void *buf, size_t len);
+  size_t PutData(const void *buf, const size_t &len);
   size_t GetOutputSize();
-  CscWriter(char *buffer, const uint64_t &buffer_size);
+  CscWriter(char *buffer, uint64_t buffer_size);
 };
 
-class CscLibrary : public CompressionLibrary {
+class CscLibrary : public CpuCompressionLibrary {
  private:
   uint8_t number_of_flags_;
   std::string *flags_;
 
  public:
-  bool CheckOptions(Options *options, const bool &compressor);
+  bool CheckOptions(CpuOptions *options, const bool &compressor);
 
-  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                char *compressed_data, uint64_t *compressed_size);
+  bool Compress(const char *const uncompressed_data,
+                const uint64_t &uncompressed_data_size, char *compressed_data,
+                uint64_t *compressed_data_size);
 
-  bool Decompress(char *compressed_data, uint64_t compressed_size,
-                  char *decompressed_data, uint64_t *decompressed_size);
+  bool Decompress(const char *const compressed_data,
+                  const uint64_t &compressed_data_size, char *decompressed_data,
+                  uint64_t *decompressed_data_size);
 
   void GetTitle();
 

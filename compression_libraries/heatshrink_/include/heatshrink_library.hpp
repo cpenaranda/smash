@@ -12,19 +12,21 @@
 #include <string>
 #include <vector>
 
-// SMASH LIBRARIES
-#include <compression_library.hpp>
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
+#include <cpu_options.hpp>
 
-class HeatshrinkLibrary : public CompressionLibrary {
+class HeatshrinkLibrary : public CpuCompressionLibrary {
  public:
-  bool CheckOptions(Options *options, const bool &compressor);
+  bool CheckOptions(CpuOptions *options, const bool &compressor);
 
-  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                char *compressed_data, uint64_t *compressed_size);
+  bool Compress(const char *const uncompressed_data,
+                const uint64_t &uncompressed_data_size, char *compressed_data,
+                uint64_t *compressed_data_size);
 
-  bool Decompress(char *compressed_data, uint64_t compressed_size,
-                  char *decompressed_data, uint64_t *decompressed_size);
+  bool Decompress(const char *const compressed_data,
+                  const uint64_t &compressed_data_size, char *decompressed_data,
+                  uint64_t *decompressed_data_size);
 
   void GetTitle();
 
@@ -32,9 +34,10 @@ class HeatshrinkLibrary : public CompressionLibrary {
       std::vector<std::string> *window_size_information = nullptr,
       uint32_t *minimum_size = nullptr, uint32_t *maximum_size = nullptr);
 
-  bool GetBackReferenceBitsInformation(
-      std::vector<std::string> *back_reference_bits_information = nullptr,
-      uint8_t *minimum_bits = nullptr, uint8_t *maximum_bits = nullptr);
+  bool GetBackReferenceInformation(
+      std::vector<std::string> *back_reference_information = nullptr,
+      uint8_t *minimum_back_reference = nullptr,
+      uint8_t *maximum_back_reference = nullptr);
 
   HeatshrinkLibrary();
   ~HeatshrinkLibrary();

@@ -8,28 +8,31 @@
 
 #include <libxpack.h>
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <xpack_library.hpp>
 
-bool XpackLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool XpackLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("xpack", options, 1, 9);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("xpack", options, 1, 9);
   }
   return result;
 }
 
-bool XpackLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                            char *compressed_data, uint64_t *compressed_size) {
+bool XpackLibrary::Compress(const char *const uncompressed_data,
+                            const uint64_t &uncompressed_data_size,
+                            char *compressed_data,
+                            uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     xpack_compressor *compressor = xpack_alloc_compressor(
-        uncompressed_size, options_.GetCompressionLevel());
-    *compressed_size =
-        xpack_compress(compressor, uncompressed_data, uncompressed_size,
-                       compressed_data, *compressed_size);
-    if (!*compressed_size) {
+        uncompressed_data_size, options_.GetCompressionLevel());
+    *compressed_data_size =
+        xpack_compress(compressor, uncompressed_data, uncompressed_data_size,
+                       compressed_data, *compressed_data_size);
+    if (!*compressed_data_size) {
       std::cout << "ERROR: xpack error when compress data" << std::endl;
       result = false;
     }
@@ -38,18 +41,19 @@ bool XpackLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool XpackLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool XpackLibrary::Decompress(const char *const compressed_data,
+                              const uint64_t &compressed_data_size,
                               char *decompressed_data,
-                              uint64_t *decompressed_size) {
+                              uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     xpack_decompressor *decompressor = xpack_alloc_decompressor();
-    uint64_t uncompressed_size{0};
+    uint64_t uncompressed_data_size{0};
     decompress_result error = xpack_decompress(
-        decompressor, compressed_data, compressed_size, decompressed_data,
-        *decompressed_size, &uncompressed_size);
+        decompressor, compressed_data, compressed_data_size, decompressed_data,
+        *decompressed_data_size, &uncompressed_data_size);
     if (error != DECOMPRESS_SUCCESS ||
-        uncompressed_size != *decompressed_size) {
+        uncompressed_data_size != *decompressed_data_size) {
       std::cout << "ERROR: xpack error when decompress data" << std::endl;
       result = false;
     }
@@ -59,9 +63,9 @@ bool XpackLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void XpackLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("xpack",
-                               "Has been inspired by the DEFLATE, LZX, and "
-                               "Zstandard formats, among others");
+  CpuCompressionLibrary::GetTitle("xpack",
+                                  "Has been inspired by the DEFLATE, LZX, and "
+                                  "Zstandard formats, among others");
 }
 
 bool XpackLibrary::GetCompressionLevelInformation(

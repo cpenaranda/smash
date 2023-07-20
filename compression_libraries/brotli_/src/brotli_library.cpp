@@ -10,41 +10,45 @@
 #include <brotli/encode.h>
 #include <math.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
 #include <brotli_library.hpp>
-#include <options.hpp>
+#include <cpu_options.hpp>
 
-bool BrotliLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool BrotliLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
     result =
-        CompressionLibrary::CheckCompressionLevel("brotli", options, 0, 11);
+        CpuCompressionLibrary::CheckCompressionLevel("brotli", options, 0, 11);
     if (result) {
-      result = CompressionLibrary::CheckMode("brotli", options, 0, 2);
+      result = CpuCompressionLibrary::CheckMode("brotli", options, 0, 2);
       if (result) {
-        result = CompressionLibrary::CheckWindowSize("brotli", options, 10, 24);
+        result =
+            CpuCompressionLibrary::CheckWindowSize("brotli", options, 10, 24);
       }
     }
   }
   return result;
 }
 
-void BrotliLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                          uint64_t uncompressed_size,
-                                          uint64_t *compressed_size) {
-  *compressed_size = BrotliEncoderMaxCompressedSize(uncompressed_size);
+void BrotliLibrary::GetCompressedDataSize(
+    const char *const uncompressed_data, const uint64_t &uncompressed_data_size,
+    uint64_t *compressed_data_size) {
+  *compressed_data_size =
+      BrotliEncoderMaxCompressedSize(uncompressed_data_size);
 }
 
-bool BrotliLibrary::Compress(char *uncompressed_data,
-                             uint64_t uncompressed_size, char *compressed_data,
-                             uint64_t *compressed_size) {
+bool BrotliLibrary::Compress(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             char *compressed_data,
+                             uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     int error = BrotliEncoderCompress(
         options_.GetCompressionLevel(), options_.GetWindowSize(),
-        static_cast<BrotliEncoderMode>(options_.GetMode()), uncompressed_size,
-        reinterpret_cast<uint8_t *>(uncompressed_data), compressed_size,
-        reinterpret_cast<uint8_t *>(compressed_data));
+        static_cast<BrotliEncoderMode>(options_.GetMode()),
+        uncompressed_data_size,
+        reinterpret_cast<const uint8_t *const>(uncompressed_data),
+        compressed_data_size, reinterpret_cast<uint8_t *>(compressed_data));
     if (!error) {
       std::cout << "ERROR: brotli error when compress data" << std::endl;
       result = false;
@@ -53,14 +57,16 @@ bool BrotliLibrary::Compress(char *uncompressed_data,
   return result;
 }
 
-bool BrotliLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool BrotliLibrary::Decompress(const char *const compressed_data,
+                               const uint64_t &compressed_data_size,
                                char *decompressed_data,
-                               uint64_t *decompressed_size) {
+                               uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     BrotliDecoderResult error = BrotliDecoderDecompress(
-        compressed_size, reinterpret_cast<uint8_t *>(compressed_data),
-        decompressed_size, reinterpret_cast<uint8_t *>(decompressed_data));
+        compressed_data_size,
+        reinterpret_cast<const uint8_t *const>(compressed_data),
+        decompressed_data_size, reinterpret_cast<uint8_t *>(decompressed_data));
     if (BROTLI_DECODER_RESULT_SUCCESS != error) {
       std::cout << "ERROR: brotli error when decompress data" << std::endl;
       result = false;
@@ -70,7 +76,7 @@ bool BrotliLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void BrotliLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "brotli",
       "Lossless compression using a combination of a variant of the LZ77 "
       "algorithm, Huffman coding and 2nd order context modeling");

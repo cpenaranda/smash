@@ -11,17 +11,17 @@
 #include <csc_enc.h>
 #include <string.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <csc_library.hpp>
-#include <options.hpp>
 
-SRes CscReader::RealRead(void *istream, void *buf, size_t *size) {
+SRes CscReader::RealRead(void *istream, void *const buf, size_t *size) {
   CscReader *reader = reinterpret_cast<CscReader *>(istream);
   *size = reader->GetData(buf, *size);
   return 0;
 }
 
-size_t CscReader::GetData(void *buf, size_t len) {
+size_t CscReader::GetData(void *const buf, const size_t &len) {
   uint64_t real_size{0};
   if (buf && len && buffer_ && buffer_size_) {
     real_size = (len > buffer_size_) ? buffer_size_ : len;
@@ -35,7 +35,7 @@ size_t CscReader::GetData(void *buf, size_t len) {
 
 size_t CscReader::GetInputSize() { return total_read_; }
 
-CscReader::CscReader(char *buffer, const uint64_t &buffer_size)
+CscReader::CscReader(const char *buffer, const uint64_t &buffer_size)
     : buffer_(buffer), buffer_size_(buffer_size), total_read_(0) {
   Read = CscReader::RealRead;
 }
@@ -45,7 +45,7 @@ size_t CscWriter::RealWrite(void *ostream, const void *buf, size_t size) {
   return writer->PutData(buf, size);
 }
 
-size_t CscWriter::PutData(const void *buf, size_t len) {
+size_t CscWriter::PutData(const void *buf, const size_t &len) {
   uint64_t real_size{0};
   if (buf && len && buffer_ && buffer_size_) {
     real_size = (len > buffer_size_) ? buffer_size_ : len;
@@ -59,27 +59,29 @@ size_t CscWriter::PutData(const void *buf, size_t len) {
 
 size_t CscWriter::GetOutputSize() { return total_write_; }
 
-CscWriter::CscWriter(char *buffer, const uint64_t &buffer_size)
+CscWriter::CscWriter(char *buffer, uint64_t buffer_size)
     : buffer_(buffer), buffer_size_(buffer_size), total_write_(0) {
   Write = CscWriter::RealWrite;
 }
 
-bool CscLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool CscLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("csc", options, 1, 5);
+    result = CpuCompressionLibrary::CheckCompressionLevel("csc", options, 1, 5);
     if (result) {
-      result = CompressionLibrary::CheckWindowSize("csc", options, 15, 29);
+      result = CpuCompressionLibrary::CheckWindowSize("csc", options, 15, 29);
       if (result) {
-        result = CompressionLibrary::CheckFlags("csc", options, 0, 7);
+        result = CpuCompressionLibrary::CheckFlags("csc", options, 0, 7);
       }
     }
   }
   return result;
 }
 
-bool CscLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                          char *compressed_data, uint64_t *compressed_size) {
+bool CscLibrary::Compress(const char *const uncompressed_data,
+                          const uint64_t &uncompressed_data_size,
+                          char *compressed_data,
+                          uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     CSCProps props;
@@ -93,8 +95,8 @@ bool CscLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
 
     CSCEnc_WriteProperties(&props, reinterpret_cast<uint8_t *>(compressed_data),
                            0);
-    CscReader reader(uncompressed_data, uncompressed_size);
-    CscWriter writer(compressed_data + CSC_PROP_SIZE, *compressed_size);
+    CscReader reader(uncompressed_data, uncompressed_data_size);
+    CscWriter writer(compressed_data + CSC_PROP_SIZE, *compressed_data_size);
     CSCEncHandle handle = CSCEnc_Create(
         &props, reinterpret_cast<ISeqOutStream *>(&writer), nullptr);
     if (result = handle) {
@@ -109,19 +111,20 @@ bool CscLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
     if (!result) {
       std::cout << "ERROR: csc error when compress data" << std::endl;
     }
-    *compressed_size = writer.GetOutputSize() + CSC_PROP_SIZE;
+    *compressed_data_size = writer.GetOutputSize() + CSC_PROP_SIZE;
   }
   return result;
 }
 
-bool CscLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool CscLibrary::Decompress(const char *const compressed_data,
+                            const uint64_t &compressed_data_size,
                             char *decompressed_data,
-                            uint64_t *decompressed_size) {
+                            uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     CSCProps props;
-    CscReader reader(compressed_data, compressed_size);
-    CscWriter writer(decompressed_data, *decompressed_size);
+    CscReader reader(compressed_data, compressed_data_size);
+    CscWriter writer(decompressed_data, *decompressed_data_size);
 
     unsigned char buf[CSC_PROP_SIZE];
     reader.GetData(buf, CSC_PROP_SIZE);
@@ -137,13 +140,13 @@ bool CscLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
     if (!result) {
       std::cout << "ERROR: csc error when decompress data" << std::endl;
     }
-    *decompressed_size = writer.GetOutputSize();
+    *decompressed_data_size = writer.GetOutputSize();
   }
   return result;
 }
 
 void CscLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "csc", "Lossless data compression algorithm inspired by LZMA");
 }
 

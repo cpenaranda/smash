@@ -8,31 +8,35 @@
 
 #include <mscomp.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <ms_library.hpp>
-#include <options.hpp>
 
-bool MsLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool MsLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("ms", options, 0, 2);
+  result = CpuCompressionLibrary::CheckMode("ms", options, 0, 2);
   return result;
 }
 
-void MsLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                      uint64_t uncompressed_size,
-                                      uint64_t *compressed_size) {
-  *compressed_size = ms_max_compressed_size(
-      static_cast<_MSCompFormat>(options_.GetMode() + 2), uncompressed_size);
+void MsLibrary::GetCompressedDataSize(const char *const uncompressed_data,
+                                      const uint64_t &uncompressed_data_size,
+                                      uint64_t *compressed_data_size) {
+  *compressed_data_size =
+      ms_max_compressed_size(static_cast<_MSCompFormat>(options_.GetMode() + 2),
+                             uncompressed_data_size);
 }
 
-bool MsLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                         char *compressed_data, uint64_t *compressed_size) {
+bool MsLibrary::Compress(const char *const uncompressed_data,
+                         const uint64_t &uncompressed_data_size,
+                         char *compressed_data,
+                         uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     MSCompStatus error = ms_compress(
         static_cast<_MSCompFormat>(options_.GetMode() + 2),
-        reinterpret_cast<bytes>(uncompressed_data), uncompressed_size,
-        reinterpret_cast<bytes>(compressed_data), compressed_size);
+        reinterpret_cast<const uint8_t *const>(uncompressed_data),
+        uncompressed_data_size, reinterpret_cast<uint8_t *>(compressed_data),
+        compressed_data_size);
     if (error != MSCOMP_OK) {
       std::cout << "ERROR: ms error when compress data" << std::endl;
       result = false;
@@ -41,15 +45,17 @@ bool MsLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool MsLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool MsLibrary::Decompress(const char *const compressed_data,
+                           const uint64_t &compressed_data_size,
                            char *decompressed_data,
-                           uint64_t *decompressed_size) {
+                           uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     MSCompStatus error = ms_decompress(
         static_cast<_MSCompFormat>(options_.GetMode() + 2),
-        reinterpret_cast<bytes>(compressed_data), compressed_size,
-        reinterpret_cast<bytes>(decompressed_data), decompressed_size);
+        reinterpret_cast<const uint8_t *const>(compressed_data),
+        compressed_data_size, reinterpret_cast<uint8_t *>(decompressed_data),
+        decompressed_data_size);
     if (error != MSCOMP_OK) {
       std::cout << "ERROR: ms error when decompress data" << std::endl;
       result = false;
@@ -59,7 +65,7 @@ bool MsLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void MsLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "ms", "Open source implementations of Microsoft compression algorithms");
 }
 

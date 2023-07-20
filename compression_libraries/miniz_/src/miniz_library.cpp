@@ -8,38 +8,42 @@
 
 #include <miniz.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <miniz_library.hpp>
-#include <options.hpp>
 
-bool MinizLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool MinizLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckWindowSize("miniz", options, 10, 11);
+  result = CpuCompressionLibrary::CheckWindowSize("miniz", options, 10, 11);
   if (compressor && result) {
-    result = CompressionLibrary::CheckCompressionLevel("miniz", options, 1, 9);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("miniz", options, 1, 9);
     if (result) {
-      result = CompressionLibrary::CheckMode("miniz", options, 0, 4);
+      result = CpuCompressionLibrary::CheckMode("miniz", options, 0, 4);
     }
   }
   return result;
 }
 
-void MinizLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                         uint64_t uncompressed_size,
-                                         uint64_t *compressed_size) {
-  *compressed_size = mz_compressBound(uncompressed_size);
+void MinizLibrary::GetCompressedDataSize(const char *const uncompressed_data,
+                                         const uint64_t &uncompressed_data_size,
+                                         uint64_t *compressed_data_size) {
+  *compressed_data_size = mz_compressBound(uncompressed_data_size);
 }
 
-bool MinizLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                            char *compressed_data, uint64_t *compressed_size) {
+bool MinizLibrary::Compress(const char *const uncompressed_data,
+                            const uint64_t &uncompressed_data_size,
+                            char *compressed_data,
+                            uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     mz_stream stream;
     memset(&stream, 0, sizeof(stream));
-    stream.next_in = reinterpret_cast<unsigned char *>(uncompressed_data);
-    stream.avail_in = uncompressed_size;
+    stream.next_in =
+        reinterpret_cast<const unsigned char *const>(uncompressed_data);
+    stream.avail_in = uncompressed_data_size;
     stream.next_out = reinterpret_cast<unsigned char *>(compressed_data);
-    stream.avail_out = *compressed_size;
+    stream.avail_out = *compressed_data_size;
     int miniz_result = mz_deflateInit2(
         &stream, options_.GetCompressionLevel(), MZ_DEFLATED,
         options_.GetWindowSize() == 10 ? MZ_DEFAULT_WINDOW_BITS
@@ -57,7 +61,7 @@ bool MinizLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
         if (miniz_result != MZ_OK) {
           result = false;
         }
-        *compressed_size = stream.total_out;
+        *compressed_data_size = stream.total_out;
       }
     }
     if (!result) {
@@ -67,17 +71,19 @@ bool MinizLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool MinizLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool MinizLibrary::Decompress(const char *const compressed_data,
+                              const uint64_t &compressed_data_size,
                               char *decompressed_data,
-                              uint64_t *decompressed_size) {
+                              uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     mz_stream stream;
     memset(&stream, 0, sizeof(stream));
-    stream.next_in = reinterpret_cast<unsigned char *>(compressed_data);
-    stream.avail_in = compressed_size;
+    stream.next_in =
+        reinterpret_cast<const unsigned char *const>(compressed_data);
+    stream.avail_in = compressed_data_size;
     stream.next_out = reinterpret_cast<unsigned char *>(decompressed_data);
-    stream.avail_out = *decompressed_size;
+    stream.avail_out = *decompressed_data_size;
     int miniz_result = mz_inflateInit2(&stream, options_.GetWindowSize() == 10
                                                     ? MZ_DEFAULT_WINDOW_BITS
                                                     : -MZ_DEFAULT_WINDOW_BITS);
@@ -93,7 +99,7 @@ bool MinizLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
         if (miniz_result != MZ_OK) {
           result = false;
         }
-        *decompressed_size = stream.total_out;
+        *decompressed_data_size = stream.total_out;
       }
     }
     if (!result) {
@@ -104,7 +110,7 @@ bool MinizLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void MinizLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "miniz", "Lossless, high performance data compression library");
 }
 

@@ -8,24 +8,24 @@
 
 #include <blosc2.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
 #include <c-blosc2_library.hpp>
-#include <options.hpp>
+#include <cpu_options.hpp>
 
-bool CBlosc2Library::CheckOptions(Options *options, const bool &compressor) {
+bool CBlosc2Library::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckNumberThreads("c-blosc2", options, 1, 8);
+  result = CpuCompressionLibrary::CheckNumberThreads("c-blosc2", options, 1, 8);
   if (compressor && result) {
-    result = CompressionLibrary::CheckFlags("c-blosc2", options, 0, 2);
+    result = CpuCompressionLibrary::CheckFlags("c-blosc2", options, 0, 2);
     if (result) {
-      result =
-          CompressionLibrary::CheckCompressionLevel("c-blosc2", options, 0, 9);
+      result = CpuCompressionLibrary::CheckCompressionLevel("c-blosc2", options,
+                                                            0, 9);
     }
   }
   return result;
 }
 
-bool CBlosc2Library::SetOptionsCompressor(Options *options) {
+bool CBlosc2Library::SetOptionsCompressor(CpuOptions *options) {
   if (initialized_compressor_ || initialized_decompressor_) {
     blosc_destroy();
     initialized_decompressor_ = false;
@@ -40,7 +40,7 @@ bool CBlosc2Library::SetOptionsCompressor(Options *options) {
   return initialized_compressor_;
 }
 
-bool CBlosc2Library::SetOptionsDecompressor(Options *options) {
+bool CBlosc2Library::SetOptionsDecompressor(CpuOptions *options) {
   if (initialized_compressor_ || initialized_decompressor_) {
     blosc_destroy();
     initialized_compressor_ = false;
@@ -54,56 +54,58 @@ bool CBlosc2Library::SetOptionsDecompressor(Options *options) {
   return initialized_decompressor_;
 }
 
-void CBlosc2Library::GetCompressedDataSize(char *uncompressed_data,
-                                           uint64_t uncompressed_size,
-                                           uint64_t *compressed_size) {
-  *compressed_size = uncompressed_size + BLOSC_MAX_OVERHEAD;
+void CBlosc2Library::GetCompressedDataSize(
+    const char *const uncompressed_data, const uint64_t &uncompressed_data_size,
+    uint64_t *compressed_data_size) {
+  *compressed_data_size = uncompressed_data_size + BLOSC_MAX_OVERHEAD;
 }
 
-bool CBlosc2Library::Compress(char *uncompressed_data,
-                              uint64_t uncompressed_size, char *compressed_data,
-                              uint64_t *compressed_size) {
+bool CBlosc2Library::Compress(const char *const uncompressed_data,
+                              const uint64_t &uncompressed_data_size,
+                              char *compressed_data,
+                              uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     int csize =
         blosc_compress(options_.GetCompressionLevel(), options_.GetFlags(),
-                       sizeof(char), uncompressed_size, uncompressed_data,
-                       compressed_data, *compressed_size);
+                       sizeof(char), uncompressed_data_size, uncompressed_data,
+                       compressed_data, *compressed_data_size);
     if (csize == 0 || csize < 0) {
       std::cout << "ERROR: c-blosc2 error when compress data" << std::endl;
       result = false;
     }
-    *compressed_size = static_cast<uint64_t>(csize);
+    *compressed_data_size = static_cast<uint64_t>(csize);
   }
   return result;
 }
 
-void CBlosc2Library::GetDecompressedDataSize(char *compressed_data,
-                                             uint64_t compressed_size,
-                                             uint64_t *decompressed_size) {
+void CBlosc2Library::GetDecompressedDataSize(
+    const char *const compressed_data, const uint64_t &compressed_data_size,
+    uint64_t *decompressed_data_size) {
   int32_t value{0};
   blosc2_cbuffer_sizes(compressed_data, nullptr, &value, nullptr);
-  *decompressed_size = value;
+  *decompressed_data_size = value;
 }
 
-bool CBlosc2Library::Decompress(char *compressed_data, uint64_t compressed_size,
+bool CBlosc2Library::Decompress(const char *const compressed_data,
+                                const uint64_t &compressed_data_size,
                                 char *decompressed_data,
-                                uint64_t *decompressed_size) {
+                                uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     int dsize = blosc_decompress(compressed_data, decompressed_data,
-                                 *decompressed_size);
+                                 *decompressed_data_size);
     if (dsize < 0) {
       std::cout << "ERROR: c-blosc2 error when decompress data" << std::endl;
       result = false;
     }
-    *decompressed_size = static_cast<uint64_t>(dsize);
+    *decompressed_data_size = static_cast<uint64_t>(dsize);
   }
   return result;
 }
 
 void CBlosc2Library::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "c-blosc2", "High performance compressor optimized for binary data");
 }
 

@@ -9,27 +9,29 @@
 #include <lzg.h>
 #include <string.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <liblzg_library.hpp>
-#include <options.hpp>
 
-bool LiblzgLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool LiblzgLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("liblzg", options, 1, 9);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("liblzg", options, 1, 9);
   }
   return result;
 }
 
-void LiblzgLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                          uint64_t uncompressed_size,
-                                          uint64_t *compressed_size) {
-  *compressed_size = LZG_MaxEncodedSize(uncompressed_size);
+void LiblzgLibrary::GetCompressedDataSize(
+    const char *const uncompressed_data, const uint64_t &uncompressed_data_size,
+    uint64_t *compressed_data_size) {
+  *compressed_data_size = LZG_MaxEncodedSize(uncompressed_data_size);
 }
 
-bool LiblzgLibrary::Compress(char *uncompressed_data,
-                             uint64_t uncompressed_size, char *compressed_data,
-                             uint64_t *compressed_size) {
+bool LiblzgLibrary::Compress(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             char *compressed_data,
+                             uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     lzg_encoder_config_t config;
@@ -37,49 +39,54 @@ bool LiblzgLibrary::Compress(char *uncompressed_data,
     config.level = options_.GetCompressionLevel();
     config.fast = LZG_TRUE;
     uint64_t compressed_bytes = LZG_Encode(
-        reinterpret_cast<unsigned char *>(uncompressed_data), uncompressed_size,
-        reinterpret_cast<unsigned char *>(compressed_data), *compressed_size,
-        &config);
-    if (compressed_bytes == 0 || compressed_bytes > *compressed_size) {
+        reinterpret_cast<const unsigned char *const>(uncompressed_data),
+        uncompressed_data_size,
+        reinterpret_cast<unsigned char *>(compressed_data),
+        *compressed_data_size, &config);
+    if (compressed_bytes == 0 || compressed_bytes > *compressed_data_size) {
       std::cout << "ERROR: liblzg error when compress data" << std::endl;
       result = false;
     } else {
-      *compressed_size = compressed_bytes;
+      *compressed_data_size = compressed_bytes;
     }
   }
   return result;
 }
 
-void LiblzgLibrary::GetDecompressedDataSize(char *compressed_data,
-                                            uint64_t compressed_size,
-                                            uint64_t *decompressed_size) {
-  *decompressed_size = LZG_DecodedSize(
-      reinterpret_cast<unsigned char *>(compressed_data), compressed_size);
+void LiblzgLibrary::GetDecompressedDataSize(
+    const char *const compressed_data, const uint64_t &compressed_data_size,
+    uint64_t *decompressed_data_size) {
+  *decompressed_data_size = LZG_DecodedSize(
+      reinterpret_cast<const unsigned char *const>(compressed_data),
+      compressed_data_size);
 }
 
-bool LiblzgLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool LiblzgLibrary::Decompress(const char *const compressed_data,
+                               const uint64_t &compressed_data_size,
                                char *decompressed_data,
-                               uint64_t *decompressed_size) {
+                               uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     uint64_t decompressed_bytes = LZG_Decode(
-        reinterpret_cast<unsigned char *>(compressed_data), compressed_size,
+        reinterpret_cast<const unsigned char *const>(compressed_data),
+        compressed_data_size,
         reinterpret_cast<unsigned char *>(decompressed_data),
-        *decompressed_size);
-    if (decompressed_bytes == 0 || decompressed_bytes > *decompressed_size) {
+        *decompressed_data_size);
+    if (decompressed_bytes == 0 ||
+        decompressed_bytes > *decompressed_data_size) {
       std::cout << "ERROR: liblzg error when decompress data" << std::endl;
       result = false;
     } else {
-      *decompressed_size = decompressed_bytes;
+      *decompressed_data_size = decompressed_bytes;
     }
   }
   return result;
 }
 
 void LiblzgLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("liblzg",
-                               "Minimal implementation of an LZ77 class "
-                               "compression library (requires no memory)");
+  CpuCompressionLibrary::GetTitle("liblzg",
+                                  "Minimal implementation of an LZ77 class "
+                                  "compression library (requires no memory)");
 }
 
 bool LiblzgLibrary::GetCompressionLevelInformation(

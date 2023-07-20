@@ -8,32 +8,35 @@
 
 #include <zlib.h>
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <zlib_library.hpp>
 
-bool ZlibLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool ZlibLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("zlib", options, 0, 9);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("zlib", options, 0, 9);
   }
   return result;
 }
 
-void ZlibLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                        uint64_t uncompressed_size,
-                                        uint64_t *compressed_size) {
-  *compressed_size = compressBound(uncompressed_size);
+void ZlibLibrary::GetCompressedDataSize(const char *const uncompressed_data,
+                                        const uint64_t &uncompressed_data_size,
+                                        uint64_t *compressed_data_size) {
+  *compressed_data_size = compressBound(uncompressed_data_size);
 }
 
-bool ZlibLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                           char *compressed_data, uint64_t *compressed_size) {
+bool ZlibLibrary::Compress(const char *const uncompressed_data,
+                           const uint64_t &uncompressed_data_size,
+                           char *compressed_data,
+                           uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
-    int err =
-        compress2(reinterpret_cast<Bytef *>(compressed_data), compressed_size,
-                  reinterpret_cast<Bytef *>(uncompressed_data),
-                  uncompressed_size, options_.GetCompressionLevel());
+    int err = compress2(reinterpret_cast<Bytef *>(compressed_data),
+                        compressed_data_size,
+                        reinterpret_cast<const Bytef *const>(uncompressed_data),
+                        uncompressed_data_size, options_.GetCompressionLevel());
     if (err != Z_OK) {
       std::cout << "ERROR: zlib error when compress data" << std::endl;
       result = false;
@@ -42,14 +45,17 @@ bool ZlibLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool ZlibLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool ZlibLibrary::Decompress(const char *const compressed_data,
+                             const uint64_t &compressed_data_size,
                              char *decompressed_data,
-                             uint64_t *decompressed_size) {
+                             uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
-    int err = uncompress2(
-        reinterpret_cast<Bytef *>(decompressed_data), decompressed_size,
-        reinterpret_cast<Bytef *>(compressed_data), &compressed_size);
+    uint64_t current_compressed_data_size = {compressed_data_size};
+    int err = uncompress2(reinterpret_cast<Bytef *>(decompressed_data),
+                          decompressed_data_size,
+                          reinterpret_cast<const Bytef *const>(compressed_data),
+                          &current_compressed_data_size);
     if (err != Z_OK) {
       std::cout << "ERROR: zlib error when decompress data" << std::endl;
       result = false;
@@ -59,8 +65,8 @@ bool ZlibLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void ZlibLibrary::GetTitle() {
-  CompressionLibrary::GetTitle("zlib",
-                               "General purpose data compression library");
+  CpuCompressionLibrary::GetTitle("zlib",
+                                  "General purpose data compression library");
 }
 
 bool ZlibLibrary::GetCompressionLevelInformation(

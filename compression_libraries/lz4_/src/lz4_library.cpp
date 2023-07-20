@@ -9,71 +9,75 @@
 #include <lz4/lib/lz4.h>
 #include <lz4/lib/lz4hc.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <lz4_library.hpp>
-#include <options.hpp>
 
-bool Lz4Library::CheckOptions(Options *options, const bool &compressor) {
+bool Lz4Library::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("lz4", options, 0, 12);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("lz4", options, 0, 12);
     if (result) {
-      result = CompressionLibrary::CheckMode("lz4", options, 0, 1);
+      result = CpuCompressionLibrary::CheckMode("lz4", options, 0, 1);
     }
   }
   return result;
 }
 
-void Lz4Library::GetCompressedDataSize(char *uncompressed_data,
-                                       uint64_t uncompressed_size,
-                                       uint64_t *compressed_size) {
-  *compressed_size = LZ4_compressBound(uncompressed_size);
+void Lz4Library::GetCompressedDataSize(const char *const uncompressed_data,
+                                       const uint64_t &uncompressed_data_size,
+                                       uint64_t *compressed_data_size) {
+  *compressed_data_size = LZ4_compressBound(uncompressed_data_size);
 }
 
-bool Lz4Library::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                          char *compressed_data, uint64_t *compressed_size) {
+bool Lz4Library::Compress(const char *const uncompressed_data,
+                          const uint64_t &uncompressed_data_size,
+                          char *compressed_data,
+                          uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     int bytes_returned{0};
     if (options_.GetMode()) {
-      bytes_returned =
-          LZ4_compress_HC(uncompressed_data, compressed_data, uncompressed_size,
-                          *compressed_size, options_.GetCompressionLevel());
+      bytes_returned = LZ4_compress_HC(
+          uncompressed_data, compressed_data, uncompressed_data_size,
+          *compressed_data_size, options_.GetCompressionLevel());
       result = (bytes_returned > 0);
     } else {
       bytes_returned = LZ4_compress_fast(
-          uncompressed_data, compressed_data, uncompressed_size,
-          *compressed_size,
+          uncompressed_data, compressed_data, uncompressed_data_size,
+          *compressed_data_size,
           1 << static_cast<int>(options_.GetCompressionLevel() * 1.4));
       result = (bytes_returned > 0);
     }
     if (!result) {
       std::cout << "ERROR: lz4 error when compress data" << std::endl;
     }
-    *compressed_size = bytes_returned;
+    *compressed_data_size = bytes_returned;
   }
   return result;
 }
 
-bool Lz4Library::Decompress(char *compressed_data, uint64_t compressed_size,
+bool Lz4Library::Decompress(const char *const compressed_data,
+                            const uint64_t &compressed_data_size,
                             char *decompressed_data,
-                            uint64_t *decompressed_size) {
+                            uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     int bytes_returned =
-        LZ4_decompress_safe(compressed_data, decompressed_data, compressed_size,
-                            *decompressed_size);
+        LZ4_decompress_safe(compressed_data, decompressed_data,
+                            compressed_data_size, *decompressed_data_size);
     if (bytes_returned < 1) {
       std::cout << "ERROR: lz4 error when decompress data" << std::endl;
       result = false;
     }
-    *decompressed_size = bytes_returned;
+    *decompressed_data_size = bytes_returned;
   }
   return result;
 }
 
 void Lz4Library::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "lz4", "Extremely fast lossless compression library based on LZ77");
 }
 

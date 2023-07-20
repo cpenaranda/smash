@@ -8,32 +8,36 @@
 
 #include <bzlib.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
 #include <bzip2_library.hpp>
-#include <options.hpp>
+#include <cpu_options.hpp>
 
-bool Bzip2Library::CheckOptions(Options *options, const bool &compressor) {
+bool Bzip2Library::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("bzip2", options, 1, 9);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("bzip2", options, 1, 9);
     if (result) {
-      result = CompressionLibrary::CheckWorkFactor("bzip2", options, 0, 25);
+      result = CpuCompressionLibrary::CheckWorkFactor("bzip2", options, 0, 25);
     }
   } else {
-    result = CompressionLibrary::CheckMode("bzip2", options, 0, 1);
+    result = CpuCompressionLibrary::CheckMode("bzip2", options, 0, 1);
   }
   return result;
 }
 
-bool Bzip2Library::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                            char *compressed_data, uint64_t *compressed_size) {
+bool Bzip2Library::Compress(const char *const uncompressed_data,
+                            const uint64_t &uncompressed_data_size,
+                            char *compressed_data,
+                            uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     int bzerr = BZ2_bzBuffToBuffCompress(
-        compressed_data, reinterpret_cast<uint32_t *>(compressed_size),
-        uncompressed_data, static_cast<uint32_t>(uncompressed_size),
+        compressed_data, reinterpret_cast<uint32_t *>(compressed_data_size),
+        const_cast<char *const>(uncompressed_data),
+        static_cast<uint32_t>(uncompressed_data_size),
         options_.GetCompressionLevel(), 0 /* verbosity */,
-        options_.GetWorkFactor()*10);
+        options_.GetWorkFactor() * 10);
     if (bzerr != BZ_OK && bzerr != BZ_OUTBUFF_FULL) {
       std::cout << "ERROR: bzip2 error when compress data" << std::endl;
       result = false;
@@ -42,15 +46,17 @@ bool Bzip2Library::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool Bzip2Library::Decompress(char *compressed_data, uint64_t compressed_size,
+bool Bzip2Library::Decompress(const char *const compressed_data,
+                              const uint64_t &compressed_data_size,
                               char *decompressed_data,
-                              uint64_t *decompressed_size) {
+                              uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     int bzerr = BZ2_bzBuffToBuffDecompress(
-        decompressed_data, reinterpret_cast<uint32_t *>(decompressed_size),
-        compressed_data, static_cast<uint32_t>(compressed_size),
-        options_.GetMode(), 0 /* verbosity */);
+        decompressed_data, reinterpret_cast<uint32_t *>(decompressed_data_size),
+        const_cast<char *const>(compressed_data),
+        static_cast<uint32_t>(compressed_data_size), options_.GetMode(),
+        0 /* verbosity */);
     if (bzerr != BZ_OK) {
       std::cout << "ERROR: bzip2 error when decompress data" << std::endl;
       result = false;
@@ -60,7 +66,7 @@ bool Bzip2Library::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void Bzip2Library::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "bzip2", "Based on Burrows-Wheeler algorithm and Huffman coding");
 }
 

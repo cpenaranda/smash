@@ -12,36 +12,41 @@
 #include <string>
 #include <vector>
 
-// SMASH LIBRARIES
-#include <compression_library.hpp>
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
+#include <cpu_options.hpp>
 
-class Smash {
+class CpuSmash {
  private:
-  CompressionLibrary *lib;
+  CpuCompressionLibrary *lib;
 
  public:
-  bool SetOptionsCompressor(Options *options);
+  bool SetOptionsCompressor(CpuOptions *options);
 
-  bool SetOptionsDecompressor(Options *options);
+  bool SetOptionsDecompressor(CpuOptions *options);
 
-  void GetCompressedDataSize(char *uncompressed_data,
-                             uint64_t uncompressed_size,
-                             uint64_t *compressed_size);
+  void GetCompressedDataSize(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             uint64_t *compressed_data_size);
 
-  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                char *compressed_data, uint64_t *compressed_size);
+  bool Compress(const char *const uncompressed_data,
+                const uint64_t &uncompressed_data_size, char *compressed_data,
+                uint64_t *compressed_data_size);
 
-  void GetDecompressedDataSize(char *compressed_data, uint64_t compressed_size,
-                               uint64_t *decompressed_size);
+  void GetDecompressedDataSize(const char *const compressed_data,
+                               const uint64_t &compressed_data_size,
+                               uint64_t *decompressed_data_size);
 
-  bool Decompress(char *compressed_data, uint64_t compressed_size,
-                  char *decompressed_data, uint64_t *decompressed_size);
+  bool Decompress(const char *const compressed_data,
+                  const uint64_t &compressed_data_size, char *decompressed_data,
+                  uint64_t *decompressed_data_size);
 
   void GetTitle();
 
-  bool CompareData(char *uncompressed_data, const uint64_t &uncompressed_size,
-                   char *decompressed_data, const uint64_t &decompressed_size);
+  bool CompareData(const char *const uncompressed_data,
+                   const uint64_t &uncompressed_data_size,
+                   const char *const decompressed_data,
+                   const uint64_t &decompressed_data_size);
 
   bool GetCompressionLevelInformation(
       std::vector<std::string> *compression_level_information = nullptr,
@@ -68,17 +73,18 @@ class Smash {
       std::vector<std::string> *number_threads_information = nullptr,
       uint8_t *minimum_threads = nullptr, uint8_t *maximum_threads = nullptr);
 
-  bool GetBackReferenceBitsInformation(
-      std::vector<std::string> *back_reference_bits_information = nullptr,
-      uint8_t *minimum_bits = nullptr, uint8_t *maximum_bits = nullptr);
+  bool GetBackReferenceInformation(
+      std::vector<std::string> *back_reference_information = nullptr,
+      uint8_t *minimum_back_reference = nullptr,
+      uint8_t *maximum_back_reference = nullptr);
 
   std::string GetModeName(const uint8_t &mode);
 
   std::string GetFlagsName(const uint8_t &flags);
 
-  Options GetOptions();
+  CpuOptions GetOptions();
 
-  explicit Smash(const std::string &compression_library_name);
+  explicit CpuSmash(const std::string &compression_library_name);
 
-  ~Smash();
+  ~CpuSmash();
 };

@@ -8,57 +8,62 @@
 
 #include <pithy.h>
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <pithy_library.hpp>
 
-bool PithyLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool PithyLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("pithy", options, 0, 9);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("pithy", options, 0, 9);
   }
   return result;
 }
 
-void PithyLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                         uint64_t uncompressed_size,
-                                         uint64_t *compressed_size) {
-  *compressed_size = pithy_MaxCompressedLength(uncompressed_size);
+void PithyLibrary::GetCompressedDataSize(const char *const uncompressed_data,
+                                         const uint64_t &uncompressed_data_size,
+                                         uint64_t *compressed_data_size) {
+  *compressed_data_size = pithy_MaxCompressedLength(uncompressed_data_size);
 }
 
-bool PithyLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                            char *compressed_data, uint64_t *compressed_size) {
+bool PithyLibrary::Compress(const char *const uncompressed_data,
+                            const uint64_t &uncompressed_data_size,
+                            char *compressed_data,
+                            uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
-    uint64_t compressed_bytes =
-        pithy_Compress(uncompressed_data, uncompressed_size, compressed_data,
-                       *compressed_size, options_.GetCompressionLevel());
-    if (compressed_bytes == 0 || compressed_bytes > *compressed_size) {
+    uint64_t compressed_bytes = pithy_Compress(
+        uncompressed_data, uncompressed_data_size, compressed_data,
+        *compressed_data_size, options_.GetCompressionLevel());
+    if (compressed_bytes == 0 || compressed_bytes > *compressed_data_size) {
       std::cout << "ERROR: pithy error when compress data" << std::endl;
       result = false;
     } else {
-      *compressed_size = compressed_bytes;
+      *compressed_data_size = compressed_bytes;
     }
   }
   return result;
 }
 
-void PithyLibrary::GetDecompressedDataSize(char *compressed_data,
-                                           uint64_t compressed_size,
-                                           uint64_t *decompressed_size) {
-  pithy_GetDecompressedLength(compressed_data, compressed_size,
-                              decompressed_size);
+void PithyLibrary::GetDecompressedDataSize(const char *const compressed_data,
+                                           const uint64_t &compressed_data_size,
+                                           uint64_t *decompressed_data_size) {
+  pithy_GetDecompressedLength(compressed_data, compressed_data_size,
+                              decompressed_data_size);
 }
 
-bool PithyLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool PithyLibrary::Decompress(const char *const compressed_data,
+                              const uint64_t &compressed_data_size,
                               char *decompressed_data,
-                              uint64_t *decompressed_size) {
+                              uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     uint64_t decompression_bytes =
-        pithy_Decompress(compressed_data, compressed_size, decompressed_data,
-                         *decompressed_size);
-    if (decompression_bytes < 0 && decompression_bytes > *decompressed_size) {
+        pithy_Decompress(compressed_data, compressed_data_size,
+                         decompressed_data, *decompressed_data_size);
+    if (decompression_bytes < 0 &&
+        decompression_bytes > *decompressed_data_size) {
       std::cout << "ERROR: pithy error when decompress data" << std::endl;
       result = false;
     }
@@ -67,7 +72,7 @@ bool PithyLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void PithyLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "pithy",
       "Fast compression/decompression library originally based on Snappy");
 }

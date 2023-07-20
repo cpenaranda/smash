@@ -7,24 +7,27 @@
  */
 #include <lzham.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <lzham_library.hpp>
-#include <options.hpp>
 
-bool LzhamLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool LzhamLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckWindowSize("lzham", options, 15, 29);
+  result = CpuCompressionLibrary::CheckWindowSize("lzham", options, 15, 29);
   if (compressor && result) {
-    result = CompressionLibrary::CheckCompressionLevel("lzham", options, 0, 4);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("lzham", options, 0, 4);
     if (result) {
-      result = CompressionLibrary::CheckFlags("lzham", options, 0, 7);
+      result = CpuCompressionLibrary::CheckFlags("lzham", options, 0, 7);
     }
   }
   return result;
 }
 
-bool LzhamLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                            char *compressed_data, uint64_t *compressed_size) {
+bool LzhamLibrary::Compress(const char *const uncompressed_data,
+                            const uint64_t &uncompressed_data_size,
+                            char *compressed_data,
+                            uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     lzham_compress_params params;
@@ -44,8 +47,9 @@ bool LzhamLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
 
     lzham_compress_status_t lzham_result = lzham_compress_memory(
         &params, reinterpret_cast<unsigned char *>(compressed_data),
-        compressed_size, reinterpret_cast<unsigned char *>(uncompressed_data),
-        uncompressed_size, NULL);
+        compressed_data_size,
+        reinterpret_cast<const unsigned char *const>(uncompressed_data),
+        uncompressed_data_size, NULL);
 
     if (lzham_result != LZHAM_COMP_STATUS_SUCCESS) {
       std::cout << "ERROR: lzham error when compress data" << std::endl;
@@ -55,9 +59,10 @@ bool LzhamLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool LzhamLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool LzhamLibrary::Decompress(const char *const compressed_data,
+                              const uint64_t &compressed_data_size,
                               char *decompressed_data,
-                              uint64_t *decompressed_size) {
+                              uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     lzham_decompress_params params;
@@ -72,8 +77,9 @@ bool LzhamLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 
     lzham_decompress_status_t lzham_result = lzham_decompress_memory(
         &params, reinterpret_cast<unsigned char *>(decompressed_data),
-        decompressed_size, reinterpret_cast<unsigned char *>(compressed_data),
-        compressed_size, NULL);
+        decompressed_data_size,
+        reinterpret_cast<const unsigned char *const>(compressed_data),
+        compressed_data_size, NULL);
 
     if (lzham_result != LZHAM_DECOMP_STATUS_SUCCESS) {
       std::cout << "ERROR: lzham error when decompress data" << std::endl;
@@ -84,7 +90,7 @@ bool LzhamLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LzhamLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "lzham", "Lossless data compression codec written in C/C++");
 }
 

@@ -12,34 +12,37 @@
 #include <string>
 #include <vector>
 
-// SMASH LIBRARIES
-#include <compression_library.hpp>
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
+#include <cpu_options.hpp>
 
-class CBlosc2Library : public CompressionLibrary {
+class CBlosc2Library : public CpuCompressionLibrary {
  private:
   uint8_t number_of_flags_;
   std::string *flags_;
 
  public:
-  bool CheckOptions(Options *options, const bool &compressor);
+  bool CheckOptions(CpuOptions *options, const bool &compressor);
 
-  bool SetOptionsCompressor(Options *options);
+  bool SetOptionsCompressor(CpuOptions *options);
 
-  bool SetOptionsDecompressor(Options *options);
+  bool SetOptionsDecompressor(CpuOptions *options);
 
-  void GetCompressedDataSize(char *uncompressed_data,
-                             uint64_t uncompressed_size,
-                             uint64_t *compressed_size);
+  void GetCompressedDataSize(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             uint64_t *compressed_data_size);
 
-  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                char *compressed_data, uint64_t *compressed_size);
+  bool Compress(const char *const uncompressed_data,
+                const uint64_t &uncompressed_data_size, char *compressed_data,
+                uint64_t *compressed_data_size);
 
-  void GetDecompressedDataSize(char *compressed_data, uint64_t compressed_size,
-                               uint64_t *decompressed_size);
+  void GetDecompressedDataSize(const char *const compressed_data,
+                               const uint64_t &compressed_data_size,
+                               uint64_t *decompressed_data_size);
 
-  bool Decompress(char *compressed_data, uint64_t compressed_size,
-                  char *decompressed_data, uint64_t *decompressed_size);
+  bool Decompress(const char *const compressed_data,
+                  const uint64_t &compressed_data_size, char *decompressed_data,
+                  uint64_t *decompressed_data_size);
 
   void GetTitle();
 

@@ -8,46 +8,49 @@
 
 #include <ucl/ucl.h>
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <ucl_library.hpp>
 
-bool UclLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool UclLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckMode("ucl", options, 0, 2);
+  result = CpuCompressionLibrary::CheckMode("ucl", options, 0, 2);
   if (compressor && result) {
-    result = CompressionLibrary::CheckCompressionLevel("ucl", options, 1, 10);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("ucl", options, 1, 10);
   }
   return result;
 }
 
-bool UclLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                          char *compressed_data, uint64_t *compressed_size) {
+bool UclLibrary::Compress(const char *const uncompressed_data,
+                          const uint64_t &uncompressed_data_size,
+                          char *compressed_data,
+                          uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     int ucl_result{0};
-    ucl_uint compressed_bytes = *compressed_size;
+    ucl_uint compressed_bytes = *compressed_data_size;
     switch (options_.GetMode()) {
       case 0:
         ucl_result = ucl_nrv2b_99_compress(
-            reinterpret_cast<unsigned char *>(uncompressed_data),
-            uncompressed_size,
+            reinterpret_cast<const unsigned char *const>(uncompressed_data),
+            uncompressed_data_size,
             reinterpret_cast<unsigned char *>(compressed_data),
             &compressed_bytes, 0, options_.GetCompressionLevel(), nullptr,
             nullptr);
         break;
       case 1:
         ucl_result = ucl_nrv2d_99_compress(
-            reinterpret_cast<unsigned char *>(uncompressed_data),
-            uncompressed_size,
+            reinterpret_cast<const unsigned char *const>(uncompressed_data),
+            uncompressed_data_size,
             reinterpret_cast<unsigned char *>(compressed_data),
             &compressed_bytes, 0, options_.GetCompressionLevel(), nullptr,
             nullptr);
         break;
       case 2:
         ucl_result = ucl_nrv2e_99_compress(
-            reinterpret_cast<unsigned char *>(uncompressed_data),
-            uncompressed_size,
+            reinterpret_cast<const unsigned char *const>(uncompressed_data),
+            uncompressed_data_size,
             reinterpret_cast<unsigned char *>(compressed_data),
             &compressed_bytes, 0, options_.GetCompressionLevel(), nullptr,
             nullptr);
@@ -56,57 +59,62 @@ bool UclLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
         break;
     }
 
-    if (ucl_result != UCL_E_OK || compressed_bytes > *compressed_size) {
+    if (ucl_result != UCL_E_OK || compressed_bytes > *compressed_data_size) {
       std::cout << "ERROR: ucl error when compress data" << std::endl;
       result = false;
     } else {
-      *compressed_size = compressed_bytes;
+      *compressed_data_size = compressed_bytes;
     }
   }
   return result;
 }
 
-bool UclLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool UclLibrary::Decompress(const char *const compressed_data,
+                            const uint64_t &compressed_data_size,
                             char *decompressed_data,
-                            uint64_t *decompressed_size) {
+                            uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     int ucl_result{0};
-    ucl_uint decompressed_bytes = *decompressed_size;
+    ucl_uint decompressed_bytes = *decompressed_data_size;
     switch (options_.GetMode()) {
       case 0:
         ucl_result = ucl_nrv2b_decompress_8(
-            reinterpret_cast<unsigned char *>(compressed_data), compressed_size,
+            reinterpret_cast<const unsigned char *const>(compressed_data),
+            compressed_data_size,
             reinterpret_cast<unsigned char *>(decompressed_data),
             &decompressed_bytes, nullptr);
         break;
       case 1:
         ucl_result = ucl_nrv2d_decompress_8(
-            reinterpret_cast<unsigned char *>(compressed_data), compressed_size,
+            reinterpret_cast<const unsigned char *const>(compressed_data),
+            compressed_data_size,
             reinterpret_cast<unsigned char *>(decompressed_data),
             &decompressed_bytes, nullptr);
         break;
       case 2:
         ucl_result = ucl_nrv2e_decompress_8(
-            reinterpret_cast<unsigned char *>(compressed_data), compressed_size,
+            reinterpret_cast<const unsigned char *const>(compressed_data),
+            compressed_data_size,
             reinterpret_cast<unsigned char *>(decompressed_data),
             &decompressed_bytes, nullptr);
         break;
       default:
         break;
     }
-    if (ucl_result != UCL_E_OK || decompressed_bytes > *decompressed_size) {
+    if (ucl_result != UCL_E_OK ||
+        decompressed_bytes > *decompressed_data_size) {
       std::cout << "ERROR: ucl error when decompress data" << std::endl;
       result = false;
     } else {
-      *decompressed_size = decompressed_bytes;
+      *decompressed_data_size = decompressed_bytes;
     }
   }
   return result;
 }
 
 void UclLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "ucl",
       "Focused on compression for generating competitive compression ratio "
       "(requires no memory for decompression)");

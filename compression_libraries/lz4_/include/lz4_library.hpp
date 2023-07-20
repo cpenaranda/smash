@@ -12,27 +12,29 @@
 #include <string>
 #include <vector>
 
-// SMASH LIBRARIES
-#include <compression_library.hpp>
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_compression_library.hpp>
+#include <cpu_options.hpp>
 
-class Lz4Library : public CompressionLibrary {
+class Lz4Library : public CpuCompressionLibrary {
  private:
   uint8_t number_of_modes_;
   std::string *modes_;
 
  public:
-  bool CheckOptions(Options *options, const bool &compressor);
+  bool CheckOptions(CpuOptions *options, const bool &compressor);
 
-  void GetCompressedDataSize(char *uncompressed_data,
-                             uint64_t uncompressed_size,
-                             uint64_t *compressed_size);
+  void GetCompressedDataSize(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             uint64_t *compressed_data_size);
 
-  bool Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                char *compressed_data, uint64_t *compressed_size);
+  bool Compress(const char *const uncompressed_data,
+                const uint64_t &uncompressed_data_size, char *compressed_data,
+                uint64_t *compressed_data_size);
 
-  bool Decompress(char *compressed_data, uint64_t compressed_size,
-                  char *decompressed_data, uint64_t *decompressed_size);
+  bool Decompress(const char *const compressed_data,
+                  const uint64_t &compressed_data_size, char *decompressed_data,
+                  uint64_t *decompressed_data_size);
 
   void GetTitle();
 
@@ -46,7 +48,6 @@ class Lz4Library : public CompressionLibrary {
                           const uint8_t &compression_level = 0);
 
   std::string GetModeName(const uint8_t &mode);
-
 
   Lz4Library();
   ~Lz4Library();

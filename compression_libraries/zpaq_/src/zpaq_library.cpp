@@ -8,8 +8,8 @@
 
 #include <libzpaq.h>
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <zpaq_library.hpp>
 
 int ZpaqReader::get() {
@@ -17,7 +17,7 @@ int ZpaqReader::get() {
   return (this->read(&value, 1)) ? static_cast<int>(value) : -1;
 }
 
-int ZpaqReader::read(char *buf, int size) {
+int ZpaqReader::read(char *const buf, const int &size) {
   int real_size{0};
   if (buffer_) {
     real_size = (size > buffer_size_) ? buffer_size_ : size;
@@ -28,7 +28,7 @@ int ZpaqReader::read(char *buf, int size) {
   return real_size;
 }
 
-ZpaqReader::ZpaqReader(char *buffer, const uint64_t &buffer_size)
+ZpaqReader::ZpaqReader(const char *buffer, const uint64_t &buffer_size)
     : buffer_(buffer), buffer_size_(buffer_size) {}
 
 void ZpaqWriter::put(int c) {
@@ -36,7 +36,7 @@ void ZpaqWriter::put(int c) {
   this->write(&value, 1);
 }
 
-void ZpaqWriter::write(const char *buf, int n) {
+void ZpaqWriter::write(const char *buf, const int &n) {
   if (buffer_) {
     if (n > buffer_size_) {
       std::cout << "ERROR: Zpaq error when compress data" << std::endl;
@@ -57,20 +57,23 @@ bool ZpaqWriter::GetRealSize(uint64_t *buffer_size) {
 ZpaqWriter::ZpaqWriter(char *buffer, const uint64_t &buffer_size)
     : buffer_(buffer), buffer_size_(buffer_size), error_(false) {}
 
-bool ZpaqLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool ZpaqLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckCompressionLevel("zpaq", options, 0, 11);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("zpaq", options, 0, 11);
   }
   return result;
 }
 
-bool ZpaqLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                           char *compressed_data, uint64_t *compressed_size) {
+bool ZpaqLibrary::Compress(const char *const uncompressed_data,
+                           const uint64_t &uncompressed_data_size,
+                           char *compressed_data,
+                           uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
-    ZpaqReader reader(uncompressed_data, uncompressed_size);
-    ZpaqWriter writer(compressed_data, *compressed_size);
+    ZpaqReader reader(uncompressed_data, uncompressed_data_size);
+    ZpaqWriter writer(compressed_data, *compressed_data_size);
 
     char method[3];
     method[0] = '1';
@@ -82,7 +85,7 @@ bool ZpaqLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
       method[2] = '0' + options_.GetCompressionLevel();
     }
     compress(&reader, &writer, method);
-    if (writer.GetRealSize(compressed_size)) {
+    if (writer.GetRealSize(compressed_data_size)) {
       std::cout << "ERROR: zpaq error when compress data" << std::endl;
       result = false;
     }
@@ -90,15 +93,16 @@ bool ZpaqLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool ZpaqLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool ZpaqLibrary::Decompress(const char *const compressed_data,
+                             const uint64_t &compressed_data_size,
                              char *decompressed_data,
-                             uint64_t *decompressed_size) {
+                             uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
-    ZpaqReader reader(compressed_data, compressed_size);
-    ZpaqWriter writer(decompressed_data, *decompressed_size);
+    ZpaqReader reader(compressed_data, compressed_data_size);
+    ZpaqWriter writer(decompressed_data, *decompressed_data_size);
     decompress(&reader, &writer);
-    if (writer.GetRealSize(decompressed_size)) {
+    if (writer.GetRealSize(decompressed_data_size)) {
       std::cout << "ERROR: zpaq error when decompress data" << std::endl;
       result = false;
     }
@@ -107,7 +111,7 @@ bool ZpaqLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void ZpaqLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "zpaq",
       "Journaling archiver optimized for user-level incremental backup of "
       "directory trees in Windows and *nix");

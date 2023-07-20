@@ -12,20 +12,22 @@ extern "C" {
 #include <z3blib.h>
 }
 
-// SMASH LIBRARIES
-#include <options.hpp>
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <z3lib_library.hpp>
 
-bool Z3libLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool Z3libLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
-    result = CompressionLibrary::CheckFlags("z3lib", options, 0, 3);
+    result = CpuCompressionLibrary::CheckFlags("z3lib", options, 0, 3);
   }
   return result;
 }
 
-bool Z3libLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
-                            char *compressed_data, uint64_t *compressed_size) {
+bool Z3libLibrary::Compress(const char *const uncompressed_data,
+                            const uint64_t &uncompressed_data_size,
+                            char *compressed_data,
+                            uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     uint64_t work_memory_size =
@@ -40,29 +42,31 @@ bool Z3libLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
         z3be_start(work_memory, work_memory_size, options_.GetFlags() & 1,
                    options_.GetFlags() & 2);
     if (result = handle) {
-      while (uncompressed_size) {
+      uint64_t current_uncompressed_data_size{uncompressed_data_size};
+      unsigned char *current_uncompressed_data = const_cast<unsigned char *>(
+          reinterpret_cast<const unsigned char *const>(uncompressed_data));
+      while (current_uncompressed_data_size) {
         do {
-          bytes = z3be_put(handle,
-                           reinterpret_cast<unsigned char *>(uncompressed_data),
-                           uncompressed_size);
-          uncompressed_data += bytes;
-          uncompressed_size -= bytes;
-        } while (uncompressed_size && bytes);
+          bytes = z3be_put(handle, current_uncompressed_data,
+                           current_uncompressed_data_size);
+          current_uncompressed_data += bytes;
+          current_uncompressed_data_size -= bytes;
+        } while (current_uncompressed_data_size && bytes);
         if (bytes) z3be_push(handle);
         z3be_tell(handle, &weighing, &inpipe);
         do {
           bytes = z3be_get(handle, &weighing,
                            reinterpret_cast<unsigned char *>(compressed_data),
-                           *compressed_size - final_compressed_size);
+                           *compressed_data_size - final_compressed_size);
           compressed_data += bytes;
           final_compressed_size += bytes;
         } while (bytes);
       }
       if (z3be_finish(handle,
                       reinterpret_cast<unsigned char *>(compressed_data))) {
-        *compressed_size = final_compressed_size + 1;
+        *compressed_data_size = final_compressed_size + 1;
       } else {
-        *compressed_size = final_compressed_size;
+        *compressed_data_size = final_compressed_size;
       }
     } else {
       std::cout << "ERROR: z3lib error when compress data" << std::endl;
@@ -72,9 +76,10 @@ bool Z3libLibrary::Compress(char *uncompressed_data, uint64_t uncompressed_size,
   return result;
 }
 
-bool Z3libLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool Z3libLibrary::Decompress(const char *const compressed_data,
+                              const uint64_t &compressed_data_size,
                               char *decompressed_data,
-                              uint64_t *decompressed_size) {
+                              uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     char work_memory[Z3BD_MEMSIZE];
@@ -84,14 +89,16 @@ bool Z3libLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
     uint64_t final_decompressed_size{0};
     z3bd_handle *handle = z3bd_start(0, 0, work_memory, Z3BD_MEMSIZE);
     if (result = handle) {
-      while (compressed_size && result) {
+      uint64_t current_compressed_data_size{compressed_data_size};
+      unsigned char *current_compressed_data = const_cast<unsigned char *>(
+          reinterpret_cast<const unsigned char *const>(compressed_data));
+      while (current_compressed_data_size && result) {
         do {
-          bytes = z3bd_put(handle,
-                           reinterpret_cast<unsigned char *>(compressed_data),
-                           compressed_size);
-          compressed_data += bytes;
-          compressed_size -= bytes;
-        } while (compressed_size && bytes);
+          bytes = z3bd_put(handle, current_compressed_data,
+                           current_compressed_data_size);
+          current_compressed_data += bytes;
+          current_compressed_data_size -= bytes;
+        } while (current_compressed_data_size && bytes);
         do {
           bytes = z3bd_get(handle, &auxiliar_decompressed_data);
           if (bytes) {
@@ -110,13 +117,13 @@ bool Z3libLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
     if (!result) {
       std::cout << "ERROR: z3lib error when decompress data" << std::endl;
     }
-    *decompressed_size = final_decompressed_size;
+    *decompressed_data_size = final_decompressed_size;
   }
   return result;
 }
 
 void Z3libLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "z3lib", "Substitute for the well known zlib compression library");
 }
 

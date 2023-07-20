@@ -8,24 +8,26 @@
 
 #include <lodepng.h>
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <lodepng_library.hpp>
-#include <options.hpp>
 
-bool LodepngLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool LodepngLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
   if (compressor) {
     result =
-        CompressionLibrary::CheckCompressionLevel("lodepng", options, 1, 2);
+        CpuCompressionLibrary::CheckCompressionLevel("lodepng", options, 1, 2);
     if (result) {
-      result = CompressionLibrary::CheckWindowSize("lodepng", options, 10, 15);
+      result =
+          CpuCompressionLibrary::CheckWindowSize("lodepng", options, 10, 15);
       if (result) {
-        result = CompressionLibrary::CheckWorkFactor("lodepng", options, 1, 20);
+        result =
+            CpuCompressionLibrary::CheckWorkFactor("lodepng", options, 1, 20);
         if (result) {
-          result = CompressionLibrary::CheckFlags("lodepng", options, 0, 1);
+          result = CpuCompressionLibrary::CheckFlags("lodepng", options, 0, 1);
           if (result) {
-            result = CompressionLibrary::CheckBackReferenceBits("lodepng",
-                                                                options, 1, 8);
+            result = CpuCompressionLibrary::CheckBackReference("lodepng",
+                                                               options, 1, 8);
           }
         }
       }
@@ -34,9 +36,10 @@ bool LodepngLibrary::CheckOptions(Options *options, const bool &compressor) {
   return result;
 }
 
-bool LodepngLibrary::Compress(char *uncompressed_data,
-                              uint64_t uncompressed_size, char *compressed_data,
-                              uint64_t *compressed_size) {
+bool LodepngLibrary::Compress(const char *const uncompressed_data,
+                              const uint64_t &uncompressed_data_size,
+                              char *compressed_data,
+                              uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     LodePNGCompressSettings settings = {
@@ -44,7 +47,7 @@ bool LodepngLibrary::Compress(char *uncompressed_data,
         1,
         static_cast<unsigned>(1 << options_.GetWindowSize()),
         options_.GetWorkFactor(),
-        static_cast<unsigned int>((1 << options_.GetBackReferenceBits()) - 1),
+        static_cast<unsigned int>((1 << options_.GetBackReference()) - 1),
         options_.GetFlags(),
         0,
         0,
@@ -53,13 +56,14 @@ bool LodepngLibrary::Compress(char *uncompressed_data,
     unsigned char *data{nullptr};
     uint64_t data_size = 0;
     unsigned int lodepng_result = lodepng_zlib_compress(
-        &data, &data_size, reinterpret_cast<unsigned char *>(uncompressed_data),
-        uncompressed_size, &settings);
-    if (lodepng_result != 0 || data_size > *compressed_size) {
+        &data, &data_size,
+        reinterpret_cast<const unsigned char *const>(uncompressed_data),
+        uncompressed_data_size, &settings);
+    if (lodepng_result != 0 || data_size > *compressed_data_size) {
       std::cout << "ERROR: lodepng error when compress data" << std::endl;
       result = false;
     } else {
-      *compressed_size = data_size;
+      *compressed_data_size = data_size;
       memcpy(compressed_data, data, data_size);
       free(data);
     }
@@ -67,22 +71,24 @@ bool LodepngLibrary::Compress(char *uncompressed_data,
   return result;
 }
 
-bool LodepngLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool LodepngLibrary::Decompress(const char *const compressed_data,
+                                const uint64_t &compressed_data_size,
                                 char *decompressed_data,
-                                uint64_t *decompressed_size) {
+                                uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result) {
     LodePNGDecompressSettings settings = {0, 0, 0, 0, 0, 0};
     unsigned char *data{nullptr};
     uint64_t data_size = 0;
     unsigned int lodepng_result = lodepng_zlib_decompress(
-        &data, &data_size, reinterpret_cast<unsigned char *>(compressed_data),
-        compressed_size, &settings);
-    if (lodepng_result != 0 || data_size > *decompressed_size) {
+        &data, &data_size,
+        reinterpret_cast<const unsigned char *const>(compressed_data),
+        compressed_data_size, &settings);
+    if (lodepng_result != 0 || data_size > *decompressed_data_size) {
       std::cout << "ERROR: lodepng error when decompress data" << std::endl;
       result = false;
     } else {
-      *decompressed_size = data_size;
+      *decompressed_data_size = data_size;
       memcpy(decompressed_data, data, data_size);
       free(data);
     }
@@ -91,7 +97,7 @@ bool LodepngLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LodepngLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "lodepng", "PNG encoder and decoder in C and C++, without dependencies");
 }
 
@@ -149,15 +155,15 @@ bool LodepngLibrary::GetFlagsInformation(
   return true;
 }
 
-bool LodepngLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_bits_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 1;
-  if (maximum_bits) *maximum_bits = 8;
-  if (back_reference_bits_information) {
-    back_reference_bits_information->clear();
-    back_reference_bits_information->push_back("Available values [1-8]");
-    back_reference_bits_information->push_back("[compression]");
+bool LodepngLibrary::GetBackReferenceInformation(
+    std::vector<std::string> *back_reference_information,
+    uint8_t *minimum_back_reference, uint8_t *maximum_back_reference) {
+  if (minimum_back_reference) *minimum_back_reference = 1;
+  if (maximum_back_reference) *maximum_back_reference = 8;
+  if (back_reference_information) {
+    back_reference_information->clear();
+    back_reference_information->push_back("Available values [1-8]");
+    back_reference_information->push_back("[compression]");
   }
   return true;
 }

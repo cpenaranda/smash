@@ -10,22 +10,24 @@
 // Necessary to compile with libbsc
 #include <libbsc/libbsc.h>  // NOLINT
 
-// SMASH LIBRARIES
+// CPU-SMASH LIBRARIES
+#include <cpu_options.hpp>
 #include <libbsc_library.hpp>
-#include <options.hpp>
 
-bool LibbscLibrary::CheckOptions(Options *options, const bool &compressor) {
+bool LibbscLibrary::CheckOptions(CpuOptions *options, const bool &compressor) {
   bool result{true};
-  result = CompressionLibrary::CheckFlags("libbsc", options, 0, 7);
+  result = CpuCompressionLibrary::CheckFlags("libbsc", options, 0, 7);
   if (compressor && result) {
-    result = CompressionLibrary::CheckCompressionLevel("libbsc", options, 1, 3);
+    result =
+        CpuCompressionLibrary::CheckCompressionLevel("libbsc", options, 1, 3);
     if (result) {
-      result = CompressionLibrary::CheckWindowSize("libbsc", options, 10, 28);
+      result =
+          CpuCompressionLibrary::CheckWindowSize("libbsc", options, 10, 28);
       if (result) {
         result =
-            CompressionLibrary::CheckBackReferenceBits("libbsc", options, 3, 8);
+            CpuCompressionLibrary::CheckBackReference("libbsc", options, 3, 8);
         if (result) {
-          result = CompressionLibrary::CheckMode("libbsc", options, 1, 5);
+          result = CpuCompressionLibrary::CheckMode("libbsc", options, 1, 5);
         }
       }
     }
@@ -33,29 +35,31 @@ bool LibbscLibrary::CheckOptions(Options *options, const bool &compressor) {
   return result;
 }
 
-void LibbscLibrary::GetCompressedDataSize(char *uncompressed_data,
-                                          uint64_t uncompressed_size,
-                                          uint64_t *compressed_size) {
-  *compressed_size = uncompressed_size + LIBBSC_HEADER_SIZE;
+void LibbscLibrary::GetCompressedDataSize(
+    const char *const uncompressed_data, const uint64_t &uncompressed_data_size,
+    uint64_t *compressed_data_size) {
+  *compressed_data_size = uncompressed_data_size + LIBBSC_HEADER_SIZE;
 }
 
-bool LibbscLibrary::Compress(char *uncompressed_data,
-                             uint64_t uncompressed_size, char *compressed_data,
-                             uint64_t *compressed_size) {
+bool LibbscLibrary::Compress(const char *const uncompressed_data,
+                             const uint64_t &uncompressed_data_size,
+                             char *compressed_data,
+                             uint64_t *compressed_data_size) {
   bool result{initialized_compressor_};
   if (result) {
     if (result = (bsc_init(options_.GetFlags()) == LIBBSC_NO_ERROR)) {
       int res = bsc_compress(
-          reinterpret_cast<unsigned char *>(uncompressed_data),
-          reinterpret_cast<unsigned char *>(compressed_data), uncompressed_size,
-          options_.GetWindowSize(), (1 << options_.GetBackReferenceBits()) - 1,
+          reinterpret_cast<const unsigned char *const>(uncompressed_data),
+          reinterpret_cast<unsigned char *>(compressed_data),
+          uncompressed_data_size, options_.GetWindowSize(),
+          (1 << options_.GetBackReference()) - 1,
           (options_.GetMode() == 1) ? options_.GetMode()
                                     : options_.GetMode() + 1,
           options_.GetCompressionLevel(), options_.GetFlags());
       if (res == LIBBSC_NOT_COMPRESSIBLE || res < LIBBSC_NO_ERROR) {
         result = false;
       }
-      *compressed_size = res;
+      *compressed_data_size = res;
     }
   }
   if (!result) {
@@ -64,31 +68,33 @@ bool LibbscLibrary::Compress(char *uncompressed_data,
   return result;
 }
 
-void LibbscLibrary::GetDecompressedDataSize(char *compressed_data,
-                                            uint64_t compressed_size,
-                                            uint64_t *decompressed_size) {
+void LibbscLibrary::GetDecompressedDataSize(
+    const char *const compressed_data, const uint64_t &compressed_data_size,
+    uint64_t *decompressed_data_size) {
   if (initialized_decompressor_) {
     int decomp_size{0}, comp_size{0};
     int bsc_result = bsc_block_info(
-        reinterpret_cast<unsigned char *>(compressed_data), LIBBSC_HEADER_SIZE,
-        &comp_size, &decomp_size, options_.GetFlags());
+        reinterpret_cast<const unsigned char *const>(compressed_data),
+        LIBBSC_HEADER_SIZE, &comp_size, &decomp_size, options_.GetFlags());
     if (bsc_result == LIBBSC_NO_ERROR) {
-      *decompressed_size = decomp_size;
+      *decompressed_data_size = decomp_size;
     }
   }
 }
 
-bool LibbscLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
+bool LibbscLibrary::Decompress(const char *const compressed_data,
+                               const uint64_t &compressed_data_size,
                                char *decompressed_data,
-                               uint64_t *decompressed_size) {
+                               uint64_t *decompressed_data_size) {
   bool result{initialized_decompressor_};
   if (result = (bsc_init(options_.GetFlags()) == LIBBSC_NO_ERROR)) {
-    GetDecompressedDataSize(compressed_data, compressed_size,
-                            decompressed_size);
+    GetDecompressedDataSize(compressed_data, compressed_data_size,
+                            decompressed_data_size);
     int res = bsc_decompress(
-        reinterpret_cast<unsigned char *>(compressed_data), compressed_size,
+        reinterpret_cast<const unsigned char *const>(compressed_data),
+        compressed_data_size,
         reinterpret_cast<unsigned char *>(decompressed_data),
-        *decompressed_size, options_.GetFlags());
+        *decompressed_data_size, options_.GetFlags());
     if (res < LIBBSC_NO_ERROR) {
       std::cout << "ERROR: libbsc error when decompress data" << std::endl;
       result = false;
@@ -98,7 +104,7 @@ bool LibbscLibrary::Decompress(char *compressed_data, uint64_t compressed_size,
 }
 
 void LibbscLibrary::GetTitle() {
-  CompressionLibrary::GetTitle(
+  CpuCompressionLibrary::GetTitle(
       "libbsc",
       "High performance file compressor based on lossless, block-sorting data "
       "compression algorithms");
@@ -169,15 +175,15 @@ bool LibbscLibrary::GetFlagsInformation(
   return true;
 }
 
-bool LibbscLibrary::GetBackReferenceBitsInformation(
-    std::vector<std::string> *back_reference_bits_information,
-    uint8_t *minimum_bits, uint8_t *maximum_bits) {
-  if (minimum_bits) *minimum_bits = 3;
-  if (maximum_bits) *maximum_bits = 8;
-  if (back_reference_bits_information) {
-    back_reference_bits_information->clear();
-    back_reference_bits_information->push_back("Available values [3-8]");
-    back_reference_bits_information->push_back("[compression]");
+bool LibbscLibrary::GetBackReferenceInformation(
+    std::vector<std::string> *back_reference_information,
+    uint8_t *minimum_back_reference, uint8_t *maximum_back_reference) {
+  if (minimum_back_reference) *minimum_back_reference = 3;
+  if (maximum_back_reference) *maximum_back_reference = 8;
+  if (back_reference_information) {
+    back_reference_information->clear();
+    back_reference_information->push_back("Available values [3-8]");
+    back_reference_information->push_back("[compression]");
   }
   return true;
 }
