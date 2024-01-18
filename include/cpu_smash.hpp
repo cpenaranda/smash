@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 // CPU-SMASH LIBRARIES
 #include <cpu_compression_library.hpp>
